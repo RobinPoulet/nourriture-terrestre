@@ -1,0 +1,4 @@
+# N’importe quel fichier portant le nom `.env`, y compris dans les sous-répertoires
+.env
+
+/vendor/*
