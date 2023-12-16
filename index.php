@@ -1,61 +1,18 @@
 <?php
-require(__DIR__ . "/db-connexion.php");
 require(__DIR__ . "/checkDates.php");
-session_start();
-$apiEndpoint = "http://www.nourriture-terrestre.fr/wp-json/wp/v2/posts?per_page=1&order=desc&orderby=date";
-
-$response = file_get_contents($apiEndpoint);
-
-if ($response !== false) {
-    libxml_use_internal_errors(true);
-    $postData = json_decode($response, true);
-
-    if ($postData !== null) {
-        $articleDate = $postData[0]['date'];
-
-        $doc = new DOMDocument();
-        $doc->loadHTML('<?xml encoding="UTF-8">' . $postData[0]['content']['rendered'], LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-
-        $images = $doc->getElementsByTagName('img');
-        foreach ($images as $img) {
-            $img->parentNode->removeChild($img);
-        }
-        // Récupérer le texte de tous les éléments <li>
-        $liTextArray = array();
-        $liElements = $doc->getElementsByTagName('li');
-        foreach ($liElements as $li) {
-            $liTextArray[] = $li->nodeValue;
-        }
-        $menuKeyArray = [
-            "entree",
-            "plat 1",
-            "plat 2",
-            "dessert 1",
-            "dessert 2",
-        ];
-        $resultArray = [];
-        foreach ($menuKeyArray as $index => $key) {
-            $resultArray[$key] = $liTextArray[$index];
-        }
-        libxml_use_internal_errors(false);
-    } else {
-        echo "Erreur lors de la conversion JSON.";
-    }
-} else {
-   // Rediriger vers la page "ma_page.html"
-    header("Location: error-page.php");
-    exit; // Assurez-vous de terminer le script après la redirection
-}
+require(__DIR__ . "/get-menu.php");
 
 $commandDate = new DateTime();
 
-// Formattez la date selon votre besoin
+// Formatage date
 $format = "Y-m-d\TH:i:s";
+$dateMenu = $postData["date"];
+$menu = $postData["menu"];
 $dateFormatee = $commandDate->format($format);
 
-$checkDate = passerCommande($articleDate, $dateFormatee);
+$checkDate = passerCommande($dateMenu, $dateFormatee);
 if ($checkDate !== "Commande passée avec succès.") {
-    header("Location: bad-day-error-page");
+    header("Location: bad-day-error-page.php");
     die();
 }
 
@@ -67,7 +24,7 @@ if ($checkDate !== "Commande passée avec succès.") {
 
 <body>
 </div>
-    <div class="container">
+    <div class="container py-5 w">
         <div class="row">
             <h1 class="title text-left" style="margin-top: 30px; margin-bottom: 30px;">🌭 Nourriture Terrestre 🍔 </h1>
             <div class="col-6">
@@ -75,7 +32,7 @@ if ($checkDate !== "Commande passée avec succès.") {
                     <h2 class="list-title" style="margin-left: 35px;">Le Menu</h2>
                     <ul>
                         <?php
-                        foreach ($resultArray as $value) {
+                        foreach ($menu as $value) {
                             echo "<li class=\"item\"><span class=\"name\">" . $value . "</span</li>";
                         }
                         ?>
@@ -83,82 +40,89 @@ if ($checkDate !== "Commande passée avec succès.") {
                 </div>
             </div>
             </div>
-            <div class="row">
-            <div class="col-6 ml-2">
-            <div id="div-alert"></div>
-                <div id="form-card" class="card" style="width: 28rem; margin_left: auto; margin-right: auto; margin-top: 20px; padding: 4px;">
-                    <h5 class="card-header">Fais ta commande : </h5>
-                    <form id="order-form" method="POST">
-                            <div class="m-3">
-                                <input class="form-input" type="text" name="user" placeholder="Ton nom">
+            <div class="row mb-4">
+                <div class="col-6 ml-2">
+                    <div id="div-alert"></div>
+                    <div 
+                        id="form-card" 
+                        class="card" 
+                        style="width: 34rem; margin_left: auto; margin-right: auto; margin-top: 20px; padding: 4px;"
+                    >
+                        <h5 class="card-header text-center">Fais ta commande : </h5>
+                        <form class="" id="order-form" method="POST">
+                            <div class="m-3 text-center">
+                                <input class="form-input" type="text" name="user" placeholder="Nom ...">
                             </div>
-                    <div class="card-body">
-                        
-                            <div class="m-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="flexCheckEntree" name="entree">
-                                    <label class="form-check-label" for="flexCheckEntree">
-                                        <?= $resultArray["entree"] ?>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="m-3 d-flex">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="inlineCheckboxPlat1"
-                                                name="plat-1">
-                                            <label class="form-check-label" for="inlineCheckboxPlat1">
-                                                <?= $resultArray["plat 1"] ?>
+                            <div class="card-body">
+                                <div class="m-3">
+                                    <div class="row">
+                                        <div class="col-4"></div>
+                                        <div class="col-4">
+                                            <div class="form-check">
+                                            <input 
+                                                class="form-check-input" 
+                                                type="checkbox" 
+                                                id="flexCheckEntree" 
+                                                name="entree"
+                                            >
+                                            <label class="form-check-label" for="flexCheckEntree">
+                                                <?= $menu["entree"] ?>
                                             </label>
                                         </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="inlineCheckboxPlat2"
-                                                name="plat-2">
-                                            <label class="form-check-label" for="inlineCheckboxPlat2">
-                                                <?= $resultArray["plat 2"] ?>
-                                            </label>
-                                        </div>
+                                        <div class="col-4"></div>
                                     </div>
                                 </div>
-
-                                <div class="m-3 d-flex">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="inlineCheckboxDessert1"
-                                                name="dessert-1">
-                                            <label class="form-check-label" for="inlineCheckboxDessert1">
-                                                <?= $resultArray["dessert 1"] ?>
-                                            </label>
-                                        </div>
+                                <div class="row">
+                                    <div class="m-3 d-flex">
+                                        <?php
+                                            foreach ([$menu["plat 1"], $menu["plat 2"]] as $index => $plat) {
+                                                echo "<div class=\"col-6\">
+                                                        <div class=\"form-check form-check-inline\">
+                                                            <input 
+                                                                class=\"form-check-input\" 
+                                                                type=\"checkbox\" 
+                                                                id=\"inlineCheckboxPlat".$index."
+                                                                name=\"plat-".$index."\">
+                                                            <label class=\"form-check-label\" for=\"inlineCheckboxPlat".$index."\">
+                                                                ".$plat."
+                                                            </label>
+                                                        </div>
+                                                    </div>";
+                                            }
+                                        ?>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="inlineCheckboxDessert2"
-                                                name="dessert-2">
-                                            <label class="form-check-label" for="inlineCheckboxDessert2">
-                                                <?= $resultArray["dessert 2"] ?>
-                                            </label>
-                                        </div>
+                                    <div class="m-3 d-flex">
+                                        <?php
+                                            foreach ([$menu["dessert 1"], $menu["dessert 2"]] as $index => $plat) {
+                                                echo "<div class=\"col-6\">
+                                                        <div class=\"form-check form-check-inline\">
+                                                            <input 
+                                                                class=\"form-check-input\" 
+                                                                type=\"checkbox\" 
+                                                                id=\"inlineCheckboxPlat".$index."
+                                                                name=\"plat-".$index."\">
+                                                            <label class=\"form-check-label\" for=\"inlineCheckboxPlat".$index."\">
+                                                                ".$plat."
+                                                            </label>
+                                                        </div>
+                                                    </div>";
+                                            }
+                                        ?>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="m-3">
+                            <div class="m-3 text-center">
                                 <input hidden name="ajax" value="order">
-                                <input value="Valider ma commande" class="btn btn-primary"
-                                    id="order-validate">
+                                <input 
+                                    value="Valider ma commande" 
+                                    class="btn btn-primary"
+                                    id="order-validate"
+                                >
                             </div>
-
                         </form>
                     </div>
                 </div>
             </div>
-          
-            
         </div>
     </div>
 </body>
