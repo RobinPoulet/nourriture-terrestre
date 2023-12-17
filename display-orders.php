@@ -1,51 +1,9 @@
 <?php
 require(__DIR__ . "/db-connexion.php");
-
-$apiEndpoint = "http://www.nourriture-terrestre.fr/wp-json/wp/v2/posts?per_page=1&order=desc&orderby=date";
-
-$response = file_get_contents($apiEndpoint);
-
-if ($response !== false) {
-    libxml_use_internal_errors(true);
-    $postData = json_decode($response, true);
-
-    if ($postData !== null) {
-        $articleDate = $postData[0]['date'];
-
-        $doc = new DOMDocument();
-        $doc->loadHTML('<?xml encoding="UTF-8">' . $postData[0]['content']['rendered'], LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        // Supprimer l'image de l'article récupéré
-        $images = $doc->getElementsByTagName('img');
-        foreach ($images as $img) {
-            $img->parentNode->removeChild($img);
-        }
-        // Récupérer le texte de tous les éléments <li>
-        $liTextArray = array();
-        $liElements = $doc->getElementsByTagName('li');
-        foreach ($liElements as $li) {
-            $liTextArray[] = $li->nodeValue;
-        }
-        $menuKeyArray = [
-            "entree",
-            "plat 1",
-            "plat 2",
-            "dessert 1",
-            "dessert 2",
-        ];
-        $resultArray = [];
-        foreach ($menuKeyArray as $index => $key) {
-            $resultArray[$key] = $liTextArray[$index];
-        }
-    } else {
-        echo "Erreur lors de la conversion JSON.";
-    }
-} else {
-   // Rediriger vers la page "error-page.html" si pas de retour de l'api, sinon la page ne pas fonctionner
-   // TODO enregistrer le menu en BDD pour faire l'appel à l'API qu'une seule fois
-    header("Location: error-page.php");
-    die();
-}
-
+// On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
+require(__DIR__ . "/get-menu.php");
+$dateMenu = $postData["date"];
+$menu = $postData["menu"];
 function raccourcirChaine($chaine, $longueurMax) {
     // Vérifier si la chaîne est plus longue que la longueur maximale
     if (strlen($chaine) > $longueurMax) {
@@ -87,7 +45,7 @@ if (isset($_POST["ajax"]) && $_POST["ajax"] === "deleteOrder") {
  $stmt->bindParam(':creation_date', $currentDate);
  $stmt->execute();
  $resultsOrder = $stmt->fetchAll(PDO::FETCH_ASSOC);
- 
+
  ?>
  <!DOCTYPE html>
 <html>
@@ -102,11 +60,11 @@ if (isset($_POST["ajax"]) && $_POST["ajax"] === "deleteOrder") {
         <thead>
             <tr>
                 <th scope="col">Nom</th>
-                <th scope="col"><?= raccourcirChaine($resultArray["entree"], 18) ?></th>
-                <th scope="col"><?= raccourcirChaine($resultArray["plat 1"], 18) ?></th>
-                <th scope="col"><?= raccourcirChaine($resultArray["plat 2"], 18) ?></th>
-                <th scope="col"><?= raccourcirChaine($resultArray["dessert 1"], 18) ?></td>
-                <th scope="col"><?= raccourcirChaine($resultArray["dessert 2"], 18) ?></th>
+                <th scope="col"><?= raccourcirChaine($menu["entree"], 18) ?></th>
+                <th scope="col"><?= raccourcirChaine($menu["plat 1"], 18) ?></th>
+                <th scope="col"><?= raccourcirChaine($menu["plat 2"], 18) ?></th>
+                <th scope="col"><?= raccourcirChaine($menu["dessert 1"], 18) ?></td>
+                <th scope="col"><?= raccourcirChaine($menu["dessert 2"], 18) ?></th>
                 <th></th>
             </tr>
         </thead>
@@ -123,11 +81,10 @@ if (isset($_POST["ajax"]) && $_POST["ajax"] === "deleteOrder") {
         foreach ($resultsOrder as $result) {
             $decodedJson = json_decode($result["CONTENT"]);
             $orders = [];
-            foreach ($decodedJson as $value) {
-                $orders[] = $value;
-                $totalOrders[$value]++;
+            foreach ($decodedJson as $key => $value) {
+                $orders[] = $key;
+                $totalOrders[$key]++;
             }
-            //var_dump($totalOrders);
             echo "
                 <tr id=\"tr".$result["ID"]."\">
                     <td>".$result["NAME"]."</td>
