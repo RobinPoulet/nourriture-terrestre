@@ -12,7 +12,7 @@ $menu = $postData["menu"];
 $dateFormatee = $commandDate->format($format);
 
 $checkDate = passerCommande($dateMenu, $dateFormatee);
-if ($checkDate !== "Commande passée avec succès.") {
+if (false && $checkDate !== "Commande passée avec succès.") {
     header("Location: bad-day-error-page.php");
     die();
 }
@@ -68,41 +68,45 @@ if ($checkDate !== "Commande passée avec succès.") {
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="m-3 d-flex">
-                                        <?php
-                                            foreach ([$menu["plat 1"], $menu["plat 2"]] as $index => $plat) {
-                                                echo "<div class=\"col-6\">
-                                                        <div class=\"form-check form-check-inline\">
-                                                            <input 
-                                                                class=\"form-check-input\" 
-                                                                type=\"checkbox\" 
-                                                                id=\"inlineCheckboxPlat".$index."
-                                                                name=\"plat-".$index."\">
-                                                            <label class=\"form-check-label\" for=\"inlineCheckboxPlat".$index."\">
-                                                                ".$plat."
-                                                            </label>
-                                                        </div>
-                                                    </div>";
-                                            }
-                                        ?>
+                                <div class="m-3 d-flex">
+                                    <div class="col-6">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckboxPlat1"
+                                                name="plat-1">
+                                            <label class="form-check-label" for="inlineCheckboxPlat1">
+                                                <?= $menu["plat 1"] ?>
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div class="m-3 d-flex">
-                                        <?php
-                                            foreach ([$menu["dessert 1"], $menu["dessert 2"]] as $index => $plat) {
-                                                echo "<div class=\"col-6\">
-                                                        <div class=\"form-check form-check-inline\">
-                                                            <input 
-                                                                class=\"form-check-input\" 
-                                                                type=\"checkbox\" 
-                                                                id=\"inlineCheckboxPlat".$index."
-                                                                name=\"plat-".$index."\">
-                                                            <label class=\"form-check-label\" for=\"inlineCheckboxPlat".$index."\">
-                                                                ".$plat."
-                                                            </label>
-                                                        </div>
-                                                    </div>";
-                                            }
-                                        ?>
+                                    <div class="col-6">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckboxPlat2"
+                                                name="plat-2">
+                                            <label class="form-check-label" for="inlineCheckboxPlat2">
+                                                <?= $menu["plat 2"] ?>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="m-3 d-flex">
+                                    <div class="col-6">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckboxDessert1"
+                                                name="dessert-1">
+                                            <label class="form-check-label" for="inlineCheckboxDessert1">
+                                                <?= $menu["dessert 1"] ?>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="inlineCheckboxDessert2"
+                                                name="dessert-2">
+                                            <label class="form-check-label" for="inlineCheckboxDessert2">
+                                                <?= $menu["dessert 2"] ?>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -123,65 +127,6 @@ if ($checkDate !== "Commande passée avec succès.") {
 </body>
 
 </html>
-<script>
-    $(document).ready(function () {
-        $("#order-validate").click(function () {
-            // Récupérer les données du formulaire
-            const formData = $("#order-form").serialize();
-            $.ajax({
-                type: "POST",
-                url: "order.php",
-                data: formData,
-                success: function(response) {
-                    const data = JSON.parse(response);
-                    console.log(data, JSON.parse(data[1]))
-                    createDivAlert(data)
-                    document.getElementById('form-card').style.display = 'none';
-                }
-            });
-        });
-    });
-    // Fonction pour créer et afficher un toast
-function createDivAlert(data) {
-    [name, order] = data
-    const root = document.getElementById('div-alert')
-    const alerte = document.createElement('div');
-    alerte.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-  <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
-    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-  </symbol>
-  </svg>
-    <div class="alert alert-success d-flex align-items-center" role="alert">
-    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
-  <div>
-  Bonjour ${name}, ta comande est bien enregirstrée
-  </div>
-</div>
-    `;
-
-    // Ajouter le toast au container
-    root.appendChild(alerte);
-}
-function deleteOrder(orderId) {
-        $.ajax({
-                type: "POST",
-                url: "display-orders.php",
-                data: {
-                    ajax: "deleteOrder",
-                    deleteId: orderId
-                },
-                success: function (response) {
-                    const data = JSON.parse(response)
-                    console.log(data);
-                    const id = "trid" + data.deleted;
-                    const tr = document.getElementById(id);
-                    tr.remove();
-                }
-            });
-     }
-
-</script>
 <style type="text/css" media="screen">
     body {
         background: linear-gradient(to right,
