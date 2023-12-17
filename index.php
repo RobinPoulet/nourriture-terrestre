@@ -23,7 +23,7 @@ if ($checkDate !== "Commande passée avec succès.") {
 <?php require(__DIR__ . "/head.html"); ?>
 <body>
 </div>
-    <div class="container py-5 w">
+    <div class="container p-4">
         <div class="row">
             <h1 class="title text-left" style="margin-top: 30px; margin-bottom: 30px;">&#x1F963; Nourriture Terrestre 🍔</h1>
             <div class="col-6">

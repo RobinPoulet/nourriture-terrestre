@@ -54,8 +54,8 @@ if (isset($_POST["ajax"]) && $_POST["ajax"] === "deleteOrder") {
 
 <body>
 </div>
-    <div class="container">
-
+    <div class="container p-4">
+    <h2 class="h3 text-center p-2">Récap des commandes du <?= $currentDate ?></h2>
     <table class="table table-striped">
         <thead>
             <tr>
