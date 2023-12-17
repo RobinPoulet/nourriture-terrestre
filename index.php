@@ -1,5 +1,6 @@
 <?php
 require(__DIR__ . "/checkDates.php");
+// On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
 require(__DIR__ . "/get-menu.php");
 
 $commandDate = new DateTime();
@@ -19,9 +20,7 @@ if ($checkDate !== "Commande passée avec succès.") {
 ?>
 <!DOCTYPE html>
 <html>
-
 <?php require(__DIR__ . "/head.html"); ?>
-
 <body>
 </div>
     <div class="container py-5 w">

@@ -7,13 +7,19 @@ if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 172800 /* 1728
     $cachedData = file_get_contents($cacheFile);
     $postData = json_decode($cachedData, true);
 } else {
+    $currentDay = date("N"); 
     // Vérifier si aujourd'hui est un dimanche ou un lundi
-    $currentDay = date("N"); // Retourne 1 pour lundi, 2 pour mardi, ..., 7 pour dimanche
-
-    if ($currentDay == 1 || $currentDay == 7 || $currentDay == 6) {
+    if ($currentDay == 1 || $currentDay == 7) {
         // Faire l'appel API
         $apiEndpoint = "http://www.nourriture-terrestre.fr/wp-json/wp/v2/posts?per_page=1&order=desc&orderby=date";
-        $response = file_get_contents($apiEndpoint);
+        $options = [
+            'http' => [
+                'method' => 'GET',
+                'header' => 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+            ],
+        ];
+        $context = stream_context_create($options);
+        $response = file_get_contents($apiEndpoint, false, $context);
 
         if ($response !== false) {
             libxml_use_internal_errors(true);
