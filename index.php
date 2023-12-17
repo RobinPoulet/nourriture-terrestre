@@ -25,7 +25,7 @@ if ($checkDate !== "Commande passée avec succès.") {
 </div>
     <div class="container py-5 w">
         <div class="row">
-            <h1 class="title text-left" style="margin-top: 30px; margin-bottom: 30px;">🌭 Nourriture Terrestre 🍔 </h1>
+            <h1 class="title text-left" style="margin-top: 30px; margin-bottom: 30px;">&#x1F963; Nourriture Terrestre 🍔</h1>
             <div class="col-6">
                 <div class="list">
                     <h2 class="list-title" style="margin-left: 35px;">Le Menu</h2>
@@ -47,28 +47,24 @@ if ($checkDate !== "Commande passée avec succès.") {
                         class="card" 
                         style="width: 34rem; margin_left: auto; margin-right: auto; margin-top: 20px; padding: 4px;"
                     >
-                        <h5 class="card-header text-center">Fais ta commande : </h5>
-                        <form class="" id="order-form" method="POST">
-                            <div class="m-3 text-center">
-                                <input class="form-input" type="text" name="user" placeholder="Nom ...">
-                            </div>
+                        <h5 class="card-header ml-3">Fais ta commande : </h5>
+                        <form id="order-form" method="POST">
                             <div class="card-body">
-                                <div class="m-3">
-                                    <div class="row">
-                                        <div class="col-4"></div>
-                                        <div class="col-4">
-                                            <div class="form-check">
-                                            <input 
-                                                class="form-check-input" 
-                                                type="checkbox" 
-                                                id="flexCheckEntree" 
-                                                name="entree"
-                                            >
-                                            <label class="form-check-label" for="flexCheckEntree">
-                                                <?= $menu["entree"] ?>
-                                            </label>
-                                        </div>
-                                        <div class="col-4"></div>
+                                <div class="form-group m-3">
+                                    <label for="your-name" class="form-label">Your Name</label>
+                                    <input type="text" class="form-control" id="your-name" name="user" required>
+                                </div>
+                                <div class="form-group m-3">
+                                    <div class="form-check">
+                                        <input 
+                                            class="form-check-input" 
+                                            type="checkbox" 
+                                            id="flexCheckEntree" 
+                                            name="entree"
+                                        >
+                                        <label class="form-check-label" for="flexCheckEntree">
+                                            <?= $menu["entree"] ?>
+                                        </label>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -113,7 +109,7 @@ if ($checkDate !== "Commande passée avec succès.") {
                             <div class="m-3 text-center">
                                 <input hidden name="ajax" value="order">
                                 <input 
-                                    value="Valider ma commande" 
+                                    value="Commander" 
                                     class="btn btn-primary"
                                     id="order-validate"
                                 >
