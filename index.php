@@ -12,7 +12,7 @@ $menu = $postData["menu"];
 $dateFormatee = $commandDate->format($format);
 
 $checkDate = passerCommande($dateMenu, $dateFormatee);
-if (false && $checkDate !== "Commande passée avec succès.") {
+if ($checkDate !== "Commande passée avec succès.") {
     header("Location: bad-day-error-page.php");
     die();
 }
