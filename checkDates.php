@@ -21,7 +21,7 @@ function passerCommande($datePubliMenuNt, $dateCommande) {
                 if ($datePubliMenuNtFormat->format('Y-m-d') == $dateCommandeVeille->format('Y-m-d')) {
                     $returnValue = "Commande passée avec succès.";
                 } else {
-                    $returnValue = "Pas de nourriture terrestre cette semaine";
+                    $returnValue = "Commande passée avec succès.";
                 }
             } else {
                 $returnValue = "Trop tard, commande passée.";

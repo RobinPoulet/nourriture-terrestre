@@ -42,17 +42,17 @@ if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 172800 /* 1728
             } else {
                  // Rediriger vers la page d'erreur
                  // TODO :: Créer une page d'erreur spécifique pour quand le menu n'est pas disponible
-                 header("Location: error-page.php");
+                 header("Location: error.php");
                  exit;
             }
         } else {
             // Rediriger vers la page d'erreur
-            header("Location: error-page.php");
+            header("Location: error.php");
             exit;
         }
     } else {
         // Rediriger vers la page d'erreur de jour
-        header("Location: bad-day-error-page.php");
+        header("Location: error.php");
         exit;
     }
 }

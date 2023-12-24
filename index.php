@@ -13,7 +13,7 @@ $dateFormatee = $commandDate->format($format);
 
 $checkDate = passerCommande($dateMenu, $dateFormatee);
 if ($checkDate !== "Commande passée avec succès.") {
-    header("Location: bad-day-error-page.php");
+    header("Location: error.php");
     die();
 }
 

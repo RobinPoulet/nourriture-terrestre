@@ -2,26 +2,9 @@
 require(__DIR__ . "/db-connexion.php");
 // On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
 require(__DIR__ . "/get-menu.php");
+require_once(__DIR__ . "/classes/HelperString.php");
 $dateMenu = $postData["date"];
 $menu = $postData["menu"];
-function raccourcirChaine($chaine, $longueurMax) {
-    // Vérifier si la chaîne est plus longue que la longueur maximale
-    if (strlen($chaine) > $longueurMax) {
-        // Couper la chaîne à la longueur maximale
-        $chaineCoupee = substr($chaine, 0, $longueurMax);
-
-        // Vérifier si la chaîne coupée se termine déjà par "..."
-        if (substr($chaineCoupee, -3) !== '...') {
-            // Ajouter "..." à la fin
-            $chaineCoupee .= '...';
-        }
-
-        return $chaineCoupee;
-    }
-
-    // Si la chaîne est déjà assez courte, la retourner telle quelle
-    return $chaine;
-}
 $currentDate = date("Y-m-d");
  $query = "SELECT * FROM orders WHERE creation_date = :creation_date";
  $stmt = $pdo->prepare($query);
@@ -50,7 +33,7 @@ if (isset($_POST["ajax"]) && $_POST["ajax"] === "deleteOrder") {
  <!DOCTYPE html>
 <html>
 
-<?php require(__DIR__ . "/head.html"); ?>
+<?php require_once(__DIR__ . "/head.html"); ?>
 
 <body>
 </div>
@@ -60,11 +43,13 @@ if (isset($_POST["ajax"]) && $_POST["ajax"] === "deleteOrder") {
         <thead>
             <tr>
                 <th scope="col">Nom</th>
-                <th scope="col"><?= raccourcirChaine($menu["entree"], 18) ?></th>
-                <th scope="col"><?= raccourcirChaine($menu["plat 1"], 18) ?></th>
-                <th scope="col"><?= raccourcirChaine($menu["plat 2"], 18) ?></th>
-                <th scope="col"><?= raccourcirChaine($menu["dessert 1"], 18) ?></td>
-                <th scope="col"><?= raccourcirChaine($menu["dessert 2"], 18) ?></th>
+                <?php
+                foreach ($menu as $dish) {
+                    echo "
+                        <th scope=\"col\">".HelperString::shortString($dish, 18)."</th>
+                    ";
+                }
+                ?>
                 <th></th>
             </tr>
         </thead>
