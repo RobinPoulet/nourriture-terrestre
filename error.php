@@ -1,8 +1,8 @@
 <?php
+session_start();
 ?>
 <div class="text">
-  <div>Nourriture Céleste ?</div>
-  <h1>Tu es parti trop loin</h1>
+  <h1><?= $_SESSION["error_message"] ?></h1>
   <hr>
   <div>Rendez-vous Lundi prochain <bold>AVANT</bold> 11h45</div>
 </div>

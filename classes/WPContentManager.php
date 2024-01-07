@@ -2,18 +2,31 @@
 class WPContentManager {
     public const ERROR_RESPONSE = "Erreur dans la réponse de la requête.";
     public const ERROR_JSON = "Erreur lors de la conversion JSON.";
-    public const MENU_NOT_AVAILABLE = "Pas de menu affcihé dans l'article de cette semaine.";
+    public const MENU_NOT_AVAILABLE = "Pas de menu affiché dans l'article de cette semaine.";
     public function __construct( // Utilisation nouvelle syntaxe simplifiée pour les constructeurs php 8
         private string $url,
         private array $contextOptions,
-        private array $menuHeader,
     ) {
     }
-    private function hasLiElement(DOMDocument $doc): bool {
-        $liElements = $doc->getElementsByTagName('li');
-        return $liElements->length > 0;
+    private function getLastPost() {
+        $requestQuery = "/wp-json/wp/v2/posts?per_page=1&order=desc&orderby=date";
+        $apiEndpoint = $this->url.$requestQuery;
+        $context = stream_context_create($this->contextOptions);
+        $response = file_get_contents($apiEndpoint, false, $context);
+
+        if ($response === false) {
+            throw new \Exception(self::ERROR_RESPONSE);
+        }
+
+        $postData = json_decode($response, true);
+
+        if (is_null($postData)) {
+            throw new \Exception(self::ERROR_JSON);
+        }
+
+        return $postData;
     }
-    private function deleteImages(DOMDocument $doc): void {
+    public function deleteImages(DOMDocument $doc): void {
         $images = $doc->getElementsByTagName('img');
         foreach ($images as $img) {
             $img->parentNode->removeChild($img);
@@ -27,66 +40,44 @@ class WPContentManager {
         }
         return $returnValue;
     }
-    private function getLastArticle() {
-        $returnValue = "";
-        $requestQuery = "/wp-json/wp/v2/posts?per_page=1&order=desc&orderby=date";
-        $apiEndpoint = $this->url.$requestQuery;
-        $context = stream_context_create($this->contextOptions);
-        $response = file_get_contents($apiEndpoint, false, $context);
-        if ($response !== false) {
-            $postData = json_decode($response, true);
-            if ($postData !== null) {
-                $returnValue = $postData;
-            } else {
-                $returnValue = self::ERROR_JSON;
-            }
-        } else {
-            $returnValue = self::ERROR_RESPONSE;
-        }
-        return $returnValue;
-    }
     
-    public function getLastArticleDate() {
-        $returnValue = "";
-        $lastArticle = $this->getLastArticle();
-        if (is_array($lastArticle)) {
-            $returnValue = $lastArticle[0]['date'];
-        } else {
-            $returnValue = $lastArticle;
+    
+    public function getLastPostDate() {
+        try {
+            $lastArticle = $this->getLastPost();
+            $dateString = $lastArticle[0]['date'];
+
+            // Convertir la chaîne de date en objet DateTime
+            $dateObj = new DateTime($dateString);
+
+            // Formater la date selon le format "Y-m-d"
+            $formattedDate = $dateObj->format("Y-m-d");
+
+            // $formattedDate contient maintenant la date formatée
+            return $formattedDate;
+        } catch (\Exception $e) {
+            throw $e;
         }
-        return $returnValue;
     }
 
-    private function getLastArticleMenuData() {
-        $returnValue = "";
-        $lastArticle = $this->getLastArticle();
-        if (is_array($lastArticle)) {
+    public function getLastPostLiElements() {
+        try {
+            $lastPost = $this->getLastPost();
             // Instanciation d'un DOCDocument, pour récupérer les éléments <li> du menu
             $doc = new DOMDocument();
             // Setup du loadHTML, pour utiliser les méthodes getElementsByName sans warning ni erreur
-            $doc->loadHTML('<?xml encoding="UTF-8"><div>' . $lastArticle[0]['content']['rendered'] . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING);
-            if ($this->hasLiElement($doc)) {
-                $returnValue = $this->getLiElements($doc);
-            } else {
-                $returnValue = self::MENU_NOT_AVAILABLE;
+            $doc->loadHTML(
+                '<?xml encoding="UTF-8"><div>' . $lastPost[0]['content']['rendered'] . '</div>', 
+                LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING
+            );
+            $lastPostLiElements = $this->getLiElements($doc);
+            if (count($lastPostLiElements) === 0) {
+                throw new \Exception(self::MENU_NOT_AVAILABLE);
             }
-        } else {
-            $returnValue = $lastArticle;
+            return $lastPostLiElements;
+        } catch (\Exception $e) {
+             // Lancez à nouveau l'exception pour propager l'erreur
+             throw $e;
         }
-        return $returnValue;
-    }
-    
-    public function displayLastArticleMenu() {
-        $returnValue = [];
-        $menuData = $this->getLastArticleMenuData();
-        if (is_array($menuData)) {
-            foreach ($this->menuHeader as $index => $key) {
-                $returnValue[$key] = $menuData[$index];
-            }
-        } else {
-            // $menuData pas un tableau, on a une constante d'erreur
-            $returnValue = $menuData;
-        }
-        return $returnValue;
     }
 }

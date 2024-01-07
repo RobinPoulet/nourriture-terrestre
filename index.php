@@ -1,21 +1,14 @@
 <?php
+session_start();
 require(__DIR__ . "/checkDates.php");
 // On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
 require(__DIR__ . "/get-menu.php");
-
 $commandDate = new DateTime();
 
 // Formatage date
 $format = "Y-m-d\TH:i:s";
 $dateMenu = $postData["date"];
 $menu = $postData["menu"];
-$dateFormatee = $commandDate->format($format);
-
-$checkDate = passerCommande($dateMenu, $dateFormatee);
-if ($checkDate !== "Commande passée avec succès.") {
-    header("Location: error.php");
-    die();
-}
 
 ?>
 <!DOCTYPE html>
