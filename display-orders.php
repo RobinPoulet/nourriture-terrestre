@@ -6,51 +6,34 @@ require_once(__DIR__ . "/classes/HelperString.php");
 $dateMenu = $postData["date"];
 $menu = $postData["menu"];
 $currentDate = date("Y-m-d");
- $query = "SELECT * FROM orders WHERE creation_date = :creation_date";
- $stmt = $pdo->prepare($query);
- $stmt->bindParam(':creation_date', $currentDate);
- $stmt->execute();
- $resultsOrder = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-if (isset($_POST["ajax"]) && $_POST["ajax"] === "deleteOrder") {
-    $id = intval($_POST["deleteId"]);
-    $query = "DELETE FROM orders WHERE id = :id";
-    $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':id', $id);
-    $stmt->execute();
-    echo json_encode(["deleted" => $id]);
-    die();
-}
-
- $currentDate = date("Y-m-d");
- $query = "SELECT * FROM orders WHERE creation_date = :creation_date";
- $stmt = $pdo->prepare($query);
- $stmt->bindParam(':creation_date', $currentDate);
- $stmt->execute();
- $resultsOrder = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
- ?>
- <!DOCTYPE html>
+$query = "SELECT * FROM orders WHERE creation_date = :creation_date";
+$stmt = $pdo->prepare($query);
+$stmt->bindParam(':creation_date', $currentDate);
+$stmt->execute();
+$resultsOrder = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+<!DOCTYPE html>
 <html>
 
 <?php require_once(__DIR__ . "/head.html"); ?>
 
 <body>
-</div>
-    <div class="container p-4">
-    <h2 class="h3 text-center p-2">Récap des commandes du <?= $currentDate ?></h2>
-    <table class="table table-striped">
+<?php require(__DIR__ . "/navbar.html"); ?>
+<h2 class="h3 text-center p-2">Récap des commandes du <?= $currentDate ?></h2>
+<div class="container">
+    <table class="table table-striped table">
         <thead>
             <tr>
                 <th scope="col">Nom</th>
                 <?php
                 foreach ($menu as $dish) {
+                    $shortDish = explode(" ", $dish)[0];
                     echo "
-                        <th scope=\"col\">".HelperString::shortString($dish, 18)."</th>
+                        <th scope=\"col\">".$shortDish."</th>
                     ";
                 }
                 ?>
-                <th></th>
+                <th scope="col">Perso</th>
             </tr>
         </thead>
         <tbody>
@@ -66,35 +49,37 @@ if (isset($_POST["ajax"]) && $_POST["ajax"] === "deleteOrder") {
         foreach ($resultsOrder as $result) {
             $decodedJson = json_decode($result["CONTENT"]);
             $orders = [];
+            $perso = $result["PERSO"] ?? "";
             foreach ($decodedJson as $key => $value) {
                 $orders[] = $key;
                 $totalOrders[$key]++;
             }
             echo "
                 <tr id=\"tr".$result["ID"]."\">
-                    <td>".$result["NAME"]."</td>
-                    <td>".(in_array("entree", $orders) ? "X" : "")."</td>
-                    <td>".(in_array("plat-1", $orders) ? "X" : "")."</td>
-                    <td>".(in_array("plat-2", $orders) ? "X" : "")."</td>
-                    <td>".(in_array("dessert-1", $orders) ? "X" : "")."</td>
-                    <td>".(in_array("dessert-2", $orders) ? "X" : "")."</td>
+                    <td class=\"col\">".$result["NAME"]."</td>
+                    <td class=\"col\">".(in_array("entree", $orders) ? "X" : "")."</td>
+                    <td class=\"col\">".(in_array("plat-1", $orders) ? "X" : "")."</td>
+                    <td class=\"col\">".(in_array("plat-2", $orders) ? "X" : "")."</td>
+                    <td class=\"col\">".(in_array("dessert-1", $orders) ? "X" : "")."</td>
+                    <td class=\"col\">".(in_array("dessert-2", $orders) ? "X" : "")."</td>
+                    <td class=\"col\">".$perso."</td>
                 </tr>
             ";
         }
         echo "
             <tr>
-                <td>TOTAL</td>
-                <td><bold>".$totalOrders["entree"]."</bold></td>
-                <td><bold>".$totalOrders["plat-1"]."</bold></td>
-                <td><bold>".$totalOrders["plat-2"]."</bold></td>
-                <td><bold>".$totalOrders["dessert-1"]."</bold></td>
-                <td><bold>".$totalOrders["dessert-2"]."</bold></td>
+                <td class=\"col\">TOTAL</td>
+                <td class=\"col\"><bold>".$totalOrders["entree"]."</bold></td>
+                <td class=\"col\"><bold>".$totalOrders["plat-1"]."</bold></td>
+                <td class=\"col\"><bold>".$totalOrders["plat-2"]."</bold></td>
+                <td class=\"col\"><bold>".$totalOrders["dessert-1"]."</bold></td>
+                <td class=\"col\"><bold>".$totalOrders["dessert-2"]."</bold></td>
+                <td class=\"col\"></td>
             </tr>
         "
         ?>
         </tbody>
     </table>
-  
-    </div>
+</div>
 </body>
 </html>

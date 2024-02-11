@@ -4,7 +4,7 @@ require(__DIR__ . "/classes/MenuManager.php");
 $cacheFile = './cache/menu.json';
 
 // Vérifier si le fichier de cache existe et est récent
-if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 1 /* 86400 24 heures */) {
+if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 86400 /* 86400 24 heures */) {
     // Charger les données à partir du cache
     $cachedData = file_get_contents($cacheFile);
     $postData = json_decode($cachedData, true);
@@ -23,13 +23,13 @@ if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 1 /* 86400 24 
         $lastPostLiElements = $wpContent->getLastPostLiElements();
         $menuHeader = [
             "entree",
-            "plat 1",
-            "plat 2",
-            "dessert 1",
-            "dessert 2",
+            "plat-1",
+            "plat-2",
+            "dessert-1",
+            "dessert-2",
         ];
         $menuManager = new MenuManager($lastPostLiElements, $menuHeader);
-        if (true || $menuManager->canDisplayMenu($dateMenu)) {
+        if ($menuManager->canDisplayMenu($dateMenu)) {
             $menu = $menuManager->getMenuArray();
             $result = [
                 "date" => $dateMenu,
