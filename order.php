@@ -5,20 +5,26 @@ if (
     && isset($_POST["ajax"]) 
     && $_POST["ajax"] === "order"
 ) {
-    // récupérer unniquement les différentes comosantes de la commande
+    // récupérer unniquement les différentes composantes de la commande
     $order = json_encode(
         // On filtre sur les clés de $_POST pour ne garder que ce qui concerne la commande
         array_filter($_POST, function ($key) {
-            return ($key !== "user" && $key !== "ajax");
+            return (
+                $key !== "user" 
+                && $key !== "ajax" 
+                && $key !== "perso"
+            );
         }, ARRAY_FILTER_USE_KEY)
     );
     $user = $_POST["user"];
+    $perso = $_POST["perso"];
     $currentDate = date('Y-m-d');
-    $query = "INSERT INTO orders (name, content, creation_date) VALUES (:name, :order, :creation_date)";
+    $query = "INSERT INTO orders (name, content, perso, creation_date) VALUES (:name, :order, :perso, :creation_date)";
     try {
         $stmt = $pdo->prepare($query);
         $stmt->bindParam(':name', $user);
         $stmt->bindParam(':order', $order);
+        $stmt->bindParam(':perso', $perso);
         $stmt->bindPAram(':creation_date', $currentDate);
          // Exécuter la requête et vérifier le succès
         $success = $stmt->execute();
