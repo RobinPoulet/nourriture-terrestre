@@ -2,7 +2,6 @@
 require(__DIR__ . "/db-connexion.php");
 // On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
 require(__DIR__ . "/get-menu.php");
-require_once(__DIR__ . "/classes/HelperString.php");
 $dateMenu = $postData["date"];
 $menu = $postData["menu"];
 $currentDate = date("Y-m-d");
