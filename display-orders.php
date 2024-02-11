@@ -17,7 +17,7 @@ $resultsOrder = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <?php require_once(__DIR__ . "/head.html"); ?>
 
 <body>
-<?php require(__DIR__ . "/navbar.html"); ?>
+<?php require(__DIR__ . "/navbar.php"); ?>
 <h2 class="h3 text-center p-2">Récap des commandes du <?= $currentDate ?></h2>
 <div class="container">
     <table class="table table-striped table">

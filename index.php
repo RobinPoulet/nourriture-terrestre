@@ -9,7 +9,7 @@ $dateMenu = $postData["date"];
 <html>
 <?php require(__DIR__ . "/head.html"); ?>
 <body>
-<?php require(__DIR__ . "/navbar.html"); ?>
+<?php require(__DIR__ . "/navbar.php"); ?>
     <div class="container-fluid">
         <h2 class="h3 text-center mt-4 p-2">Menu du <?= $dateMenu ?></h2>
         <ul class="list-group w-50 mt-4 p-4" style="margin-left: auto; margin-right: auto;">

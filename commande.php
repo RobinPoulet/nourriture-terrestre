@@ -7,7 +7,7 @@ $menu = $postData["menu"];
 <html>
 <?php require(__DIR__ . "/head.html"); ?>
 <body>
-<?php require(__DIR__ . "/navbar.html"); ?>
+<?php require(__DIR__ . "/navbar.php"); ?>
     <div class="container-fluid">
         <div id="div-alert"></div>
         <div 

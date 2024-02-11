@@ -1,3 +1,6 @@
+<?php
+$page = $_SERVER["REQUEST_URI"];
+?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="./index.php">
@@ -10,13 +13,19 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link active" href="./index.php">Le menu</a>
+                <?php
+                echo "<a class=\"nav-link".(str_contains($page, "index") ? " active\"  aria-current=\"page\"" : "\"")." href=\"./index.php\">Le menu</a>";
+                ?>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="./commande.php">Commander</a>
+                <?php
+                echo "<a class=\"nav-link".(str_contains($page, "commande") ? " active\"  aria-current=\"page\"" : "\"")." href=\"./commande.php\">Commander</a>";
+                ?>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="./display-orders.php">Voir les commandes</a>
+                <?php
+                echo "<a class=\"nav-link".(str_contains($page, "display-orders") ? " active\"  aria-current=\"page\"" : "\"")." href=\"./display-orders.php\">Voir les commandes</a>";
+                ?>
             </li>
         </ul>
       </div>
