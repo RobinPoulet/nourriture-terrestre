@@ -9,13 +9,11 @@ abstract class  HelperDate {
         return (int)$date->format("H") * 60 + (int)$date->format("i");
     }
     static public function dateDiff($date1_str, $date2_str) {
-        //var_dump($date1, $date2);
         // Convertir les chaînes de date en objets DateTime
         $date1 = new DateTime($date1_str);
         $date2 = new DateTime($date2_str);
         // Calculer la différence entre les deux dates
         $interval = $date1->diff($date2);
-
         // Obtenir le nombre de jours d'écart
         $days_diff = $interval->days;
         

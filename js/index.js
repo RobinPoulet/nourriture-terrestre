@@ -37,21 +37,3 @@ function createDivAlert(data) {
     // Ajouter le toast au container
     root.appendChild(alerte);
 }
-
-function deleteOrder(orderId) {
-    $.ajax({
-        type: "POST",
-        url: "display-orders.php",
-        data: {
-            ajax: "deleteOrder",
-            deleteId: orderId
-        },
-        success: function (response) {
-            const data = JSON.parse(response)
-            console.log(data);
-            const id = "trid" + data.deleted;
-            const tr = document.getElementById(id);
-            tr.remove();
-        }
-    });
- }

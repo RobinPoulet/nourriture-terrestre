@@ -29,7 +29,7 @@ if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 1 /* 86400 24 
             "dessert 2",
         ];
         $menuManager = new MenuManager($lastPostLiElements, $menuHeader);
-        if ($menuManager->canDisplayMenu($dateMenu)) {
+        if (true || $menuManager->canDisplayMenu($dateMenu)) {
             $menu = $menuManager->getMenuArray();
             $result = [
                 "date" => $dateMenu,

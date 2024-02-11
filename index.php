@@ -1,9 +1,7 @@
 <?php
 session_start();
-require(__DIR__ . "/checkDates.php");
 // On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
 require(__DIR__ . "/get-menu.php");
-
 $menu = $postData["menu"];
 
 ?>

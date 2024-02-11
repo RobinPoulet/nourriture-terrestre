@@ -8,18 +8,16 @@ static public function shortString($string, $lengthMax) {
     if (strlen($string) > $lengthMax) {
         // Couper la chaîne à la longueur maximale
         $returnValue = substr($string, 0, $lengthMax);
-
         // Vérifier si la chaîne coupée se termine déjà par "..."
         if (substr($returnValue, -3) !== '...') {
             // Ajouter "..." à la fin
             $returnValue .= '...';
         }
-
-        return $returnValue;
+    } else {
+        // Si la chaîne est déjà assez courte, la retourner telle quelle
+        $returnValue = $string;
     }
 
-    // Si la chaîne est déjà assez courte, la retourner telle quelle
-    $returnValue = $string;
     return $returnValue;
 }
 

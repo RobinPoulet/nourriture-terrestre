@@ -1,6 +1,10 @@
 <?php
 require(__DIR__ . "/db-connexion.php");
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["ajax"]) && $_POST["ajax"] === "order") {
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST' 
+    && isset($_POST["ajax"]) 
+    && $_POST["ajax"] === "order"
+) {
     // récupérer unniquement les différentes comosantes de la commande
     $order = json_encode(
         // On filtre sur les clés de $_POST pour ne garder que ce qui concerne la commande
