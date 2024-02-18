@@ -13,9 +13,9 @@ class MenuManager {
         // Date actuelle
         $currentDate = new DateTime();
         $formattedCurrentDate = $currentDate->format("Y-m-d");
-        // Cas a vérifier si le current est dimanche est qu'il n'est pas égal à la date du menu, le nouveau menu n'a pas encore été publié
+                // Cas a vérifier si le current est dimanche est qu'il n'est pas égal à la date du menu, le nouveau menu n'a pas encore été publié
         if (
-            (HelperDate::getCurrentDateWeekDay() === 7 && $dateMenu !== $currentDate)
+            (HelperDate::getCurrentDateWeekDay() === 7 && $dateMenu !== $formattedCurrentDate)
             || (HelperDate::getCurrentDateWeekDay() === 1 && HelperDate::dateDiff($formattedCurrentDate, $dateMenu) > 1)
         ) {
             throw new \Exception(self::ERROR_MENU);
@@ -23,7 +23,7 @@ class MenuManager {
         // On peut afficher le menu le dimanche si le nouveau menu est publié
         // Ou le lundi avant 11h45
         if (
-            $dateMenu === $currentDate
+            $dateMenu === $formattedCurrentDate
             || (HelperDate::getCurrentDateWeekDay() === 1 && HelperDate::getCurrentDatetime() < 11 * 60 + 45)
         ) {
             $returnValue = true;

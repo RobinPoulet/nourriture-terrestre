@@ -10,6 +10,7 @@ $menu = $postData["menu"];
 <?php require(__DIR__ . "/navbar.php"); ?>
     <div class="container-fluid">
         <div id="div-alert"></div>
+        <div id="div-alert-request"></div>
         <div 
             id="form-card" 
             class="card" 
@@ -18,10 +19,12 @@ $menu = $postData["menu"];
             <h5 class="card-header text-center">Fais ta commande : </h5>
             <form id="order-form" method="POST">
                 <div class="card-body">
+                    <div id="div-alert-user"></div>
                     <div class="form-group m-3">
                         <input type="text" class="form-control" name="user" placeholder="Nom" required>
                     </div>
                     <div class="form-group m-3 list-group">
+                        <div id="div-alert-order"></div>
                         <?php
                         foreach ($menu as $titrePlat => $nomPlat) {
                             echo "
