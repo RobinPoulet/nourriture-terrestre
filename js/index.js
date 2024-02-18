@@ -28,6 +28,10 @@ $(document).ready(function () {
                     createDivAlert(data.success, 'div-alert', 'success')
                     document.getElementById('form-card').style.display = 'none';
                 }
+            },
+            error: function(xhr, status, error) {
+                // Afficher un message d'erreur générique en cas d'erreur de requête AJAX
+                createDivAlert("Une erreur s'est produite lors de la requête AJAX : " + error, 'div-alert-request', 'danger');
             }
         });
     });
