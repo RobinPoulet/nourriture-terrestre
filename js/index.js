@@ -36,7 +36,12 @@ $(document).ready(function () {
         });
     });
 });
-// Fonction pour créer et afficher un toast
+
+/** 
+* Fonction pour créer et afficher un toast 
+* 
+* @param
+*/
 function createDivAlert(message, alertId, type) {
     console.log(alertId)
     const root = document.getElementById(alertId);

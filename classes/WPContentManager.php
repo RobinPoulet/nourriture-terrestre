@@ -1,38 +1,78 @@
 <?php
 class WPContentManager {
-    public const ERROR_RESPONSE = "Erreur dans la réponse de la requête.";
-    public const ERROR_JSON = "Erreur lors de la conversion JSON.";
-    public const MENU_NOT_AVAILABLE = "Pas de menu affiché dans l'article de cette semaine.";
+
+    /**
+    * @var array Options de contexte pour le file get contents
+    */
+    private array $contextOptions = [
+        'http' => [
+            'method' => 'GET',
+            'header' => 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+        ],
+    ];
+    
+     /**
+     * Constructeur de la classe
+     *
+     * @param string $url Url du WordPress
+     *
+     * @return void
+     */
     public function __construct( // Utilisation nouvelle syntaxe simplifiée pour les constructeurs php 8
         private string $url,
-        private array $contextOptions,
     ) {
     }
-    private function getLastPost() {
+    
+    /**
+    * Récupérer le dernier article WordPress
+    *
+    * @return array
+    * @throws Exception Renvoie une exception si pas de réponse de l'API ou problème lors de la conversion du JSON
+    */
+    private function getLastPost(): array 
+    {
         $requestQuery = "/wp-json/wp/v2/posts?per_page=1&order=desc&orderby=date";
         $apiEndpoint = $this->url.$requestQuery;
         $context = stream_context_create($this->contextOptions);
         $response = file_get_contents($apiEndpoint, false, $context);
 
         if ($response === false) {
-            throw new \Exception(self::ERROR_RESPONSE);
+            throw new \Exception("Erreur dans la réponse de la requête.");
         }
 
         $postData = json_decode($response, true);
 
         if (is_null($postData)) {
-            throw new \Exception(self::ERROR_JSON);
+            throw new \Exception("Erreur lors de la conversion JSON.");
         }
 
         return $postData;
     }
-    public function deleteImages(DOMDocument $doc): void {
+    
+    /**
+    * Supprimer les images du contenu de l'article
+    *
+    * @param DOMDocument $doc Contenu de l'article parser en Dom Document
+    *
+    * @return void
+    */
+    public function deleteImages(DOMDocument $doc): void 
+    {
         $images = $doc->getElementsByTagName('img');
         foreach ($images as $img) {
             $img->parentNode->removeChild($img);
         }
     }
-    private function getLiElements(DOMDocument $doc): array {
+    
+    /**
+    * Récupérer les élements de type <li></li> de l'article
+    *
+    * @param DOMDocument $doc Contenu de l'article parser en Dom Document
+    *
+    * @return array
+    */
+    private function getLiElements(DOMDocument $doc): array 
+    {
         $returnValue = [];
         $liElements = $doc->getElementsByTagName('li');
         foreach ($liElements as $li) {
@@ -41,40 +81,53 @@ class WPContentManager {
         return $returnValue;
     }
     
-    
-    public function getLastPostDate() {
+    /**
+    * Récupérer la date du dernier article WordPress
+    *
+    * @return string
+    * @throws Exception Fais remonter l'exception de l'appel à l'API 
+    */
+    public function getLastPostDate(): string 
+    {
+        $returnValue = "";
         try {
             $lastArticle = $this->getLastPost();
             $dateString = $lastArticle[0]['date'];
-
             // Convertir la chaîne de date en objet DateTime
             $dateObj = new DateTime($dateString);
-
             // Formater la date selon le format "Y-m-d"
-            $formattedDate = $dateObj->format("Y-m-d");
-
-            // $formattedDate contient maintenant la date formatée
-            return $formattedDate;
+            $retunValue = $dateObj->format("Y-m-d");
+            
+            return $returnValue;
         } catch (\Exception $e) {
             throw $e;
         }
     }
+    
+    /**
+    * Récupérer les éléments de type <li></li> de l'article
+    *
+    * @return array
+    * @throws Exception Fais remonter les exceptions aux méthodes qui vont utiliser cette méthode
+    */
 
     public function getLastPostLiElements() {
+        $returnValue = [];
         try {
             $lastPost = $this->getLastPost();
-            // Instanciation d'un DOCDocument, pour récupérer les éléments <li> du menu
             $doc = new DOMDocument();
             // Setup du loadHTML, pour utiliser les méthodes getElementsByName sans warning ni erreur
             $doc->loadHTML(
                 '<?xml encoding="UTF-8"><div>' . $lastPost[0]['content']['rendered'] . '</div>', 
                 LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING
             );
-            $lastPostLiElements = $this->getLiElements($doc);
-            if (count($lastPostLiElements) === 0) {
-                throw new \Exception(self::MENU_NOT_AVAILABLE);
+            $returnValue = $this->getLiElements($doc);
+            // Si il n'y a pas de <li> dans l'article de la semaine, c'est une semaine sans menu on léve une exception
+            if (empty($returnValue)) {
+                throw new \Exception("Pas de menu affiché dans l'article de cette semaine.");
             }
-            return $lastPostLiElements;
+            
+            return $returnValue;
         } catch (\Exception $e) {
              // Lancez à nouveau l'exception pour propager l'erreur
              throw $e;

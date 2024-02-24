@@ -1,7 +1,10 @@
 <?php
 // On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
 require(__DIR__ . "/get-menu.php");
+require(__DIR__ . "/classes/HelperDate.php");
 $menu = $postData["menu"];
+$dateMenu = $postData["date"];
+$canDisplayForm = HelperDate::canDisplayOrderForm($dateMenu);
 ?>
 <!DOCTYPE html>
 <html>
@@ -9,6 +12,7 @@ $menu = $postData["menu"];
 <body>
 <?php require(__DIR__ . "/navbar.php"); ?>
     <div class="container-fluid">
+    <?php if ($canDisplayForm) : ?>
         <div id="div-alert"></div>
         <div id="div-alert-request"></div>
         <div 
@@ -51,7 +55,9 @@ $menu = $postData["menu"];
                 </div>
             </form>
         </div>
+    <?php else: ?>
+        <div>Pas possible de commander</div>
+    <?php endif; ?>
     </div>
 </body>
 </html>
-
