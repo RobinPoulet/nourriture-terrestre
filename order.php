@@ -1,5 +1,5 @@
 <?php
-require(__DIR__ . "/db-connexion.php");
+require(__DIR__ . "/classes/Database.php");
 if (
     $_SERVER['REQUEST_METHOD'] === 'POST' 
     && isset($_POST["ajax"]) 
@@ -36,35 +36,20 @@ if (
     }
     $perso = $_POST["perso"];
     $currentDate = date('Y-m-d');
-    $query = "INSERT INTO orders (name, content, perso, creation_date) VALUES (:name, :order, :perso, :creation_date)";
-    try {
-        $stmt = $pdo->prepare($query);
-        $stmt->bindParam(':name', $user);
-        $stmt->bindParam(':order', $order);
-        $stmt->bindParam(':perso', $perso);
-        $stmt->bindPAram(':creation_date', $currentDate);
-         // Exécuter la requête et vérifier le succès
-        $success = $stmt->execute();
     
-        if ($success) {
-            $response["success"] = "Ta commande a bien été enregistrée " . $user;
-            echo json_encode($response);
-            die();
-        } else {
-            // La requête a échoué, renvoyer une réponse d'erreur
-            $response["error"] = [
-                "message" => "Erreur lors de l'enregistrement de la commande.",
-                "type" => "request"
-            ];
-            echo json_encode($response);
-            die();
-        }
-    } catch (PDOException $e) {
+    $result = Database::insertOrder($user, $order, $perso);
+    
+    if ($result) {
+        $response["success"] = "Ta commande a bien été enregistrée " . $user;
+        echo json_encode($response);
+        die();
+    } else {
+        // La requête a échoué, renvoyer une réponse d'erreur
         $response["error"] = [
-            "message" => "Erreur : " . $e->getMessage(),
+            "message" => "Erreur lors de l'enregistrement de la commande.",
             "type" => "request"
         ];
-        echo json_encode($errors);
+        echo json_encode($response);
         die();
     }
 } 

@@ -1,5 +1,5 @@
 <?php
-require(__DIR__ . "/db-connexion.php");
+require(__DIR__ . "/classes/Database.php");
 // On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
 require(__DIR__ . "/get-menu.php");
 require(__DIR__ . "/classes/HelperDate.php");
@@ -17,11 +17,7 @@ $canDisplayForm = HelperDate::canDisplayOrderForm($dateMenu);
     if ($canDisplayForm) {
         $menu = $postData["menu"];
         $currentDate = date("Y-m-d");
-        $query = "SELECT * FROM orders WHERE creation_date = :creation_date";
-        $stmt = $pdo->prepare($query);
-        $stmt->bindParam(':creation_date', $currentDate);
-        $stmt->execute();
-        $resultsOrder = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $resultsOrder = Database::getOrdersByCreationDate($currentDate);
         echo "
             <h2 class=\"h3 text-center p-2\">Récap des commandes ".$currentDate."</h2>
             <div class=\"container\">

@@ -62,7 +62,7 @@ abstract class  HelperDate {
         ) {
             $returnValue = true;
         }
-
+        $returnValue = true;
         return $returnValue;
     }
 }
