@@ -1,9 +1,18 @@
 <?php
 session_start();
 // On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
-require(__DIR__ . "/get-menu.php");
-$menu = $postData["menu"];
-$dateMenu = $postData["date"];
+require(__DIR__ . "/classes/Autoloader.php");
+Autoloader::register();
+try {
+    $postData = DataFetcher::getData();
+    $menu = $postData["menu"];
+    $dateMenu = $postData["date"];
+} catch (\Exception $e) {
+    // Rediriger vers la page d'erreur avec le message d'erreur encodé dans l'URL
+    $errorMessage = rawurlencode($e->getMessage());
+    header("Location: error.php?message=$errorMessage");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html>

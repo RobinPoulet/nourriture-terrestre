@@ -1,8 +1,8 @@
 <?php
-session_start();
+$message = rawurldecode($_GET['message']);
 ?>
 <div class="text">
-  <h1><?= $_SESSION["error_message"] ?></h1>
+  <h1><?= $message ?></h1>
   <hr>
   <div>Rendez-vous Lundi prochain <bold>AVANT</bold> 11h45</div>
 </div>

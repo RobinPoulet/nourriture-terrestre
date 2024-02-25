@@ -124,7 +124,8 @@ class WPContentManager {
             $returnValue = $this->getLiElements($doc);
             // Si il n'y a pas de <li> dans l'article de la semaine, c'est une semaine sans menu on léve une exception
             if (empty($returnValue)) {
-                throw new \Exception("Pas de menu affiché dans l'article de cette semaine.");
+               Header("Location: error-critic.html");
+               die;
             }
             
             return $returnValue;
