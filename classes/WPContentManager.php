@@ -96,8 +96,7 @@ class WPContentManager {
             // Convertir la chaîne de date en objet DateTime
             $dateObj = new DateTime($dateString);
             // Formater la date selon le format "Y-m-d"
-            $retunValue = $dateObj->format("Y-m-d");
-            
+            $returnValue = $dateObj->format("Y-m-d");
             return $returnValue;
         } catch (\Exception $e) {
             throw $e;
