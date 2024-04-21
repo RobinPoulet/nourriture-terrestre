@@ -20,6 +20,12 @@ abstract class MenuManager {
     */
     static public function getMenuArray(array $menuContent): array 
     {
-        return array_combine(self::$menuHeader, $menuContent);
+        $returnValue = [];
+        
+        foreach ($menuContent as $index => $plat) {
+            $returnValue[self::$menuHeader[$index]] = $plat;
+        }
+        
+        return$returnValue;
     }
 }

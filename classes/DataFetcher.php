@@ -4,10 +4,11 @@ require(__DIR__ . "/MenuManager.php");
 require(__DIR__ . "/CacheManager.php");
 
 abstract class DataFetcher {
-    private static $validityDuration = 86400;
+
     // Méthode pour récupérer les données à partir du cache ou les reconstruire
-    public static function getData() {
-        $cachedData = CacheManager::getCache(self::$validityDuration);
+    public static function getData() 
+    {
+        $cachedData = CacheManager::getCache();
         if ($cachedData) {
             // Les données sont disponibles dans le cache
             return $cachedData;
@@ -18,7 +19,7 @@ abstract class DataFetcher {
             try {
                 $dateMenu = $wpContent->getLastPostDate();
                 $menuContent = $wpContent->getLastPostLiElements();
-                $menu = MenuManager::getMenuArray($menuContent);
+            $menu = MenuManager::getMenuArray($menuContent);
                 $result = [
                     "date" => $dateMenu,
                     "menu" => $menu,

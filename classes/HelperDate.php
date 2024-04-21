@@ -48,7 +48,8 @@ abstract class  HelperDate {
     *
     * @return bool Retourne true si il est possible d'afficher le formulaire de commande
     */
-    static public function canDisplayOrderForm($dateMenu) {
+    static public function canDisplayOrderForm(string $dateMenu): bool 
+    {
         $returnValue = false;
         $currentDate = new DateTime();
         $formattedCurrentDate = $currentDate->format("Y-m-d");
@@ -62,7 +63,7 @@ abstract class  HelperDate {
         ) {
             $returnValue = true;
         }
-        $returnValue = true;
+        
         return $returnValue;
     }
 }
