@@ -102,14 +102,14 @@ class WPContentManager {
         $lastPost = $this->getLastPost();
         if (isset($lastPost["error"])) {
             $returnValue["error"] = $lastPost["error"];
-        } elseif (!isset($lastPost[0]["date"])) {
+        } elseif (!isset($lastPost["success"][0]["date"])) {
             $returnValue["error"] = "Pas de date dans cet article";
         } else {
-            $dateString = $lastPost[0]['date'];
+            $dateString = $lastPost["success"][0]['date'];
             // Convertir la chaîne de date en objet DateTime
             $dateObj = new DateTime($dateString);
             // Formater la date selon le format "Y-m-d"
-            $returnValue = $dateObj->format("Y-m-d");
+            $returnValue["success"] = $dateObj->format("Y-m-d");
         }
            
         return $returnValue;
@@ -133,7 +133,7 @@ class WPContentManager {
             $doc = new DOMDocument();
             // Setup du loadHTML, pour utiliser les méthodes getElementsByName sans warning ni erreur
             $doc->loadHTML(
-                '<?xml encoding="UTF-8"><div>' . $lastPost[0]['content']['rendered'] . '</div>', 
+                '<?xml encoding="UTF-8"><div>' . $lastPost["success"][0]['content']['rendered'] . '</div>', 
                 LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING
             );
             $returnValue["success"] = $this->getLiElements($doc);

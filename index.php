@@ -1,17 +1,17 @@
 <?php
-session_start();
+// Afficher toutes les erreurs
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 // On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
 require(__DIR__ . "/classes/Autoloader.php");
 Autoloader::register();
-try {
-    $postData = DataFetcher::getData();
-    $menu = $postData["menu"];
-    $dateMenu = $postData["date"];
-} catch (\Exception $e) {
-    // Rediriger vers la page d'erreur avec le message d'erreur encodé dans l'URL
-    $errorMessage = rawurlencode($e->getMessage());
-    header("Location: error.php?message=$errorMessage");
-    exit;
+$postData = DataFetcher::getData();
+var_dump($postData);
+if (isset($postData["success"])) {
+    $menu = $postData["success"]["menu"];
+    $dateMenu = $postData["success"]["date"];
+} elseif (isset($postData["error"])) {
+    echo $postData["error"];
 }
 ?>
 <!DOCTYPE html>
