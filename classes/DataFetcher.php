@@ -19,7 +19,7 @@ abstract class DataFetcher {
             try {
                 $dateMenu = $wpContent->getLastPostDate();
                 $menuContent = $wpContent->getLastPostLiElements();
-            $menu = MenuManager::getMenuArray($menuContent);
+                $menu = MenuManager::getMenuArray($menuContent);
                 $result = [
                     "date" => $dateMenu,
                     "menu" => $menu,
