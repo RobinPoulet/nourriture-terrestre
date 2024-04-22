@@ -64,7 +64,9 @@ $canDisplayForm = HelperDate::canDisplayOrderForm($dateMenu);
             </form>
         </div>
     <?php else: ?>
-        <div>Pas possible de commander</div>
+        <div class="alert alert-info m-4 p-4" style="margin-left: auto; margin-right: auto;">
+          La prise de commande n'est possible que le lundi matin AVANT 11h45 🕛  
+        </div>
     <?php endif; ?>
     </div>
 </body>
