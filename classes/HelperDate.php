@@ -53,11 +53,11 @@ abstract class  HelperDate {
         $returnValue = false;
         $currentDate = new DateTime();
         $formattedCurrentDate = $currentDate->format("Y-m-d");
-        // On peut commander le lundi de 8h00 à 11h45 inclus, si il y a bien un menu publié cette semaine
+        // On peut commander le lundi de 7h00 à 11h45 inclus, si il y a bien un menu publié cette semaine
         // Nouveau menu chaque dimanche, donc si il y a bien un menu cette semaine, la date du menu doit être inférieur ou égal à 1 par rapport à la date du jour
         if (
             self::getCurrentDateWeekDay() === 1
-            && self::getCurrentDatetime() >= 8 * 60
+            && self::getCurrentDatetime() >= 7 * 60
             && self::getCurrentDatetime() <= 11 * 60 + 45
             && self::dateDiff($formattedCurrentDate, $dateMenu) <= 1
         ) {

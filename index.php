@@ -12,6 +12,8 @@ try {
     header("Location: error.php?message=$errorMessage");
     exit;
 }
+// On check si il y a un seul dessert cette semaine (ça arrive malheuresement)
+$isOnlyOneDessert = !isset($menu["dessert-2"]);
 ?>
 <!DOCTYPE html>
 <html>
@@ -20,6 +22,9 @@ try {
 <?php require(__DIR__ . "/navbar.php"); ?>
     <div class="container-fluid">
         <h2 class="h3 text-center mt-4 p-2">Menu du <?= $dateMenu ?></h2>
+        <?php if ($isOnlyOneDessert) : ?>
+            <div class="alert alert-info w-50 mt-4 p-4" style="margin-left: auto; margin-right: auto;">⚠️ Il n'y a malheuresement qu'un seul dessert cette semaine 😭</div>
+        <?php endif; ?>
         <ul class="list-group w-50 mt-4 p-4" style="margin-left: auto; margin-right: auto;">
             <?php
             foreach ($menu as $typePlat => $nomPlat) {
