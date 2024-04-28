@@ -65,6 +65,30 @@ class WPContentManager {
     }
     
     /**
+     * Récupérer l'attribut src de toutes les balises <img>
+     *
+     * @param DOMDocument $doc
+     * @return array
+     */
+    private function getImgElements(DOMDocument $doc): array
+    {
+        $returnValue = [];
+        
+        $images = $doc->getElementsByTagName('img');
+        
+        // Parcourir toutes les balises <img> pour récupérer les URLs des images
+        foreach ($images as $image) {
+            // Récupérer l'attribut 'src' de la balise <img>
+            $imageUrl = $image->getAttribute('src');
+            
+            // Ajouter l'URL de l'image au tableau
+            $returnValue[] = $imageUrl;
+        }
+        
+        return $returnValue;
+    }
+    
+    /**
     * Récupérer les élements de type <li></li> de l'article
     *
     * @param DOMDocument $doc Contenu de l'article parser en Dom Document
@@ -74,10 +98,12 @@ class WPContentManager {
     private function getLiElements(DOMDocument $doc): array 
     {
         $returnValue = [];
+        
         $liElements = $doc->getElementsByTagName('li');
         foreach ($liElements as $li) {
             $returnValue[] = $li->nodeValue;
         }
+        
         return $returnValue;
     }
     
@@ -90,6 +116,7 @@ class WPContentManager {
     public function getLastPostDate(): string 
     {
         $returnValue = "";
+        
         try {
             $lastArticle = $this->getLastPost();
             $dateString = $lastArticle[0]['date'];
@@ -123,8 +150,15 @@ class WPContentManager {
             $returnValue = $this->getLiElements($doc);
             // Si il n'y a pas de <li> dans l'article de la semaine, c'est une semaine sans menu on léve une exception
             if (empty($returnValue)) {
-               Header("Location: error-critic.html");
-               die;
+                // On récupère la source de l'image du message d'absence
+                $tabAbsenceMessageImgSrc = $this->getImgElements($doc);
+                $srcImage = "";
+                if (!empty($tabAbsenceMessageImgSrc)) {
+                    $srcImage .= urlencode($tabAbsenceMessageImgSrc[0]);
+                  
+                }
+                Header("Location: error-critic.html".(empty($srcImage) ? "" : "?imgsrc=".$srcImage));
+                die;
             }
             
             return $returnValue;

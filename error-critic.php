@@ -1,92 +1,208 @@
+<!DOCTYPE html>
 
-<link href='https://fonts.googleapis.com/css?family=Carter+One' rel='stylesheet' type='text/css'>
+<html>
 
-<div class="fon">
-  <div class="horizon"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-<div class="hill"></div>
+<head>
+  <title>Pas de nourriture céleste</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Favicon -->
+  <link rel="icon" href="./IMG/favicon-32x32.png" type="image/x-icon">
+  <link href='https://fonts.googleapis.com/css?family=Carter+One' rel='stylesheet' type='text/css'>
+  <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+    rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+    crossorigin="anonymous"
+  >
+</head>
 
-<span class="not-found">&#x1F63F;... cette semaine&#x1F63F;</span>
-<span class="page-404"> &#x1F62D;PAS DE NOURRITURE CELESTE&#x1F62D; </span>
-<div class="moon-sky"></div>
-<div class="satellite">☄</div>
-  <div class="meteores">
-							<div></div>
-							<div></div>
-							<div></div>
-						</div>
-<div class="cosmos-star">
-  <div></div>
- <div></div>
- <div></div>
- <div></div>
- <div></div>
- <div></div>
- <div></div>
-<div></div>
-</div>
-<div class="my-cat">
-    <div class="ear-l">
-        <div class="ear-fur-l"></div>
+<body>
+  <div class="container">
+    <div class="fon">
+      <div class="horizon">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="hill"></div>
+      <span class="page-404">&#x1F62D;PAS DE NOURRITURE CELESTE&#x1F62D;</span>
+      <span class="not-found">
+        &#x1F63F;... cette semaine ...&#x1F63F;
+        <?php
+        if (isset($_GET["imgsrc"])) {
+          echo "<img src=\"".$_GET["imgsrc"]."\" alt=\"message d'erreur\">";
+        }
+        ?>
+      </span>
+      <div class="moon-sky"></div>
+      <div class="satellite">☄</div>
+      <div class="meteores">
+    		<div></div>
+    		<div></div>
+    		<div></div>
+    	</div>
+      <div class="cosmos-star">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="my-cat">
+        <div class="ear-l">
+          <div class="ear-fur-l"></div>
+        </div>
+        <div class="ear-r">
+          <div class="ear-fur-r"></div>
+        </div>
+        <div class="head-cat">
+          <div class="tabby-cat"></div>
+          <div class="tabby-cat-1"></div>
+          <div class="tabby-cat-2"></div>
+          <div class="eye-l">
+            <div class="eye-lz"></div>
+          </div>
+          <div class="cat-nose"></div>
+          <div class="eye-r">
+            <div class="eye-rz"></div>
+          </div> 
+          <div class="muzzle-cat"></div>
+          <div class="	jaws-cat"></div>
+          <div class="whiskers">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+        <div class="body-cat"></div>
+        <div class="body-cat-1"></div>
+        <div class="paw-cat-l"><div></div></div>
+        <div class="paw-cat-r"><div></div></div>
+        <div class="tail-cat"></div>
+      </div>
+      <div class="rock">
+        <div class="rock-mountain_1"></div>
+        <div class="rock-mountain_s_1"></div>
+        <div class="rock-mountain_2"></div>
+        <div class="rock-mountain_s_2"></div>
+        <div class="rock-mountain_3"></div>
+        <div class="rock-mountain_s_3"></div>
+      </div>
     </div>
-    <div class="ear-r">
-        <div class="ear-fur-r"></div>
-    </div>
-<div class="head-cat">
-  <div class="tabby-cat"></div>
-  <div class="tabby-cat-1"></div>
-  <div class="tabby-cat-2"></div>
-    <div class="eye-l">
-        <div class="eye-lz"></div>
-    </div>
-    <div class="cat-nose"></div>
-    <div class="eye-r">
-        <div class="eye-rz"></div>
-    </div> 
-    <div class="muzzle-cat"></div>
-  <div class="	jaws-cat"></div>
-   <div class="whiskers">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-   </div>
-</div>
-  <div class="body-cat"></div>
-  <div class="body-cat-1"></div>
-  <div class="paw-cat-l"><div></div></div>
-  <div class="paw-cat-r"><div></div></div>
-  <div class="tail-cat"></div>
-</div>
-<div class="rock">
-<div class="rock-mountain_1"></div>
-<div class="rock-mountain_s_1"></div>
-<div class="rock-mountain_2"></div>
-<div class="rock-mountain_s_2"></div>
-<div class="rock-mountain_3"></div>
-<div class="rock-mountain_s_3"></div>
-</div>
-</div>
-</div>
+  </div>
+</body>
+
+</html>
+
 <style>
-body {background:#000}
-.fon {overflow:hidden;left:-10px;position:absolute;width:100%;height:100%;background:linear-gradient(#000,#002)}
-.rock-mountain_1,.rock-mountain_s_1,.rock-mountain_2,.rock-mountain_s_2,.rock-mountain_3,.rock-mountain_s_3 {width:140px; height:140px;background:linear-gradient(90deg,#222,#000);transform:rotate(45deg);position:absolute;}
-.rock{position:absolute;bottom:3%;left:40%}
-.rock-mountain_1{z-index:8;left:140px;bottom:25px;width:180px; height:180px;}
-.rock-mountain_s_1 {z-index:7;transform:rotate(52deg);left:125px;bottom:25px;width:180px; height:180px;background:#111}
-.rock-mountain_2 {z-index:11;left:-50px;bottom:30px;width:180px; height:180px;}
-.rock-mountain_s_2 {z-index:10;transform:rotate(52deg);left:-65px;bottom:30px;width:180px; height:180px;background:#111}
-.rock-mountain_3 {z-index:10;left:60px;bottom:25px;width:180px; height:180px;}
-.rock-mountain_s_3 {z-index:9;transform:rotate(52deg);left:45px;bottom:25px;width:180px; height:180px;background:#111}
-.horizon div{left:20%;z-index:15;position:absolute;bottom:0;border-radius:100px 100px 0 0; background:linear-gradient(#333,#111);width:200px;height:150px}
-.horizon div:nth-child(2){z-index: 15;
-left: 48%;
-bottom: 0px;
-height: 130px;
-background:linear-gradient(120deg, #333, #111)}
-.horizon div:nth-child(3){z-index:14;background:linear-gradient(#222,#111);left:40%;bottom:0px;height:180px;width:150px}
+  body {
+    background:#000
+  }
+  .fon {
+    overflow:hidden;
+    left:-10px;position:absolute;
+    width:100%;
+    height:100%;
+    background:linear-gradient(#000,#002)
+  }
+  .rock-mountain_1,.rock-mountain_s_1,.rock-mountain_2,.rock-mountain_s_2,.rock-mountain_3,.rock-mountain_s_3 {
+    width:140px;
+    height:140px;
+    background:linear-gradient(90deg,#222,#000);
+    transform:rotate(45deg);
+    position:absolute;
+  }
+  .rock{
+    position:absolute;
+    bottom:3%;
+    left:40%
+  }
+  .rock-mountain_1{
+    z-index:8;
+    left:140px;
+    bottom:25px;
+    width:180px;
+    height:180px;
+  }
+  .rock-mountain_s_1 {
+    z-index:7;
+    transform:rotate(52deg);
+    left:125px;
+    bottom:25px;
+    width:180px;
+    height:180px;
+    background:#111
+  }
+  .rock-mountain_2 {
+    z-index:11;
+    left:-50px;
+    bottom:30px;
+    width:180px;
+    height:180px;
+  }
+  .rock-mountain_s_2 {
+    z-index:10;
+    transform:rotate(52deg);
+    left:-65px;
+    bottom:30px;
+    width:180px;
+    height:180px;
+    background:#111
+  }
+  .rock-mountain_3 {
+    z-index:10;
+    left:60px;
+    bottom:25px;
+    width:180px;
+    height:180px;
+  }
+  .rock-mountain_s_3 {
+    z-index:9;
+    transform:rotate(52deg);
+    left:45px;
+    bottom:25px;
+    width:180px;
+    height:180px;
+    background:#111
+  }
+  .horizon div{
+    left:20%;
+    z-index:15;
+    position:absolute;
+    bottom:0;
+    border-radius:100px 100px 0 0;
+    background:linear-gradient(#333,#111);
+    width:200px;
+    height:150px
+  }
+  .horizon div:nth-child(2){
+    z-index: 15;
+    left: 48%;
+    bottom: 0px;
+    height: 130px;
+    background:linear-gradient(120deg, #333, #111)
+  }
+  .horizon div:nth-child(3){z-index:14;background:linear-gradient(#222,#111);left:40%;bottom:0px;height:180px;width:150px}
 .horizon div:nth-child(4){z-index:14;background:linear-gradient(190deg,#333,#111);left:38%;bottom:20px;height:170px}
 .horizon div:nth-child(5){z-index:15;left:25%;bottom:0px;height:170px;background:linear-gradient(210deg,#333,#111)}
 .horizon div:nth-child(6){background:linear-gradient(180deg,#444,#111);z-index:14;left:34%;bottom:0px;height:190px}
@@ -132,8 +248,22 @@ border-radius:50%;box-shadow:0 0 14px 4px white;margin-top:-2px}
 .meteores div:nth-child(3){top:70%;left:20%;-webkit-animation:meteors 2s linear infinite;
 -moz-animation:meteors 2s linear infinite;animation:meteors 2s linear infinite}
 
-.page-404,.not-found{transform:rotate(0deg);font:45px 'Carter One', cursive; cursive;color:#777;position:absolute;display:block;bottom:10%;left:46.5%;z-index:120;text-shadow:2px 2px 2px #000}
-.not-found{bottom:3%;left:45%;font-size:30px;}
+  .page-404,.not-found{
+    transform:rotate(0deg);
+    font:45px 'Carter One', cursive; 
+    color:#777;
+    position:absolute;
+    display:block;
+    bottom:43%;
+    left:46.5%;
+    z-index:120;
+    text-shadow:2px 2px 2px #000
+  }
+  .not-found{
+    bottom:33%;
+    left:60%;
+    font-size:30px;
+  }
 
 .my-cat{z-index:100;position:absolute;left:35%;bottom:235px}
 .ear-l,.ear-r,.ear-fur-l,.ear-fur-r{position:relative;z-index:2;border-radius:0 50px 0 0px;width:12px;height:14px;margin:0px 0 -16px 0px;padding:2px;transform:rotate(-2deg);background:linear-gradient(40deg,#111,#444)}
@@ -178,10 +308,41 @@ border-radius:50%;box-shadow:0 0 14px 4px white;margin-top:-2px}
 @-moz-keyframes eye-cat {0%{left:3px} 10%{border-radius:30px} 20%{border-radius:30px;} 30% {left:1px} 40%{top:2px;right:2px} 50%{left:4px} 60%{bottom:2px} 70%{bottom:0px;width:0} 71%{width:5px} 80%{left:2px}97%{bottom:1px;width:0} 100%{bottom:2px}}
 @keyframes eye-cat 
 {0%{left:3px} 10%{border-radius:30px} 20%{border-radius:30px;} 30% {left:1px} 40%{top:2px;right:2px} 50%{left:4px} 60%{bottom:2px} 70%{bottom:0px;width:0} 71%{width:5px} 80%{left:2px}97%{bottom:1px;width:0} 100%{bottom:2px}}
-@-webkit-keyframes sleep-cat {0%{height:7px;top:12px;border-radius:30px} 35%{height:8px;top:12px;border-radius:30px} 56%{height:4px;top;13px} 70%{height:3px;top:15px} 71%{height:8px;top:12px} 85%{height:3px;top:12px} 97%{height:0;top:15px}}
-@-moz-keyframes sleep-cat {0%{height:7px;top:12px;border-radius:30px} 35%{height:8px;top:12px;border-radius:30px} 56%{height:4px;top;13px} 70%{height:3px;top:15px} 71%{height:8px;top:12px} 85%{height:3px;top:12px} 97%{height:0;top:15px}}
+@-webkit-keyframes sleep-cat {
+  0%{
+    height:7px;
+    top:12px;
+    border-radius:30px;
+  } 
+  35%{
+    height:8px;
+    top:12px;
+    border-radius:30px;
+  } 
+  56%{
+    height:4px;
+    top:13px
+  } 
+  70%{
+    height:3px;
+    top:15px
+  } 
+  71%{
+    height:8px;
+    top:12px
+  } 
+  85%{
+    height:3px;
+    top:12px
+  } 
+  97%{
+    height:0;
+    top:15px
+  }
+}
+@-moz-keyframes sleep-cat {0%{height:7px;top:12px;border-radius:30px} 35%{height:8px;top:12px;border-radius:30px} 56%{height:4px;top:13px} 70%{height:3px;top:15px} 71%{height:8px;top:12px} 85%{height:3px;top:12px} 97%{height:0;top:15px}}
 @keyframes sleep-cat 
-{0%{height:7px;top:12px;border-radius:30px} 35%{height:8px;top:12px;border-radius:30px} 56%{height:4px;top;13px} 70%{height:3px;top:15px} 71%{height:8px;top:12px} 85%{height:3px;top:12px} 97%{height:0;top:15px}}
+{0%{height:7px;top:12px;border-radius:30px} 35%{height:8px;top:12px;border-radius:30px} 56%{height:4px;top:13px} 70%{height:3px;top:15px} 71%{height:8px;top:12px} 85%{height:3px;top:12px} 97%{height:0;top:15px}}
 @-webkit-keyframes jaws-cat {0%{height:0} 50%{height:3px}100%{height:0}}
 @-moz-keyframes jaws-cat {0%{height:0} 50%{height:3px}100%{height:0}}
 @keyframes jaws-cat {0%{height:0} 50%{height:3px}100%{height:0}}

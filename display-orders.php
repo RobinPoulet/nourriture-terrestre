@@ -27,9 +27,9 @@ $currentDate = date("Y-m-d");
 $resultsOrder = Database::getOrdersByCreationDate($currentDate);
 ?>
 <?php if (count($resultsOrder) > 0) : ?>
-    <h2 class=\"h3 text-center p-2\">Récap des commandes ".$currentDate."</h2>
-    <div class=\"container\">
-        <table class=\"table table-striped table\">
+    <h2 class="h3 text-center p-2">Récap des commandes ".$currentDate."</h2>
+    <div class="container">
+        <table class="table table-striped table">
             <thead>
                 <tr>
                     <th scope=\"col\">Nom</th>
