@@ -2,18 +2,19 @@
 // On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
 require(__DIR__ . "/classes/Autoloader.php");
 Autoloader::register();
-try {
-    $postData = DataFetcher::getData();
-    $menu = $postData["menu"];
-    $dateMenu = $postData["date"];
-} catch (\Exception $e) {
-    // Rediriger vers la page d'erreur avec le message d'erreur encodé dans l'URL
-    $errorMessage = rawurlencode($e->getMessage());
-    header("Location: error.php?message=$errorMessage");
-    exit;
+$postData = DataFetcher::getData();
+if (isset($postData["success"])) {
+    $menu = $postData["success"]["menu"];
+    $dateMenu = $postData["success"]["date"];
+    // On check si il y a un seul dessert cette semaine (ça arrive malheuresement)
+    $isOnlyOneDessert = !isset($menu["dessert-2"]);
 }
-// On check si il y a un seul dessert cette semaine (ça arrive malheuresement)
-$isOnlyOneDessert = !isset($menu["dessert-2"]);
+// check si on a bien un article publié cette semaine
+if (!HelperDate::isNewMenuAvailable($dateMenu)) {
+    Header("Location: bad-day.php");
+    die;
+}
+
 ?>
 <!DOCTYPE html>
 <html>

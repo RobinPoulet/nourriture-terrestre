@@ -1,9 +1,13 @@
 <?php
 require(__DIR__ . "/EnvManager.php");
 class Database {
+    /**
+     * Instance de PDO
+     *
+     * @var PDO
+     */
     private static $instance;
 
-    
     /**
      * Constructeur privé pour empêcher l'instanciation directe de la classe.
      */
@@ -18,21 +22,19 @@ class Database {
     public static function getInstance(): PDO 
     {
         if (!self::$instance) {
-            $envFilePath =__DIR__ . "/../.env";
+            $envFilePath = __DIR__ . "/../.env";
             $envManager = EnvManager::getInstance($envFilePath);
-
-            $dbHost = $envManager->getEnvVariable('DB_HOST');
-            $dbUser = $envManager->getEnvVariable('DB_USER');
-            $dbPass = $envManager->getEnvVariable('DB_PASS');
-            $dbName = $envManager->getEnvVariable('DB_NAME');
+            $envVariables = $envManager->getAllEnvVariables();
 
             try {
-                self::$instance = new PDO('mysql:host=' . $dbHost . ';dbname=' . $dbName, $dbUser, $dbPass);
+                self::$instance = new PDO("mysql:host=" . $envVariables["DB_HOST"] . ";dbname=" . $envVariables["DB_NAME"], $envVariables["DB_USER"], $envVariables["DB_PASS"]);
                 self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
+                // Ici il n'y a qu'une requête ajax qui utilise la connexion à la base de donnée
                 die('Erreur de connexion à la base de données : ' . $e->getMessage());
             }
         }
+        
         return self::$instance;
     }
     
@@ -57,20 +59,19 @@ class Database {
             // Exécuter la requête et vérifier le succès
             return $stmt->execute();
         } catch (PDOException $e) {
-            die('Erreur lors de l\'insertion en base de données : ' . $e->getMessage());
+            return false;
         }
     }
     
     
     /**
-     * Méthode pour récupérer les commandes depuis la base de données pour une date donnée.
+     * Méthode pour récupérer les commandes depuis la base de données pour la date du jour.
      *
-     * @param string $creation_date Date de création des commandes.
-     *
-     * @return array Tableau contenant les commandes pour la date donnée.
+     * @return array Tableau contenant les commandes pour la date donnée ou un message d'erreur.
      */
-    public static function getOrdersByCreationDate($creation_date): array 
+    public static function getTodayOrders(): array 
     {
+        $currentDate = date("Y-m-d");
         $query = "SELECT * FROM orders WHERE creation_date = :creation_date";
         try {
             $stmt = self::getInstance()->prepare($query);
@@ -78,7 +79,9 @@ class Database {
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            die('Erreur lors de la récupération des commandes pour la date donnée : ' . $e->getMessage());
+            return [
+                "error" => "Erreur lors de la récupération des commandes pour la date donnée : " . $e->getMessage()
+            ];
         }
     }
 }

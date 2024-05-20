@@ -38,6 +38,7 @@ if (
     $currentDate = date('Y-m-d');
     
     $result = Database::insertOrder($user, $order, $perso);
+    var_dump($result);
     
     if ($result) {
         $response["success"] = "Ta commande a bien été enregistrée " . $user;
