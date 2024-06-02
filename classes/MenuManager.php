@@ -16,7 +16,7 @@ abstract class MenuManager {
     *
     * @param array $menuContent Liste des plats de la semaine
     *
-    * @return array Le menu de la semaine clé : type de plat valeur : noms de plats
+    * @return array Le menu de la semaine clé : type de plat, valeur : noms de plats
     */
     static public function getMenuArray(array $menuContent): array 
     {

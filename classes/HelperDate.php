@@ -6,8 +6,10 @@ abstract class  HelperDate {
      *
      * @return int Le jour de la semaine actuel (1 pour lundi, 2 pour mardi, ..., 7 pour dimanche).
      */
-    static public function getCurrentDateWeekDay() {
+    static public function getCurrentDateWeekDay(): int
+    {
         $date = new DateTime();
+        
         return (int) $date->format("N");
     }
     
@@ -16,9 +18,13 @@ abstract class  HelperDate {
      *
      * @return int La date et l'heure actuelles sous forme de minutes depuis minuit.
      */
-    static public function getCurrentDatetime() {
+    static public function getCurrentDatetime(): int
+    {
         $date = new DateTime();
-        return (int)$date->format("H") * 60 + (int)$date->format("i");
+        $hoursMinutes = (int)$date->format("H") * 60;
+        $secondes = (int)$date->format("i");
+        
+        return $hoursMinutes + $secondes;
     }
     
     /**
@@ -66,4 +72,32 @@ abstract class  HelperDate {
         
         return $returnValue;
     }
+    
+    /**
+     * Vérifier si le menu est publié depuis moins d'une semaine
+     *
+     * @param string $dateMenu Date de publication du menu
+     
+     * @return boolean
+     */
+    static public function isNewMenuAvailable(string $dateMenu): bool
+    {
+        $returnValue = false;
+        $currentDate = new DateTimeImmutable();
+        $storedDateTime = new DateTimeImmutable($dateMenu);
+        // Calculer la différence entre les deux dates
+        $interval = $currentDate->diff($storedDateTime);
+        
+        // Convertir la différence en jours
+        $daysDifference = $interval->days;
+        
+        if ($currentDate->format("w") === "0") {
+            $returnValue = $daysDifference <= 8;
+        } else {
+            $returnValue = $daysDifference < 8;
+        }
+        
+        return $returnValue;
+    }
+    
 }

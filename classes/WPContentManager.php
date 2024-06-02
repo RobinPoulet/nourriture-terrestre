@@ -18,10 +18,7 @@ class WPContentManager {
      *
      * @return void
      */
-    public function __construct( // Utilisation nouvelle syntaxe simplifiée pour les constructeurs php 8
-        private string $url,
-    ) {
-    }
+    public function __construct(private string $url) {}
     
     /**
     * Récupérer le dernier article WordPress
@@ -31,22 +28,17 @@ class WPContentManager {
     */
     private function getLastPost(): array 
     {
+        $returnValue = [];
+        
         $requestQuery = "/wp-json/wp/v2/posts?per_page=1&order=desc&orderby=date";
         $apiEndpoint = $this->url.$requestQuery;
         $context = stream_context_create($this->contextOptions);
-        $response = file_get_contents($apiEndpoint, false, $context);
-
-        if ($response === false) {
-            throw new \Exception("Erreur dans la réponse de la requête.");
-        }
-
-        $postData = json_decode($response, true);
-
-        if (is_null($postData)) {
-            throw new \Exception("Erreur lors de la conversion JSON.");
-        }
-
-        return $postData;
+        $response = file_get_contents($apiEndpoint,false,$context);
+        $returnValue = $response 
+        ? json_decode($response,true,512,JSON_THROW_ON_ERROR) 
+        : [ "error" => "Erreur lors de la récupération des données de l'API Wordpress"];
+        
+        return $returnValue;
     }
     
     /**
@@ -58,7 +50,7 @@ class WPContentManager {
     */
     public function deleteImages(DOMDocument $doc): void 
     {
-        $images = $doc->getElementsByTagName('img');
+        $images = $doc->getElementsByTagName("img");
         foreach ($images as $img) {
             $img->parentNode->removeChild($img);
         }
@@ -68,19 +60,18 @@ class WPContentManager {
      * Récupérer l'attribut src de toutes les balises <img>
      *
      * @param DOMDocument $doc
+     *
      * @return array
      */
     private function getImgElements(DOMDocument $doc): array
     {
         $returnValue = [];
         
-        $images = $doc->getElementsByTagName('img');
-        
+        $images = $doc->getElementsByTagName("img");
         // Parcourir toutes les balises <img> pour récupérer les URLs des images
         foreach ($images as $image) {
             // Récupérer l'attribut 'src' de la balise <img>
-            $imageUrl = $image->getAttribute('src');
-            
+            $imageUrl = $image->getAttribute("src");
             // Ajouter l'URL de l'image au tableau
             $returnValue[] = $imageUrl;
         }
@@ -99,8 +90,8 @@ class WPContentManager {
     {
         $returnValue = [];
         
-        $liElements = $doc->getElementsByTagName('li');
-        foreach ($liElements as $li) {
+        $lis = $doc->getElementsByTagName("li");
+        foreach ($lis as $li) {
             $returnValue[] = $li->nodeValue;
         }
         
@@ -110,35 +101,36 @@ class WPContentManager {
     /**
     * Récupérer la date du dernier article WordPress
     *
-    * @return string
-    * @throws Exception Fais remonter l'exception de l'appel à l'API 
+    * @return array<string, string>
+    *
     */
-    public function getLastPostDate(): string 
+    public function getLastPostDate(): array 
     {
-        $returnValue = "";
-        
         try {
             $lastArticle = $this->getLastPost();
             $dateString = $lastArticle[0]['date'];
             // Convertir la chaîne de date en objet DateTime
             $dateObj = new DateTime($dateString);
             // Formater la date selon le format "Y-m-d"
-            $returnValue = $dateObj->format("Y-m-d");
-            return $returnValue;
+            $dateString = $dateObj->format("Y-m-d");
+            return [
+                "success" => $dateString
+            ];
         } catch (\Exception $e) {
-            throw $e;
+            return [
+                "error" => "Erreur lors de la récupération du post : " . $e->getMessage()
+            ];
         }
     }
     
     /**
-    * Récupérer les éléments de type <li></li> de l'article
+    * Récupérer les éléments de type li de l'article
     *
     * @return array
-    * @throws Exception Fais remonter les exceptions aux méthodes qui vont utiliser cette méthode
+    *
     */
-
-    public function getLastPostLiElements() {
-        $returnValue = [];
+    public function getLastPostLiElements(): array
+    {
         try {
             $lastPost = $this->getLastPost();
             $doc = new DOMDocument();
@@ -147,9 +139,9 @@ class WPContentManager {
                 '<?xml encoding="UTF-8"><div>' . $lastPost[0]['content']['rendered'] . '</div>', 
                 LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING
             );
-            $returnValue = $this->getLiElements($doc);
+            $lis = $this->getLiElements($doc);
             // Si il n'y a pas de <li> dans l'article de la semaine, c'est une semaine sans menu on léve une exception
-            if (empty($returnValue)) {
+            if (empty($lis)) {
                 // On récupère la source de l'image du message d'absence
                 $tabAbsenceMessageImgSrc = $this->getImgElements($doc);
                 $srcImage = "";
@@ -157,14 +149,16 @@ class WPContentManager {
                     $srcImage .= urlencode($tabAbsenceMessageImgSrc[0]);
                   
                 }
-                Header("Location: error-critic.html".(empty($srcImage) ? "" : "?imgsrc=".$srcImage));
+                Header("Location: bad-day.php".(empty($srcImage) ? "" : "?imgsrc=".$srcImage));
                 die;
             }
-            
-            return $returnValue;
+            return [
+                "success" => $lis
+            ];
         } catch (\Exception $e) {
-             // Lancez à nouveau l'exception pour propager l'erreur
-             throw $e;
+            return [
+                "error" => $e->getMessage()
+            ];
         }
     }
 }
