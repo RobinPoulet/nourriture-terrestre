@@ -9,6 +9,7 @@ abstract class MenuManager {
         "plat-2",
         "dessert-1",
         "dessert-2",
+        "dessert-3",
     ];
 
     /**

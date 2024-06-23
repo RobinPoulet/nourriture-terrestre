@@ -3,15 +3,11 @@
 
 class EnvManager {
     /**
-     * Instance de la classe EnvManager
-     *
-     * @var EnvManager
+     * @var EnvManager Instance de la classe EnvManager
      */
     private static $instance;
     /**
-     * Tableau contenant les variables d'environnements
-     *
-     * @var array
+     * @var array Tableau contenant les variables d'environnements
      */
     private $env;
 
@@ -71,7 +67,7 @@ class EnvManager {
      *
      * @return null|string
      */
-    public function getEnvVariable(string $key): null|string
+    public function getEnvVariable(string $key): ?string
     {
         return $this->env[$key] ?? null;
     }

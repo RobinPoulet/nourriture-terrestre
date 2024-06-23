@@ -2,9 +2,7 @@
 require(__DIR__ . "/EnvManager.php");
 class Database {
     /**
-     * Instance de PDO
-     *
-     * @var PDO
+     * @var PDO Instance de PDO
      */
     private static $instance;
 
@@ -41,9 +39,9 @@ class Database {
     /**
      * Méthode statique pour insérer une commande dans la base de données.
      *
-     * @param int $userId Id de l'utilisateur.
-     * @param string $order Contenu de la commande.
-     * @param string $perso Informations personnelles de l'utilisateur.
+     * @param int    $userId Id de l'utilisateur.
+     * @param string $order  Contenu de la commande.
+     * @param string $perso  Informations personnelles de l'utilisateur.
      *
      * @return bool True si l'insertion a réussi, sinon false.
      */
@@ -109,6 +107,7 @@ class Database {
      * Ajouter un nouvel utilisateur
      *
      * @param string $name Nom de l'utilisateur
+     *
      * @return boolean True si l'insertion a réussi
      */
     public static function insertUser(string $name): bool
@@ -130,8 +129,9 @@ class Database {
     /**
      * Modifier le nom d'un utilisateur
      *
-     * @param integer $id Id de l'utilisateur
-     * @param string $name Nouveau nom de l'utilisateur
+     * @param integer $id   Id de l'utilisateur
+     * @param string  $name Nouveau nom de l'utilisateur
+     *
      * @return boolean True si la modification a réussie
      */
     public static function editUser(int $id, string $name): bool
@@ -158,6 +158,7 @@ class Database {
      * Supprimer un utilisateur
      *
      * @param integer $id Id de l'utilisateur
+     *
      * @return boolean True si la suppression à réussie
      */
     public static function deleteUser(int $id): bool
@@ -175,6 +176,13 @@ class Database {
         }
     }
     
+    /**
+     * Retrouvé un utilisateur avec son Id
+     *
+     * @param integer $id Id de l'utilisateur
+     *
+     * @return array|null L'utilisateur si il est trouvé
+     */
     public static function getOneUser(int $id): ?array
     {
         $query = "SELECT * FROM users WHERE id= :id";
