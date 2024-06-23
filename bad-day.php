@@ -371,4 +371,20 @@ border-radius:50%;box-shadow:0 0 14px 4px white;margin-top:-2px}
 30% {margin-top:300px -600px 0 0;opacity:0}100% {opacity:0}}
 @keyframes meteors{0%{margin:-300px -300px 0 0;opacity:1}8%{opacity:0}
 30% {margin-top:300px -600px 0 0;opacity:0}100% {opacity:0}}
+ /* Styles pour l'image */
+ img {
+  position: absolute;       /* Position absolue pour l'image */
+  top: -640%;                 /* Centre verticalement */
+  left: 0;                  /* Aligne à gauche */
+  transform: translateY(-50%); /* Ajuste pour centrer verticalement */
+  
+  max-width: 300px;         /* Largeur maximale de 300 pixels */
+  max-height: 300px;        /* Hauteur maximale de 300 pixels */
+  width: auto;              /* Conserve les proportions de l'image */
+  height: auto;             /* Conserve les proportions de l'image */
+
+  border: 5px solid #3498db; /* Bordure bleue de 5 pixels */
+  border-radius: 15px;       /* Bords arrondis */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombrage pour un effet de relief */
+}
 </style>

@@ -27,6 +27,11 @@ $page = $_SERVER["REQUEST_URI"];
                 echo "<a class=\"nav-link".(str_contains($page, "display-orders") ? " active\"  aria-current=\"page\"" : "\"")." href=\"./display-orders.php\">Voir les commandes</a>";
                 ?>
             </li>
+            <li class="nav-item">
+                <?php
+                echo "<a class=\"nav-link".(str_contains($page, "users") ? " active\"  aria-current=\"page\"" : "\"")." href=\"./users.php\">Utilisateurs</a>";
+                ?>
+            </li>
         </ul>
       </div>
     </div>

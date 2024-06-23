@@ -33,9 +33,18 @@ class WPContentManager {
         $requestQuery = "/wp-json/wp/v2/posts?per_page=1&order=desc&orderby=date";
         $apiEndpoint = $this->url.$requestQuery;
         $context = stream_context_create($this->contextOptions);
-        $response = file_get_contents($apiEndpoint,false,$context);
+        $response = file_get_contents(
+        $apiEndpoint,
+        false,
+        $context
+        );
         $returnValue = $response 
-        ? json_decode($response,true,512,JSON_THROW_ON_ERROR) 
+        ? json_decode(
+        $response,
+        true,
+        512,
+        JSON_THROW_ON_ERROR
+        ) 
         : [ "error" => "Erreur lors de la récupération des données de l'API Wordpress"];
         
         return $returnValue;

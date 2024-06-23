@@ -1,11 +1,23 @@
 <?php
 class Autoloader {
+    /**
+     * Enregistrement de l'autoloader
+     *
+     * @return void
+     */
     static public function register()
     {
         spl_autoload_register([self::class, "autoload"]);
     }
-    static public function autoload($class_name)
+    /**
+     * Autoloader
+     *
+     * @param string $className Nom de la classe à load
+     *
+     * @return void
+     */
+    static public function autoload($className)
     {
-        require "classes/" . $class_name . ".php";
+        require "classes/" . $className . ".php";
     }
 }

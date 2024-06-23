@@ -7,20 +7,21 @@ if (isset($postData["success"])) {
     $menu = $postData["success"]["menu"];
     $dateMenu = $postData["success"]["date"];
 }
+$users = Database::getAllUsers();
 ?>
 <!DOCTYPE html>
 <html>
 
-<?php require_once(__DIR__ . "/head.html"); ?>
+<?php require_once(__DIR__ . "/head.php"); ?>
 
 <body>
 <?php 
 require(__DIR__ . "/navbar.php");
 ?>
 <?php if (isset($menu) && isset($dateMenu)) : ?>
-    <?php $resultsOrder = Database::getTodayOrders(); ?>
+    <?php $resultsOrder = Database::getTodayOrders();?>
     <?php if (!isset($resultsOrder["error"]) && count($resultsOrder) > 0) : ?>
-        <h2 class="h3 text-center p-2">Récap des commandes ".$currentDate."</h2>
+        <h2 class="h3 text-center p-2">Récap des commandes du <?= date("Y-m-d") ?></h2>
         <div class="container">
             <table class="table table-striped table">
                 <thead>
@@ -54,9 +55,10 @@ require(__DIR__ . "/navbar.php");
                                 $orders[] = $key;
                                 $totalOrders[$key]++;
                             }
+                            $user = Database::getOneUser($result["USER_ID"]);
                             echo "
-                            <tr id=\"tr".$result["ID"]."\">
-                                <td class=\"col\">".$result["NAME"]."</td>
+                            <tr id=\"tr".$user["NAME"]."\">
+                                <td class=\"col\">".$user["NAME"]."</td>
                                 <td class=\"col\">".(in_array("entree", $orders) ? "X" : "")."</td>
                                 <td class=\"col\">".(in_array("plat-1", $orders) ? "X" : "")."</td>
                                 <td class=\"col\">".(in_array("plat-2", $orders) ? "X" : "")."</td>

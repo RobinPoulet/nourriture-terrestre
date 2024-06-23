@@ -9,10 +9,11 @@ if (isset($postData["success"])) {
     $canDisplayForm = HelperDate::canDisplayOrderForm($dateMenu);
     $canDisplayForm = true;
 }
+$users = Database::getAllUsers();
 ?>
 <!DOCTYPE html>
 <html>
-<?php require(__DIR__ . "/head.html"); ?>
+<?php require(__DIR__ . "/head.php"); ?>
 <body>
 <?php require(__DIR__ . "/navbar.php"); ?>
     <div class="container-fluid">
@@ -30,7 +31,14 @@ if (isset($postData["success"])) {
                     <div class="card-body">
                         <div id="div-alert-user"></div>
                         <div class="form-group m-3">
-                            <input type="text" class="form-control" name="user" placeholder="Nom" required>
+                            <select class="form-select" id="user-select" data-placeholder="Sélectionner un nom" name="user">
+                                <option></option>
+                                <?php
+                                foreach ($users as $user) {
+                                    echo "<option value=\"".$user["ID"]."\">".$user["NAME"]."</option>";
+                                }
+                                ?>
+                            </select>
                         </div>
                         <div class="form-group m-3 list-group">
                             <div id="div-alert-order"></div>
@@ -50,12 +58,8 @@ if (isset($postData["success"])) {
                             <textarea class="form-control" aria-label="With textarea" name="perso"></textarea>
                         </div>
                         <div class="m-3 text-center">
-                            <input hidden name="ajax" value="order">
-                            <input 
-                                value="Commander" 
-                                class="btn btn-dark"
-                                id="order-validate"
-                            >
+                            <input type="hidden" value="order" name="ajax">
+                            <input value="Commander" class="btn btn-dark" onclick="orderValidate()">
                         </div>
                     </div>
                 </form>

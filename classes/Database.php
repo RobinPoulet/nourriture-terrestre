@@ -2,9 +2,7 @@
 require(__DIR__ . "/EnvManager.php");
 class Database {
     /**
-     * Instance de PDO
-     *
-     * @var PDO
+     * @var PDO Instance de PDO
      */
     private static $instance;
 
@@ -41,18 +39,19 @@ class Database {
     /**
      * Méthode statique pour insérer une commande dans la base de données.
      *
-     * @param string $user Nom de l'utilisateur.
-     * @param string $order Contenu de la commande.
-     * @param string $perso Informations personnelles de l'utilisateur.
+     * @param int    $userId Id de l'utilisateur.
+     * @param string $order  Contenu de la commande.
+     * @param string $perso  Informations personnelles de l'utilisateur.
      *
      * @return bool True si l'insertion a réussi, sinon false.
      */
-    public static function insertOrder($user, $order, $perso) {
+    public static function insertOrder(int $userId, string $order, string $perso): bool 
+    {
         $currentDate = date('Y-m-d');
-        $query = "INSERT INTO orders (name, content, perso, creation_date) VALUES (:name, :order, :perso, :creation_date)";
+        $query = "INSERT INTO orders (user_id, content, perso, creation_date) VALUES (:user_id, :order, :perso, :creation_date)";
         try {
             $stmt = self::getInstance()->prepare($query);
-            $stmt->bindParam(':name', $user);
+            $stmt->bindParam(':user_id', $userId);
             $stmt->bindParam(':order', $order);
             $stmt->bindParam(':perso', $perso);
             $stmt->bindParam(':creation_date', $currentDate);
@@ -75,12 +74,132 @@ class Database {
         $query = "SELECT * FROM orders WHERE creation_date = :creation_date";
         try {
             $stmt = self::getInstance()->prepare($query);
-            $stmt->bindParam(':creation_date', $creation_date);
+            $stmt->bindParam(':creation_date', $currentDate);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return [
                 "error" => "Erreur lors de la récupération des commandes pour la date donnée : " . $e->getMessage()
+            ];
+        }
+    }
+    
+    /**
+     * Méthode pour récupérer la liste des utilisateurs
+     *
+     * @return array Tableau contenant la liste des utilisateurs
+     */
+    public static function getAllUsers(): array
+    {
+        $query = "SELECT * FROM users";
+        try {
+            $stmt = self::getInstance()->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [
+                "error" => "Erreur lors de la récupération de la liste des utilisateurs : " . $e->getMessage()
+            ];
+        }
+    }
+    
+    /**
+     * Ajouter un nouvel utilisateur
+     *
+     * @param string $name Nom de l'utilisateur
+     *
+     * @return boolean True si l'insertion a réussi
+     */
+    public static function insertUser(string $name): bool
+    {
+        $currentDate = date('Y-m-d');
+        $query = "INSERT INTO users (name, creation_date, modification_date) VALUES (:name, :creation_date, :modification_date)";
+        try {
+            $stmt = self::getInstance()->prepare($query);
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':creation_date', $currentDate);
+            $stmt->bindParam(':modification_date', $currentDate);
+            // Exécuter la requête et vérifier le succès
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Modifier le nom d'un utilisateur
+     *
+     * @param integer $id   Id de l'utilisateur
+     * @param string  $name Nouveau nom de l'utilisateur
+     *
+     * @return boolean True si la modification a réussie
+     */
+    public static function editUser(int $id, string $name): bool
+    {
+        $currentDate = date("Y-m-d");
+        $query = "UPDATE users SET name = :name, modification_date = :modification_date WHERE id = :id";
+        try {
+            // Préparation de la requête
+            $stmt = self::getInstance()->prepare($query);
+    
+            // Liaison des paramètres
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':modification_date', $currentDate);
+            $stmt->bindParam(':id', $id);
+    
+            // Exécution de la requête et vérification du succès
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Supprimer un utilisateur
+     *
+     * @param integer $id Id de l'utilisateur
+     *
+     * @return boolean True si la suppression à réussie
+     */
+    public static function deleteUser(int $id): bool
+    {
+        $query = "DELETE FROM users WHERE id = :id";
+        try {
+            // Préparation de la requête
+            $stmt = self::getInstance()->prepare($query);
+            $stmt->bindParam(':id', $id);
+           
+            // Exécution de la requête et vérification du succès
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Retrouvé un utilisateur avec son Id
+     *
+     * @param integer $id Id de l'utilisateur
+     *
+     * @return array|null L'utilisateur si il est trouvé
+     */
+    public static function getOneUser(int $id): ?array
+    {
+        $query = "SELECT * FROM users WHERE id= :id";
+        try {
+            // Préparation de la requête
+            $stmt = self::getInstance()->prepare($query);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute(); // Exécution de la requête
+            
+            // Récupération du résultat
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Retourner l'utilisateur ou null s'il n'est pas trouvé
+            return ($user !== false ? $user : null);
+        } catch (PDOException $e) {
+            return [
+                "error" => "Erreur lors de la récupération de l'utilisateur : " . $e->getMessage()
             ];
         }
     }
