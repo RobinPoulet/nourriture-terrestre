@@ -23,10 +23,10 @@ if (
             "type" => "order"
         ];
     }
-    $user = $_POST["user"];
-    if (empty($user)) {
+    $userId = (int) $_POST["user"];
+    if (is_null($userId)) {
         $response["errors"][] = [
-            "message" => "Le nom est obligatoire",
+            "message" => "L'utilisateur choisi n'existe pas en base",
             "type" => "user"
         ];
     }
@@ -37,20 +37,18 @@ if (
     $perso = $_POST["perso"];
     $currentDate = date('Y-m-d');
     
-    $result = Database::insertOrder($user, $order, $perso);
-    var_dump($result);
+    $result = Database::insertOrder($userId, $order, $perso);
     
     if ($result) {
-        $response["success"] = "Ta commande a bien été enregistrée " . $user;
-        echo json_encode($response);
-        die();
+        $user = Database::getOneUser($userId);
+        $response["success"] = "Ta commande a bien été enregistrée " . $user["NAME"];
     } else {
         // La requête a échoué, renvoyer une réponse d'erreur
         $response["error"] = [
             "message" => "Erreur lors de l'enregistrement de la commande.",
             "type" => "request"
         ];
-        echo json_encode($response);
-        die();
     }
+    echo json_encode($response);
+    die();
 } 

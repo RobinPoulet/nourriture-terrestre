@@ -18,7 +18,7 @@ if (!HelperDate::isNewMenuAvailable($dateMenu)) {
 ?>
 <!DOCTYPE html>
 <html>
-<?php require(__DIR__ . "/head.html"); ?>
+<?php require(__DIR__ . "/head.php"); ?>
 <body>
 <?php require(__DIR__ . "/navbar.php"); ?>
     <div class="container-fluid">
