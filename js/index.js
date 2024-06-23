@@ -6,6 +6,9 @@ $(document).ready(function () {
     } );
 });
 
+/**
+ * AJAX pour valider une commande
+ */
 function orderValidate() {
     $.ajax({
         type: "POST",
@@ -33,11 +36,13 @@ function orderValidate() {
     });
 }
 
-/** 
-* Fonction pour créer et afficher un toast 
-* 
-* @param
-*/
+/**
+ * Créer et afficher un toast 
+ *
+ * @param {string} message Contenu du message
+ * @param {int} alertId Id de la div d'alerte pour affichage du message
+ * @param {string} type Type d'alerte
+ */
 function createDivAlert(message, alertId, type) {
     const displayTime = (type === 'danger' ? 8000 : 4000);
     // Vider le conteneur
