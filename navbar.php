@@ -1,5 +1,11 @@
 <?php
 $page = $_SERVER["REQUEST_URI"];
+$navItems = [
+    "Le menu"                => "./index.php",
+    "Commander"              => "./commande.php",
+    "Afficher les commandes" => "./display-orders.php",
+    "Utilisateurs"           => "./users.php",
+];
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
@@ -12,26 +18,14 @@ $page = $_SERVER["REQUEST_URI"];
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-            <li class="nav-item">
-                <?php
-                echo "<a class=\"nav-link".(str_contains($page, "index") ? " active\"  aria-current=\"page\"" : "\"")." href=\"./index.php\">Le menu</a>";
-                ?>
-            </li>
-            <li class="nav-item">
-                <?php
-                echo "<a class=\"nav-link".(str_contains($page, "commande") ? " active\"  aria-current=\"page\"" : "\"")." href=\"./commande.php\">Commander</a>";
-                ?>
-            </li>
-            <li class="nav-item">
-                <?php
-                echo "<a class=\"nav-link".(str_contains($page, "display-orders") ? " active\"  aria-current=\"page\"" : "\"")." href=\"./display-orders.php\">Voir les commandes</a>";
-                ?>
-            </li>
-            <li class="nav-item">
-                <?php
-                echo "<a class=\"nav-link".(str_contains($page, "users") ? " active\"  aria-current=\"page\"" : "\"")." href=\"./users.php\">Utilisateurs</a>";
-                ?>
-            </li>
+            <?php foreach ($navItems as $name => $path) :?>
+                <li class="nav-item">
+                    <a 
+                        class="nav-link<?= ((str_contains($page, substr($path, 2))) || ($path === "./index.php" && strlen($page) === 22) ? " active" : "") ?>" 
+                        href="<?= $path ?>"
+                    ><?= $name ?></a>
+                </li>
+            <?php endforeach; ?>
         </ul>
       </div>
     </div>

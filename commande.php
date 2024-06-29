@@ -33,25 +33,19 @@ $users = Database::getAllUsers();
                         <div class="form-group m-3">
                             <select class="form-select" id="user-select" data-placeholder="Sélectionner un nom" name="user">
                                 <option></option>
-                                <?php
-                                foreach ($users as $user) {
-                                    echo "<option value=\"".$user["ID"]."\">".$user["NAME"]."</option>";
-                                }
-                                ?>
+                                <?php foreach ($users as $user) :?>
+                                    <option value="<?= $user["ID"] ?>"><?= $user["NAME"] ?></option>";
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-group m-3 list-group">
                             <div id="div-alert-order"></div>
-                            <?php
-                            foreach ($menu as $titrePlat => $nomPlat) {
-                                echo "
-                                    <label class=\"list-group-item\">
-                                    <input class=\"form-check-input me-1\" type=\"checkbox\" name=".$titrePlat.">
-                                    ".$nomPlat."
-                                    </label>
-                                ";
-                            }
-                            ?>
+                            <?php foreach ($menu as $titrePlat => $nomPlat) :?>
+                                <label class="list-group-item">
+                                    <input class="form-check-input me-1" type="checkbox" name="<?= $titrePlat ?>">
+                                    <?= $nomPlat ?>
+                                </label>
+                            <?php endforeach; ?>
                         </div>
                         <div class="form-group m-3">
                             <span class="input-group-text">Personnalisation</span>
