@@ -27,64 +27,52 @@ require(__DIR__ . "/navbar.php");
                 <thead>
                     <tr>
                         <th scope="col">Nom</th>
-                        <?php
-                        foreach ($menu as $dish) {
-                            $shortDish = explode(" ", $dish)[0];
-                            echo "
-                            <th scope=\"col\">".$shortDish."</th>
-                            ";
-                        }
-                        echo "
-                            <th scope=\"col\">Perso</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        ";
-                        $totalOrders = [
-                            "entree" => 0,
-                            "plat-1" => 0,
-                            "plat-2" => 0,
-                            "dessert-1" => 0,
-                            "dessert-2" => 0,
-                        ];
-                        foreach ($resultsOrder as $result) {
-                            $decodedJson = json_decode($result["CONTENT"]);
-                            $orders = [];
-                            $perso = $result["PERSO"] ?? "";
-                            foreach ($decodedJson as $key => $value) {
-                                $orders[] = $key;
-                                $totalOrders[$key]++;
-                            }
-                            $user = Database::getOneUser($result["USER_ID"]);
-                            echo "
-                            <tr id=\"tr".$user["NAME"]."\">
-                                <td class=\"col\">".$user["NAME"]."</td>
-                                <td class=\"col\">".(in_array("entree", $orders) ? "X" : "")."</td>
-                                <td class=\"col\">".(in_array("plat-1", $orders) ? "X" : "")."</td>
-                                <td class=\"col\">".(in_array("plat-2", $orders) ? "X" : "")."</td>
-                                <td class=\"col\">".(in_array("dessert-1", $orders) ? "X" : "")."</td>
-                                <td class=\"col\">".(in_array("dessert-2", $orders) ? "X" : "")."</td>
-                                <td class=\"col\">".$perso."</td>
-                            </tr>
-                            ";
-                        }
-                        echo "
-                            <tr>
-                                <td class=\"col\">TOTAL</td>
-                        ";
-                        foreach ($totalOrders as $totalOrder) {
-                            echo "
-                                <td class=\"col\"><bold>".$totalOrder."</bold></td>
-                            ";
-                        }
-                        echo "
-                                <td class=\"col\"></td>
-                            </tr>
-                        </tbody>
-                        </table>
-                        </div>
-                        ";
-                        ?>
+                        <?php foreach ($menu as $dish) :?>
+                            <th scope="col"><?= explode(" ", $dish)[0] ?></th>
+                        <?php endforeach; ?>
+                        <th scope="col">Perso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                    $totalOrders = [
+                        "entree" => 0,
+                        "plat-1" => 0,
+                        "plat-2" => 0,
+                        "dessert-1" => 0,
+                        "dessert-2" => 0,
+                        "dessert-3" => 0,
+                    ];
+                ?>
+                <?php foreach ($resultsOrder as $result) :?>
+                <?php
+                    $decodedJson = json_decode($result["CONTENT"]);
+                    $orders = [];
+                    $perso = $result["PERSO"] ?? "";
+                    foreach ($decodedJson as $key => $value) {
+                        $orders[] = $key;
+                        $totalOrders[$key]++;
+                    }
+                    $user = Database::getOneUser($result["USER_ID"]);
+                ?>
+                    <tr id="tr<?= $user["NAME"] ?>">
+                        <td class="col"><?= $user["NAME"] ?></td>
+                        <?php foreach ($totalOrders as $totalOrder) :?>
+                            <td class="col"><?= (in_array($totalOrder, $orders) ? "X" : "") ?></td>
+                        <?php endforeach; ?>
+                        <td class="col"><?= $perso ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                    <tr>
+                        <td class="col">TOTAL</td>
+                        <?php foreach ($totalOrders as $totalOrder) :?>
+                            <td class="col"><bold><?= $totalOrder ?></bold></td>
+                        <?php endforeach; ?>
+                        <td class="col"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     <?php elseif (isset($resultsOrder["error"])) : ?>
         <div class="alert alert-danger m-4 p-4" style="margin-left: auto; margin-right: auto;">
             <?= $resultsOrder["error"] ?>

@@ -27,16 +27,12 @@ if (!HelperDate::isNewMenuAvailable($dateMenu)) {
             <div class="alert alert-info w-50 mt-4 p-4" style="margin-left: auto; margin-right: auto;">⚠️ Il n'y a malheuresement qu'un seul dessert cette semaine 😭</div>
         <?php endif; ?>
         <ul class="list-group w-50 mt-4 p-4" style="margin-left: auto; margin-right: auto;">
-            <?php
-            foreach ($menu as $typePlat => $nomPlat) {
-                echo "
-                    <li class=\"list-group-item list-group-item-light\">
-                        <span class=\"badge bg-primary rounded-pill mr-2\">".$typePlat."</span>
-                         " . $nomPlat . "
-                    </li>
-                ";
-            }
-            ?>
+            <?php foreach ($menu as $typePlat => $nomPlat) :?>
+                <li class="list-group-item list-group-item-light">
+                    <span class="badge bg-primary rounded-pill mr-2"><?= $typePlat ?></span>
+                        <?= $nomPlat ?>
+                </li>
+            <?php endforeach; ?>
         </ul>
     </div>
 </body>
