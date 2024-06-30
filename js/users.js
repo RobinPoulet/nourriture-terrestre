@@ -248,7 +248,7 @@ function createUserNameCell(name) {
  */
 function createUserEditButton(id, name) {
     const editTd = document.createElement('td');
-    editTd.className = 'text-center';
+    editTd.className = 'text-end';
     const editButton = document.createElement('button');
     editButton.className = 'btn btn-warning btn-sm btn-edit';
     // Définir les attributs

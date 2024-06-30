@@ -31,10 +31,10 @@ $users = Database::getAllUsers();
                     <div class="card-body">
                         <div id="div-alert-user"></div>
                         <div class="form-group m-3">
-                            <select class="form-select" id="user-select" data-placeholder="Sélectionner un nom" name="user">
-                                <option></option>
-                                <?php foreach ($users as $user) :?>
-                                    <option value="<?= $user["ID"] ?>"><?= $user["NAME"] ?></option>";
+                            <select class="form-select w-100" id="user-select" data-placeholder="Sélectionner un nom" name="user">
+                                <option value="" disabled selected hidden>Sélectionner un nom</option>
+                                <?php foreach ($users as $user) : ?>
+                                    <option value="<?= $user["ID"] ?>"><?= $user["NAME"] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

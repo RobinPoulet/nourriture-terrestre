@@ -1,13 +1,14 @@
 <?php
-// On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
 require(__DIR__ . "/classes/Autoloader.php");
 Autoloader::register();
+// On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
 $postData = DataFetcher::getData();
 if (isset($postData["success"])) {
     $menu = $postData["success"]["menu"];
     $dateMenu = $postData["success"]["date"];
+    $resultsOrder = Database::getTodayOrders();
+    $users = Database::getAllUsers();
 }
-$users = Database::getAllUsers();
 ?>
 <!DOCTYPE html>
 <html>
@@ -19,7 +20,6 @@ $users = Database::getAllUsers();
 require(__DIR__ . "/navbar.php");
 ?>
 <?php if (isset($menu) && isset($dateMenu)) : ?>
-    <?php $resultsOrder = Database::getTodayOrders();?>
     <?php if (!isset($resultsOrder["error"]) && count($resultsOrder) > 0) : ?>
         <h2 class="h3 text-center p-2">Récap des commandes du <?= date("Y-m-d") ?></h2>
         <div class="container">
@@ -35,14 +35,10 @@ require(__DIR__ . "/navbar.php");
                 </thead>
                 <tbody>
                 <?php
-                    $totalOrders = [
-                        "entree" => 0,
-                        "plat-1" => 0,
-                        "plat-2" => 0,
-                        "dessert-1" => 0,
-                        "dessert-2" => 0,
-                        "dessert-3" => 0,
-                    ];
+                    $totalOrders = [];
+                    foreach ($menu as $type => $name) {
+                        $totalOrders[$type] = 0;
+                    }
                 ?>
                 <?php foreach ($resultsOrder as $result) :?>
                 <?php
@@ -57,8 +53,8 @@ require(__DIR__ . "/navbar.php");
                 ?>
                     <tr id="tr<?= $user["NAME"] ?>">
                         <td class="col"><?= $user["NAME"] ?></td>
-                        <?php foreach ($totalOrders as $totalOrder) :?>
-                            <td class="col"><?= (in_array($totalOrder, $orders) ? "X" : "") ?></td>
+                        <?php foreach ($totalOrders as $dish => $order) :?>
+                            <td class="col"><?= (in_array($dish, $orders, true) ? "X" : "") ?></td>
                         <?php endforeach; ?>
                         <td class="col"><?= $perso ?></td>
                     </tr>
@@ -84,7 +80,7 @@ require(__DIR__ . "/navbar.php");
     <?php endif; ?>
 <?php else: ?>
     <div class="alert alert-info m-4 p-4" style="margin-left: auto; margin-right: auto;">
-            Erreur lors de la récupération des informations du menu
+        Erreur lors de la récupération des informations du menu
     </div>
 <?php endif; ?>
 </body>
