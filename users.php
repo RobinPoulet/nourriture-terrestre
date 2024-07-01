@@ -7,14 +7,13 @@ Autoloader::register();
 <?php require(__DIR__ . "/head.php"); ?>
 <body>
 <?php require(__DIR__ . "/navbar.php"); ?>
+<div id="div-alert-request" class="mt-3"></div>
 <div class="container mt-5 w-50">
     <div class="d-flex justify-content-between align-items-center">
         <h2>Liste des Utilisateurs</h2>
         <!-- Utilisation du bouton pour ouvrir la modale d'ajout -->
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">Ajouter un utilisateur</button>
     </div>
-    
-    <div id="div-alert-request" class="mt-3"></div>
     
     <?php if (isset($_GET['message'])): ?>
         <div class="alert alert-success mt-3"><?= htmlspecialchars($_GET['message']) ?></div>
@@ -80,4 +79,15 @@ Autoloader::register();
                 </div>
         </div>
     </div>
+</div>
+<!-- Toast notification -->
+<div class="position-fixed top-0 start-0 p-3" style="z-index: 11">
+  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">Nourriture Terrestre</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body" id="liveToastContent">
+    </div>
+  </div>
 </div>

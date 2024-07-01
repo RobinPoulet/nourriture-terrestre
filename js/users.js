@@ -58,7 +58,7 @@ function addUser() {
     };
     $.ajax({
         type: 'POST',
-        url: 'ajax-user.php',
+        url: 'ajax.php',
         data: data,
         success: async function(response) {
             const data = JSON.parse(response);
@@ -102,7 +102,7 @@ function editUser(userId) {
     };
     $.ajax({
         type: 'POST',
-        url: 'ajax-user.php',
+        url: 'ajax.php',
         data: data,
         success: async function(response) {
             const data = JSON.parse(response);
@@ -145,12 +145,16 @@ function deleteUser(userId) {
     }
     $.ajax({
         type: 'POST',
-        url: 'ajax-user.php',
+        url: 'ajax.php',
         data: data,
         success: async function(response) {
             const data = JSON.parse(response);
             if (data.success) {
-                createDivAlert(data.success, 'div-alert-request', 'success');
+                const toastLive = document.getElementById('liveToast');
+                const toastContent = document.getElementById('liveToastContent');
+                toastContent.textContent = 'L\'utilisateur a bien été supprimé';
+                const toast = new bootstrap.Toast(toastLive);
+                toast.show();
                 const users = await getAllUsers();
                 displayUsersTable(users);
             } else {
@@ -173,7 +177,7 @@ async function getAllUsers() {
     try {
         const response = await $.ajax({
             type: 'POST',
-            url: 'ajax-user.php',
+            url: 'ajax.php',
             data: {
                 ajax: 'getAllUsers'
             }
@@ -196,10 +200,9 @@ async function getAllUsers() {
  */
 function displayUsersTable(users) {
     $('#tbodyUsers').empty();
-    users.forEach(user => {
-        const tr = createUserRow(user);
-        $('#tbodyUsers').append(tr);
-    })
+    users.forEach(
+        user => $('#tbodyUsers').append(createUserRow(user))
+    );
 }
 
 /**
@@ -212,30 +215,52 @@ function displayUsersTable(users) {
 function createUserRow(user) {
     const tr = document.createElement('tr');
     
-    const nameTd = createUserNameCell(user.NAME);
+    const nameTd = createNameTd(user.NAME);
     tr.appendChild(nameTd);
 
-    const editTd = createUserEditButton(user.ID, user.NAME);
-    tr.appendChild(editTd);
-
-    const deleteTd = createDeleteUserButton(user.ID);
-    tr.appendChild(deleteTd);
+    const actionTd = createActionTd(user.ID, user.NAME);
+    tr.appendChild(actionTd);
 
     return tr;
 }
 
 /**
- * Créer la cellule pour le nom de l'utilisateur
+ * Créer le td pour le nom de l'utilisateur
  *
  * @param {string} name Nom de l'utilisateur
  *
  * @returns {HTMLTableCellElement}
  */
-function createUserNameCell(name) {
+function createNameTd(name) {
     const nameTd = document.createElement('td');
     nameTd.textContent = name;
     
     return nameTd
+}
+
+/**
+ * Créer le td contenant les boutons d'actions
+ *
+ * @param {int} id id Id de l'utilisateur
+ * @param {string} name name Nom de l'utilisateur
+ *
+ * @returns {HTMLTableCellElement}
+ */
+function createActionTd(id, name) {
+    const actionTd = document.createElement('td');
+    actionTd.className = 'text-end';
+    
+    const editButton = createEditButton(id, name);
+    actionTd.appendChild(editButton);
+    
+    // Ajouter un espace entre les boutons
+    const space = document.createTextNode(' '); // Utilise un espace texte
+    actionTd.appendChild(space);
+    
+    const deleteButton = createDeleteButton(id);
+    actionTd.appendChild(deleteButton);
+    
+    return actionTd;
 }
 
 /**
@@ -244,11 +269,9 @@ function createUserNameCell(name) {
  * @param {int} id Id de l'utilisateur
  * @param {string} name Nom de l'utilisateur
  *
- * @returns {HTMLTableCellElement}
+ * @returns {HTMLButtonElement}
  */
-function createUserEditButton(id, name) {
-    const editTd = document.createElement('td');
-    editTd.className = 'text-end';
+function createEditButton(id, name) {
     const editButton = document.createElement('button');
     editButton.className = 'btn btn-warning btn-sm btn-edit';
     // Définir les attributs
@@ -256,12 +279,10 @@ function createUserEditButton(id, name) {
     editButton.setAttribute('data-bs-target', '#addUserModal');
     editButton.setAttribute('data-user-name', name);
     editButton.setAttribute('data-user-id', id);
-
     // Ajouter le texte du bouton
     editButton.textContent = 'Modifier';
-    editTd.appendChild(editButton);
-    
-    return editTd;
+
+    return editButton;
 }
 
 /**
@@ -269,18 +290,15 @@ function createUserEditButton(id, name) {
  *
  * @param {int} id Id de l'utilisateur
  *
- * @returns {HTMLTableCellElement}
+ * @returns {HTMLButtonElement}
  */
-function createDeleteUserButton(id) {
-    const deleteTd = document.createElement('td');
-    deleteTd.className = 'text-center';
+function createDeleteButton(id) {
     const deleteButton = document.createElement('button');
     deleteButton.className = 'btn btn-danger btn-sm';
     deleteButton.textContent = 'Supprimer';
     deleteButton.onclick = function() {
         confirmDelete(id);
     };
-    deleteTd.appendChild(deleteButton);
-    
-    return deleteTd;
+
+    return deleteButton;
 }

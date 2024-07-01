@@ -12,7 +12,7 @@ $(document).ready(function () {
 function orderValidate() {
     $.ajax({
         type: "POST",
-        url: "order.php",
+        url: "ajax.php",
         data: $("#order-form").serialize(),
         success: function(response) {
             const data = JSON.parse(response);
@@ -67,7 +67,7 @@ function createDivAlert(message, alertId, type) {
     alerte.innerHTML = `
         ${icons}
         <div class="d-flex justify-content-center text-center">
-            <div class="alert alert-${type} alert-dismissible d-flex align-items-center mt-3 w-50" role="alert">
+            <div class="alert alert-${type} alert-dismissible d-flex align-items-center mt-3" role="alert">
                 ${type === 'success' ? '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>' : ''}
                 ${type === 'danger' ? '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>' : ''}
                 <div>
