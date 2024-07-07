@@ -1,51 +1,56 @@
-$(document).ready(function () { 
-    // Sélectionner les éléments nécessaires
-    const addUserModal = document.getElementById('addUserModal');
-    const userNameInput = document.getElementById('userName');
-    const userValidateButton = document.getElementById('user-validate');
-    
-    /**
-    * Fonction pour réinitialiser la modale au mode ajout
-    */
-    function resetModalToAddMode() {
-        document.getElementById('addUserModalLabel').textContent = 'Ajouter un Utilisateur';
-        userNameInput.value = '';
-        userValidateButton.textContent = 'Ajouter';
-        userValidateButton.onclick = function() {
-            addUser();
-        };
-    }
- 
-    // Gestion de l'événement de l'ouverture de la modale
-    addUserModal.addEventListener('show.bs.modal', function (event) {
-        // Bouton qui a déclenché la modale
-        const button = event.relatedTarget;
+$(document).ready(function () {
+    const pathname = window.location.pathname;
+    const pageName = pathname.split('/').pop();
+    if (pageName === 'users.php') {
+        // Sélectionner les éléments nécessaires
+        const addUserModal = document.getElementById('addUserModal');
+        const userNameInput = document.getElementById('userName');
+        const userValidateButton = document.getElementById('user-validate');
 
-        // Récupérer les données du bouton
-        const userId = button.getAttribute('data-user-id');
-        const userName = button.getAttribute('data-user-name');
 
-        if (
-            userId
-            && userName
-        ) {
-            // Si l'édition est en cours
-            document.getElementById('addUserModalLabel').textContent = 'Éditer un Utilisateur';
-            userNameInput.value = userName;
-            userValidateButton.textContent = 'Modifier';
-            userValidateButton.onclick = function() {
-                confirmEdit(userId);
-            }
-        } else {
-            // Sinon, réinitialiser au mode ajout
-            resetModalToAddMode();
+        /**
+         * Fonction pour réinitialiser la modale au mode ajout
+         */
+        function resetModalToAddMode() {
+            document.getElementById('addUserModalLabel').textContent = 'Ajouter un Utilisateur';
+            userNameInput.value = '';
+            userValidateButton.textContent = 'Ajouter';
+            userValidateButton.onclick = function () {
+                addUser();
+            };
         }
-    });
-    
-    // Réinitialiser la modale lorsqu'elle est fermée
-    addUserModal.addEventListener('hidden.bs.modal', function () {
-        resetModalToAddMode();
-    });
+
+        // Gestion de l'événement de l'ouverture de la modale
+        addUserModal.addEventListener('show.bs.modal', function (event) {
+            // Bouton qui a déclenché la modale
+            const button = event.relatedTarget;
+
+            // Récupérer les données du bouton
+            const userId = button.getAttribute('data-user-id');
+            const userName = button.getAttribute('data-user-name');
+
+            if (
+                userId
+                && userName
+            ) {
+                // Si l'édition est en cours
+                document.getElementById('addUserModalLabel').textContent = 'Éditer un Utilisateur';
+                userNameInput.value = userName;
+                userValidateButton.textContent = 'Modifier';
+                userValidateButton.onclick = function () {
+                    confirmEdit(userId);
+                }
+            } else {
+                // Sinon, réinitialiser au mode ajout
+                resetModalToAddMode();
+            }
+        });
+
+        // Réinitialiser la modale lorsqu'elle est fermée
+        addUserModal.addEventListener('hidden.bs.modal', function () {
+            resetModalToAddMode();
+        });
+    }
 });
 
 /**
@@ -64,16 +69,17 @@ function addUser() {
             const data = JSON.parse(response);
             if (data.success) {
                 $('#addUserModal').modal('hide');
-                createDivAlert(data.success, 'div-alert-request', 'success');
+                displayToast(data.success, 'liveToast', 'liveToastContent');
                 const users = await getAllUsers();
                 displayUsersTable(users);
             } else {
-                createDivAlert(data.error.message, 'div-alert' + data.error.type, 'danger')
+                displayToast(data.error.message, 'liveToast', 'liveToastContent');
             }
         },
         error: function(xhr, status, error) {
             // Afficher un message d'erreur générique en cas d'erreur de requête AJAX
-            createDivAlert("Une erreur s'est produite lors de la requête AJAX : " + error, 'div-alert-request', 'danger');
+            const toastMessage = 'Une erreur s\'est produite lors de la requête AJAX : ' + error;
+            displayToast(toastMessage, 'liveToast', 'liveToastContent');
         }
     });
 }
@@ -108,16 +114,17 @@ function editUser(userId) {
             const data = JSON.parse(response);
             if (data.success) {
                 $('#addUserModal').modal('hide');
-                createDivAlert(data.success, 'div-alert-request', 'success');
+                displayToast(data.success, 'liveToast', 'liveToastContent');
                 const users = await getAllUsers();
                 displayUsersTable(users);
             } else {
-                createDivAlert(data.error.message, 'div-alert' + data.error.type, 'danger')
+                displayToast(data.error.message, 'liveToast', 'liveToastContent');
             }
         },
         error: function(xhr, status, error) {
             // Afficher un message d'erreur générique en cas d'erreur de requête AJAX
-            createDivAlert("Une erreur s'est produite lors de la requête AJAX : " + error, 'div-alert-request', 'danger');
+            const toastMessage = 'Une erreur s\'est produite lors de la requête AJAX : ' + error;
+            displayToast(toastMessage, 'liveToast', 'liveToastContent');
         }
     });
 }
@@ -150,20 +157,18 @@ function deleteUser(userId) {
         success: async function(response) {
             const data = JSON.parse(response);
             if (data.success) {
-                const toastLive = document.getElementById('liveToast');
-                const toastContent = document.getElementById('liveToastContent');
-                toastContent.textContent = 'L\'utilisateur a bien été supprimé';
-                const toast = new bootstrap.Toast(toastLive);
-                toast.show();
+                const toastMessage = 'L\'utilisateur a bien été supprimé';
+                displayToast(toastMessage, 'liveToast', 'liveToastContent');
                 const users = await getAllUsers();
                 displayUsersTable(users);
             } else {
-                createDivAlert(data.error.message, 'div-alert' + data.error.type, 'danger');
+                displayToast(data.error.message, 'liveToast', 'liveToastContent');
             }
         },
         error: function(xhr, status, error) {
             // Afficher un message d'erreur générique en cas d'erreur de requête AJAX
-            createDivAlert("Une erreur s'est produite lors de la requête AJAX : " + error, 'div-alert-request', 'danger');
+            const toastMessage = "Une erreur s'est produite lors de la requête AJAX : " + error;
+            displayToast(toastMessage, 'liveToast', 'liveToastContent');
         }
     });
 }
@@ -186,10 +191,11 @@ async function getAllUsers() {
         if (data.success) {
             return data.success;
         } else {
-            throw new Error(data.error); // Lancer une erreur en cas de réponse avec erreur
+            return { error: data.error };
         }
     } catch (error) {
-        createDivAlert("Une erreur s'est produite lors de la requête AJAX : " + error, 'div-alert-request', 'danger');
+        const toastMessage = 'Une erreur s\'est produite lors de la requête AJAX : ' + error;
+        displayToast(toastMessage, 'liveToast', 'liveToastContent');
     }
 }
 
@@ -199,9 +205,10 @@ async function getAllUsers() {
  * @param {array} users Les utilisateurs 
  */
 function displayUsersTable(users) {
-    $('#tbodyUsers').empty();
+    const tbodyUsers = $('#tbodyUsers');
+    tbodyUsers.empty();
     users.forEach(
-        user => $('#tbodyUsers').append(createUserRow(user))
+        user => tbodyUsers.append(createUserRow(user))
     );
 }
 

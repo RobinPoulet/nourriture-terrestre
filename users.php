@@ -3,7 +3,7 @@ require(__DIR__ . "/classes/Autoloader.php");
 Autoloader::register();
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <?php require(__DIR__ . "/head.php"); ?>
 <body>
 <?php require(__DIR__ . "/navbar.php"); ?>
@@ -30,18 +30,18 @@ Autoloader::register();
             <?php $users = Database::getAllUsers();?>
             <?php foreach ($users as $user) :?>
                 <tr>
-                    <td><?= htmlspecialchars($user['NAME']) ?></td>
+                    <td><?= htmlspecialchars($user["NAME"] ?? "") ?></td>
                     <td class="text-end">
                         <button 
                             class="btn btn-warning btn-sm btn-edit" 
                             data-bs-toggle="modal" 
                             data-bs-target="#addUserModal" 
-                            data-user-name="<?= htmlspecialchars($user['NAME']) ?>" 
-                            data-user-id="<?= $user['ID'] ?>"
+                            data-user-name="<?= htmlspecialchars($user["NAME"] ?? "") ?>"
+                            data-user-id="<?= $user["ID"] ?? 0 ?>"
                         >Modifier</button>
                         <button 
                             class="btn btn-danger btn-sm" 
-                            onclick="confirmDelete(<?= $user['ID'] ?>)"
+                            onclick="confirmDelete(<?= $user["ID"] ?? 0 ?>)"
                         >Supprimer</button>
                     </td>
                 </tr>
@@ -81,13 +81,13 @@ Autoloader::register();
     </div>
 </div>
 <!-- Toast notification -->
-<div class="position-fixed top-0 start-0 p-3" style="z-index: 11">
-  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-      <strong class="me-auto">Nourriture Terrestre</strong>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+<div class="position-fixed top-50 start-50 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-white">
+            <strong class="me-auto">Nourriture Terrestre</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="liveToastContent">
+        </div>
     </div>
-    <div class="toast-body" id="liveToastContent">
-    </div>
-  </div>
 </div>

@@ -1,8 +1,9 @@
-$(document).ready(function () {    
-    $( '#user-select' ).select2( {
+$(document).ready(function () {
+    const userSelect = $( '#user-select' );
+    userSelect.select2( {
         theme: "bootstrap-5",
         width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
-        placeholder: $( '#user-select' ).data( 'placeholder' ),
+        placeholder: userSelect.data( 'placeholder' ),
     });
 });
 
@@ -17,21 +18,22 @@ function orderValidate() {
         success: function(response) {
             const data = JSON.parse(response);
             if (data.error) {
-                createDivAlert(data.error.message, 'div-alert-' + data.error.type, 'danger');
+                displayToast(data.error.message, 'liveToast', 'liveToastContent');
             }
             if (data.errors) {
                 data.errors.forEach(error => {
-                    createDivAlert(error.message, 'div-alert-' + error.type, 'danger');
+                    displayToast(error.message, 'liveToast', 'liveToastContent');
                 });
             }
             if (data.success) {
-                createDivAlert(data.success, 'div-alert', 'success')
+                displayToast(data.success, 'liveToast', 'liveToastContent')
                 document.getElementById('form-card').style.display = 'none';
             }
         },
         error: function(xhr, status, error) {
             // Afficher un message d'erreur générique en cas d'erreur de requête AJAX
-            createDivAlert("Une erreur s'est produite lors de la requête AJAX : " + error, 'div-alert-request', 'danger');
+            const toastMessage = 'Une erreur s\'est produite lors de la requête AJAX : ' + error;
+            displayToast(toastMessage, 'liveToast', 'liveToastContent');
         }
     });
 }
@@ -94,4 +96,12 @@ function createDivAlert(message, alertId, type) {
             alerte.parentElement.removeChild(alerte);
         }
     });
+}
+
+function displayToast(message, toastId, toastContentId) {
+    const toastLive = document.getElementById(toastId);
+    const toastContent = document.getElementById(toastContentId);
+    toastContent.textContent = message;
+    const toast = new bootstrap.Toast(toastLive);
+    toast.show();
 }

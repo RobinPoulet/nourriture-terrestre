@@ -12,7 +12,7 @@ if (isset($postData["success"])) {
 $users = Database::getAllUsers();
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <?php require(__DIR__ . "/head.php"); ?>
 <body>
 <?php require(__DIR__ . "/navbar.php"); ?>
@@ -34,7 +34,7 @@ $users = Database::getAllUsers();
                             <select class="form-select w-100" id="user-select" data-placeholder="Sélectionner un nom" name="user">
                                 <option value="" disabled selected hidden>Sélectionner un nom</option>
                                 <?php foreach ($users as $user) : ?>
-                                    <option value="<?= $user["ID"] ?>"><?= $user["NAME"] ?></option>
+                                    <option value="<?= $user["ID"] ?? 0 ?>"><?= $user["NAME"] ?? ""?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -69,5 +69,16 @@ $users = Database::getAllUsers();
         </div>
     <?php endif; ?>
     </div>
+<!-- Toast notification -->
+<div class="position-fixed top-50 start-50 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-white">
+            <strong class="me-auto">Nourriture Terrestre</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="liveToastContent">
+        </div>
+    </div>
+</div>
 </body>
 </html>

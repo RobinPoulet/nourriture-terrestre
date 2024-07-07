@@ -17,10 +17,7 @@
     <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="./js/index.js"></script>
-    <?php
-        if ($_SERVER['REQUEST_URI'] === "/nourriture-terrestre/users.php") {
-            echo "<script src=\"./js/users.js\"></script>";
-        }
-    ?>
+    <script src="./js/users.js"></script>;
 </head>

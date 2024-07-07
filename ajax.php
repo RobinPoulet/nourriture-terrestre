@@ -147,12 +147,13 @@ if (
             "type" => "order"
         ];
     }
-    $userId = (int) $_POST["user"];
-    if (is_null($userId)) {
+    if (empty($_POST["user"])) {
         $response["errors"][] = [
-            "message" => "L'utilisateur choisi n'existe pas en base",
+            "message" => "Merci de sélectionner un nom",
             "type" => "user"
         ];
+    } else {
+        $userId = (int) $_POST["user"];
     }
     if (!empty($response["errors"])) {
         echo json_encode($response);
@@ -165,7 +166,7 @@ if (
     
     if ($result) {
         $user = Database::getOneUser($userId);
-        $response["success"] = "Ta commande a bien été enregistrée " . $user["NAME"];
+        $response["success"] = "Ta commande a bien été enregistrée";
     } else {
         // La requête a échoué, renvoyer une réponse d'erreur
         $response["error"] = [
