@@ -3,6 +3,8 @@
         "phpunit/phpunit": "^9.6"
     },
   "require": {
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "ext-dom": "*",
+    "ext-libxml": "*"
   }
 }

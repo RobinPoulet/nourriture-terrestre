@@ -7,7 +7,6 @@ if (isset($postData["success"])) {
     $menu = $postData["success"]["menu"];
     $dateMenu = $postData["success"]["date"];
     $canDisplayForm = HelperDate::canDisplayOrderForm($dateMenu);
-    $canDisplayForm = true;
 }
 $users = Database::getAllUsers();
 ?>
@@ -31,10 +30,11 @@ $users = Database::getAllUsers();
                     <div class="card-body">
                         <div id="div-alert-user"></div>
                         <div class="form-group m-3">
+                            <label for="user-select"></label>
                             <select class="form-select w-100" id="user-select" data-placeholder="Sélectionner un nom" name="user">
                                 <option value="" disabled selected hidden>Sélectionner un nom</option>
                                 <?php foreach ($users as $user) : ?>
-                                    <option value="<?= $user["ID"] ?? 0 ?>"><?= $user["NAME"] ?? ""?></option>
+                                    <option value="<?= $user["ID"] ?>"><?= $user["NAME"]?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -53,7 +53,9 @@ $users = Database::getAllUsers();
                         </div>
                         <div class="m-3 text-center">
                             <input type="hidden" value="order" name="ajax">
-                            <input value="Commander" class="btn btn-dark" onclick="orderValidate()">
+                            <label>
+                                <input value="Commander" class="btn btn-dark" onclick="orderValidate()">
+                            </label>
                         </div>
                     </div>
                 </form>

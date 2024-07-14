@@ -64,18 +64,16 @@ class WPContentManager {
             $img->parentNode->removeChild($img);
         }
     }
-    
+
     /**
      * Récupérer l'attribut src de toutes les balises <img>
-     *
      * @param DOMDocument $doc
-     *
      * @return array
      */
-    private function getImgElements(DOMDocument $doc): array
+    public function getImgElements(DOMDocument $doc): array
     {
         $returnValue = [];
-        
+
         $images = $doc->getElementsByTagName("img");
         // Parcourir toutes les balises <img> pour récupérer les URLs des images
         foreach ($images as $image) {
@@ -84,7 +82,19 @@ class WPContentManager {
             // Ajouter l'URL de l'image au tableau
             $returnValue[] = $imageUrl;
         }
-        
+
+        return $returnValue;
+    }
+
+    public function getFigcaptionElements(DOMDocument $doc): array
+    {
+        $returnValue = [];
+
+        $figcaptions = $doc->getElementsByTagName("figcaption");
+        foreach ($figcaptions as $figcaption) {
+            $returnValue[] = $figcaption->nodeValue;
+        }
+
         return $returnValue;
     }
     
@@ -140,6 +150,9 @@ class WPContentManager {
     */
     public function getLastPostLiElements(): array
     {
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
         try {
             $lastPost = $this->getLastPost();
             $doc = new DOMDocument();
@@ -150,19 +163,20 @@ class WPContentManager {
             );
             $lis = $this->getLiElements($doc);
             // Si il n'y a pas de <li> dans l'article de la semaine, c'est une semaine sans menu on léve une exception
+            // On récupère la source de l'image du message d'absence
+            $tabAbsenceMessageImgSrc = $this->getImgElements($doc);
+            $srcImage = urlencode($tabAbsenceMessageImgSrc[0]);
+            $tabFigcaptions = $this->getFigcaptionElements($doc);
             if (empty($lis)) {
-                // On récupère la source de l'image du message d'absence
-                $tabAbsenceMessageImgSrc = $this->getImgElements($doc);
-                $srcImage = "";
-                if (!empty($tabAbsenceMessageImgSrc)) {
-                    $srcImage .= urlencode($tabAbsenceMessageImgSrc[0]);
-                  
-                }
                 Header("Location: bad-day.php".(empty($srcImage) ? "" : "?imgsrc=".$srcImage));
                 die;
             }
             return [
-                "success" => $lis
+                "success" => [
+                    "menu"       => $lis,
+                    "imgSrc"     => $srcImage,
+                    "figcaption" => $tabFigcaptions[0],
+                ]
             ];
         } catch (\Exception $e) {
             return [
