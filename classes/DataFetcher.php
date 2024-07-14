@@ -26,10 +26,12 @@ abstract class DataFetcher {
             if (isset($dateMenu["success"])) {
                 $menuContent = $wpContent->getLastPostLiElements();
                 if (isset($menuContent["success"])) {
-                    $menu = MenuManager::getMenuArray($menuContent["success"]);
+                    $menu = MenuManager::getMenuArray($menuContent["success"]["menu"]);
                     $result = [
-                        "date" => $dateMenu["success"],
-                        "menu" => $menu,
+                        "date"       => $dateMenu["success"],
+                        "menu"       => $menu,
+                        "imgSrc"     => $menuContent["success"]["imgSrc"],
+                        "figcaption" => $menuContent["success"]["figcaption"]
                     ];
                     // Sauvegarder les données dans le cache
                     CacheManager::saveCache($result);

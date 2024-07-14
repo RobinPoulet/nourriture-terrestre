@@ -7,7 +7,7 @@ abstract class CacheManager {
     /**
      * @var int Durée de validation du cache
      */
-    private static $cacheValidityDuration = 2;
+    private static $cacheValidityDuration = 86400;
     
     /**
      * Récupérer la durée de validation du cache
