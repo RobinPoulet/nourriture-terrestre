@@ -41,7 +41,7 @@ if (!HelperDate::isNewMenuAvailable($dateMenu)) {
                 </ul>
             </div>
             <div class="col-4">
-                <div class="text-center w-50" style="margin-right: auto;">
+                <div class="text-center w-50 mt-4" style="margin-right: auto;">
                     <img src="<?= $imageUrl ?>" alt="photo du menu" class="rounded mt-4 img-fluid" style="width: auto; height: auto">
                     <p class="text-center mt-4"><small><?= $figcaption ?></small></p>
                 </div>
