@@ -8,11 +8,9 @@ if (
 ) {
     $response = [];
     $name = $_POST["name"];
- 
-    if (
-        empty($name)
-        || !is_string($name)
-    ) {
+    $name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8'); // Échapper les entrées
+
+    if (empty($name)) {
         $response["errors"][] = [
             "message" => "Il faut un nom pour l'utilisateur",
             "type"    => "addUser"
@@ -41,23 +39,17 @@ if (
 ) {
     $response = [];
     $name = $_POST["name"];
+    $name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8'); // Échapper les entrées
     $id = $_POST["id"];
- 
-    if (
-        empty($name)
-        || !is_string($name)
-        || is_null($name)
-    ) {
+
+    if (empty($name)) {
         $response["errors"][] = [
             "message" => "Il faut un nom pour l'utilisateur",
             "type"    => "editUser"
         ];
     }
-    
-    if (
-        !is_integer($id)
-        || is_null($name)
-    ) {
+
+    if (!is_integer($id)) {
         $response["errors"][] = [
             "message" => "L'ID utilisateur n'est pas valide",
             "type"    => "editUser"
@@ -147,6 +139,7 @@ if (
             "type" => "order"
         ];
     }
+    $userId = null;
     if (empty($_POST["user"])) {
         $response["errors"][] = [
             "message" => "Merci de sélectionner un nom",
