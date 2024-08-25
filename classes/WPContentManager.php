@@ -150,9 +150,6 @@ class WPContentManager {
      */
     public function getLastPostLiElements(): array
     {
-        ini_set('display_errors', 1);
-        ini_set('display_startup_errors', 1);
-        error_reporting(E_ALL);
         try {
             $lastPost = $this->getLastPost();
             $doc = new DOMDocument();

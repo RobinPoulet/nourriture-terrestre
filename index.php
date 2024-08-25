@@ -1,8 +1,17 @@
 <?php
+if (in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1']) || $_SERVER['SERVER_NAME'] === 'localhost') {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
 // On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
 require(__DIR__ . "/classes/Autoloader.php");
 Autoloader::register();
 $postData = DataFetcher::getData();
+$isOnlyOneDessert = false;
+$dateMenu = "";
+$menu = [];
+$imgSrc = "";
 if (isset($postData["success"])) {
     $menu = $postData["success"]["menu"];
     $dateMenu = $postData["success"]["date"];
@@ -10,11 +19,11 @@ if (isset($postData["success"])) {
     $figcaption = $postData["success"]["figcaption"];
     // On check si il y a un seul dessert cette semaine (ça arrive malheuresement)
     $isOnlyOneDessert = !isset($menu["dessert-2"]);
-}
-// check si on a bien un article publié cette semaine
-if (!HelperDate::isNewMenuAvailable($dateMenu)) {
-    Header("Location: bad-day.php");
-    die;
+    // check si on a bien un article publié cette semaine
+    if (!HelperDate::isNewMenuAvailable($dateMenu)) {
+        Header("Location: bad-day.php");
+        die;
+    }
 }
 
 ?>
@@ -23,6 +32,7 @@ if (!HelperDate::isNewMenuAvailable($dateMenu)) {
 <?php require(__DIR__ . "/head.php"); ?>
 <body>
 <?php require(__DIR__ . "/navbar.php"); ?>
+<?php if (isset($postData["success"])) : ?>
 <div class="container-fluid">
     <h2 class="h2 text-center mt-4 p-2">MENU DU <?= $dateMenu ?></h2>
     <?php if ($isOnlyOneDessert) : ?>
@@ -49,5 +59,7 @@ if (!HelperDate::isNewMenuAvailable($dateMenu)) {
     </div>
 </div>
 </body>
-
+<?php else: ?>
+    <div class="alert-danger">Erreur lors de la récupération des données</div>
+<?php endif; ?>
 </html>
