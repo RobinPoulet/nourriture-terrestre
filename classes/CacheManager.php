@@ -3,12 +3,12 @@ abstract class CacheManager {
     /**
      * @var string Path vers le fichier json de cache pour sauvegarder les données du menu de la semaine
      */
-    private static $cacheFile = './cache/menu.json';
+    private static string $cacheFile = './cache/menu.json';
     /**
      * @var int Durée de validation du cache
      */
-    private static $cacheValidityDuration = 86400;
-    
+    private static int $cacheValidityDuration = 86400;
+
     /**
      * Récupérer la durée de validation du cache
      *
@@ -18,7 +18,7 @@ abstract class CacheManager {
     {
         return self::$cacheValidityDuration;
     }
-    
+
     /**
      * Mettre à jour la durée de validation du cache
      *
@@ -41,20 +41,20 @@ abstract class CacheManager {
         $returnValue = [
             "false" => "no cache"
         ];
-        
+
         if (
             file_exists(self::$cacheFile)
             && (time() - filemtime(self::$cacheFile)) < self::$cacheValidityDuration
         ) {
             $returnValue = [
                 "success" => json_decode(
-                file_get_contents(self::$cacheFile), 
-                true
+                    file_get_contents(self::$cacheFile),
+                    true
                 )
             ];
         }
-       
-       return $returnValue;
+
+        return $returnValue;
     }
 
     /**
@@ -67,8 +67,8 @@ abstract class CacheManager {
     public static function saveCache(array $data): void
     {
         file_put_contents(
-        self::$cacheFile, 
-        json_encode($data)
+            self::$cacheFile,
+            json_encode($data)
         );
     }
 }
