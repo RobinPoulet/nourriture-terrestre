@@ -65,13 +65,14 @@ function addUser() {
         type: 'POST',
         url: 'ajax.php',
         data: data,
-        success: async function(response) {
+        success: function (response) {
             const data = JSON.parse(response);
             if (data.success) {
-                $('#addUserModal').modal('hide');
                 displayToast(data.success, 'liveToast', 'liveToastContent');
-                const users = await getAllUsers();
-                displayUsersTable(users);
+                // Déterminer l'URL de redirection en fonction de l'environnement
+                const baseUrl = window.location.origin;
+                // Rediriger vers l'URL calculée
+                window.location.href = baseUrl + '/users.php';
             } else {
                 displayToast(data.error.message, 'liveToast', 'liveToastContent');
             }
@@ -110,13 +111,14 @@ function editUser(userId) {
         type: 'POST',
         url: 'ajax.php',
         data: data,
-        success: async function(response) {
+        success: function (response) {
             const data = JSON.parse(response);
             if (data.success) {
-                $('#addUserModal').modal('hide');
                 displayToast(data.success, 'liveToast', 'liveToastContent');
-                const users = await getAllUsers();
-                displayUsersTable(users);
+                // Déterminer l'URL de redirection en fonction de l'environnement
+                const baseUrl = window.location.origin;
+                // Rediriger vers l'URL calculée
+                window.location.href = baseUrl + '/users.php';
             } else {
                 displayToast(data.error.message, 'liveToast', 'liveToastContent');
             }
@@ -154,13 +156,14 @@ function deleteUser(userId) {
         type: 'POST',
         url: 'ajax.php',
         data: data,
-        success: async function(response) {
+        success: function (response) {
             const data = JSON.parse(response);
             if (data.success) {
-                const toastMessage = 'L\'utilisateur a bien été supprimé';
-                displayToast(toastMessage, 'liveToast', 'liveToastContent');
-                const users = await getAllUsers();
-                displayUsersTable(users);
+                displayToast(data.success, 'liveToast', 'liveToastContent');
+                // Déterminer l'URL de redirection en fonction de l'environnement
+                const baseUrl = window.location.origin;
+                // Rediriger vers l'URL calculée
+                window.location.href = baseUrl + '/users.php';
             } else {
                 displayToast(data.error.message, 'liveToast', 'liveToastContent');
             }
@@ -171,141 +174,4 @@ function deleteUser(userId) {
             displayToast(toastMessage, 'liveToast', 'liveToastContent');
         }
     });
-}
-
-/**
- * Récupérer en AJAX la liste des utilisateurs
- *
- * @returns {array} La liste des utilisateurs
- */
-async function getAllUsers() {
-    try {
-        const response = await $.ajax({
-            type: 'POST',
-            url: 'ajax.php',
-            data: {
-                ajax: 'getAllUsers'
-            }
-        });
-        const data = JSON.parse(response);
-        if (data.success) {
-            return data.success;
-        } else {
-            return { error: data.error };
-        }
-    } catch (error) {
-        const toastMessage = 'Une erreur s\'est produite lors de la requête AJAX : ' + error;
-        displayToast(toastMessage, 'liveToast', 'liveToastContent');
-    }
-}
-
-/**
- * Afficher le tableau des utilisateurs
- *
- * @param {array} users Les utilisateurs 
- */
-function displayUsersTable(users) {
-    const tbodyUsers = $('#tbodyUsers');
-    tbodyUsers.empty();
-    users.forEach(
-        user => tbodyUsers.append(createUserRow(user))
-    );
-}
-
-/**
- * Créer une ligne de tableau (<tr>)
- *
- * @param {Object} user - L'objet utilisateur avec les propriétés 'ID' et 'NAME'.
- *
- * @returns {HTMLTableRowElement}
- */
-function createUserRow(user) {
-    const tr = document.createElement('tr');
-    
-    const nameTd = createNameTd(user.NAME);
-    tr.appendChild(nameTd);
-
-    const actionTd = createActionTd(user.ID, user.NAME);
-    tr.appendChild(actionTd);
-
-    return tr;
-}
-
-/**
- * Créer le td pour le nom de l'utilisateur
- *
- * @param {string} name Nom de l'utilisateur
- *
- * @returns {HTMLTableCellElement}
- */
-function createNameTd(name) {
-    const nameTd = document.createElement('td');
-    nameTd.textContent = name;
-    
-    return nameTd
-}
-
-/**
- * Créer le td contenant les boutons d'actions
- *
- * @param {int} id id Id de l'utilisateur
- * @param {string} name name Nom de l'utilisateur
- *
- * @returns {HTMLTableCellElement}
- */
-function createActionTd(id, name) {
-    const actionTd = document.createElement('td');
-    actionTd.className = 'text-end';
-    
-    const editButton = createEditButton(id, name);
-    actionTd.appendChild(editButton);
-    
-    // Ajouter un espace entre les boutons
-    const space = document.createTextNode(' '); // Utilise un espace texte
-    actionTd.appendChild(space);
-    
-    const deleteButton = createDeleteButton(id);
-    actionTd.appendChild(deleteButton);
-    
-    return actionTd;
-}
-
-/**
- * Créer la cellule pour le bouton "Modifier"
- *
- * @param {int} id Id de l'utilisateur
- * @param {string} name Nom de l'utilisateur
- *
- * @returns {HTMLButtonElement}
- */
-function createEditButton(id, name) {
-    const editButton = document.createElement('button');
-    editButton.className = 'btn btn-warning btn-sm btn-edit';
-    // Définir les attributs
-    editButton.setAttribute('data-bs-toggle', 'modal');
-    editButton.setAttribute('data-bs-target', '#addUserModal');
-    editButton.setAttribute('data-user-name', name);
-    editButton.setAttribute('data-user-id', id);
-    // Ajouter le texte du bouton
-    editButton.textContent = 'Modifier';
-
-    return editButton;
-}
-
-/**
- * Créer la cellule pour le bouton "Supprimer"
- *
- * @param {int} id Id de l'utilisateur
- *
- * @returns {HTMLButtonElement}
- */
-function createDeleteButton(id) {
-    const deleteButton = document.createElement('button');
-    deleteButton.className = 'btn btn-danger btn-sm';
-    deleteButton.textContent = 'Supprimer';
-    deleteButton.onclick = function() {
-        confirmDelete(id);
-    };
-
-    return deleteButton;
 }

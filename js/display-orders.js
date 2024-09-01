@@ -61,7 +61,6 @@ function editOrder() {
                 });
             }
             if (data.success) {
-
                 // Déterminer l'URL de redirection en fonction de l'environnement
                 const baseUrl = window.location.origin;
                 // Rediriger vers l'URL calculée
