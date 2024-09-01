@@ -44,7 +44,7 @@ if (isset($postData["success"])) {
         <ul class="list-group mt-4 p-4">
             <?php foreach ($menu as $typePlat => $nomPlat) : ?>
                 <li class="list-group-item list-group-item-light">
-                    <span class="badge bg-secondary rounded-pill mr-2"><?= $typePlat ?></span>
+                    <span class="badge bg-primary rounded-pill mr-2"><?= $typePlat ?></span>
                     <?= $nomPlat ?>
                 </li>
             <?php endforeach; ?>
