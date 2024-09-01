@@ -61,7 +61,11 @@ function editOrder() {
                 });
             }
             if (data.success) {
-                window.location.href = 'http://localhost/nourriture-terrestre/display-orders.php';
+
+                // Déterminer l'URL de redirection en fonction de l'environnement
+                const baseUrl = window.location.origin;
+                // Rediriger vers l'URL calculée
+                window.location.href = baseUrl + '/display-orders.php';
                 displayToast(data.success.message, 'liveToast', 'liveToastContent')
             }
         },
@@ -100,8 +104,11 @@ function deleteOrder(orderId) {
         success: function (response) {
             const data = JSON.parse(response);
             if (data.success) {
-                // Rediriger vers la nouvelle page après une suppression réussie
-                window.location.href = 'http://localhost/nourriture-terrestre/display-orders.php';
+
+                // Déterminer l'URL de redirection en fonction de l'environnement
+                const baseUrl = window.location.origin;
+                // Rediriger vers l'URL calculée
+                window.location.href = baseUrl + '/display-orders.php';
                 displayToast(data.success, 'liveToast', 'liveToastContent');
             } else {
                 displayToast(data.error.message, 'liveToast', 'liveToastContent');
