@@ -169,4 +169,77 @@ if (
     }
     echo json_encode($response);
     die();
-} 
+}
+
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST'
+    && isset($_POST["ajax"])
+    && $_POST["ajax"] === "edit-order"
+) {
+    $response = [];
+    $orderId = $_POST["order-id"];
+    // récupérer unniquement les différentes composantes de la commande
+    $order = json_encode(
+    // On filtre sur les clés de $_POST pour ne garder que ce qui concerne la commande
+        array_filter($_POST, function ($key) {
+            return (
+                $key !== "perso"
+                && $key !== "ajax"
+                && $key !== "order-id"
+            );
+        }, ARRAY_FILTER_USE_KEY)
+    );
+    if (empty(json_decode($order))) {
+        $response["errors"][] = [
+            "message" => "Il faut commander au moins un article",
+            "type" => "order"
+        ];
+    }
+    if (!empty($response["errors"])) {
+        echo json_encode($response);
+        die;
+    }
+    $perso = $_POST["perso"] ?? "";
+    $currentDate = date('Y-m-d');
+
+    $result = Database::editOrder($orderId, $order, $perso);
+
+    if ($result) {
+        $orderData = Database::getOneOrder($orderId);
+        $response["success"] = [
+            "message" => "Ta commande a bien été modifiée",
+            "data" => $orderData
+        ];
+    } else {
+        // La requête a échoué, renvoyer une réponse d'erreur
+        $response["error"] = [
+            "message" => "Erreur lors de la modification de la commande.",
+            "type" => "request"
+        ];
+    }
+    echo json_encode($response);
+    die();
+}
+
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST'
+    && isset($_POST["ajax"])
+    && $_POST["ajax"] === "delete-order"
+) {
+    $response = [];
+    $orderId = $_POST["id"];
+    $result = Database::deleteOrder($orderId);
+
+    if ($result) {
+        $response["success"] = "La commande a bien été supprimé";
+    } else {
+        // La requête a échoué, renvoyer une réponse d'erreur
+        $response["error"] = [
+            "message" => "Erreur lors de la suppression de la commande",
+            "type" => "request"
+        ];
+    }
+
+    echo json_encode($response);
+    die();
+}

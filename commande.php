@@ -74,7 +74,7 @@ $users = Database::getAllUsers();
     <?php endif; ?>
     </div>
 <!-- Toast notification -->
-<div class="position-fixed top-0 start-0 p-3" style="z-index: 11">
+<div class="position-fixed top-50 start-50 p-3" style="z-index: 11">
     <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header bg-success text-white">
             <strong class="me-auto">Nourriture Terrestre</strong>

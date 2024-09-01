@@ -61,6 +61,36 @@ class Database {
             return false;
         }
     }
+
+    /**
+     * Méthode statique pour éditer une commande dans la base de données.
+     *
+     * @param int $orderId Id de la commande.
+     * @param string $order Contenu de la commande.
+     * @param string $perso Informations personnelles de l'utilisateur.
+     *
+     * @return bool True si l'insertion a réussi, sinon false.
+     */
+    public static function editOrder(int $orderId, string $order, string $perso): bool
+    {
+        $currentDate = date("Y-m-d");
+        $query = "UPDATE orders SET content = :order, perso =:perso, modification_date = :modification_date WHERE id = :id";
+        try {
+            // Préparation de la requête
+            $stmt = self::getInstance()->prepare($query);
+
+            // Liaison des paramètres
+            $stmt->bindParam(':order', $order);
+            $stmt->bindParam(':perso', $perso);
+            $stmt->bindParam(':modification_date', $currentDate);
+            $stmt->bindParam(':id', $orderId);
+
+            // Exécution de la requête et vérification du succès
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
     
     
     /**
@@ -81,6 +111,51 @@ class Database {
             return [
                 "error" => "Erreur lors de la récupération des commandes pour la date donnée : " . $e->getMessage()
             ];
+        }
+    }
+
+    /**
+     * Méthode pour récupérer une commande depuis la base de données avec son order id.
+     *
+     * @param int $orderId Id de la commande
+     *
+     * @return array Tableau contenant le détail de la commande ou un message d'erreur.
+     */
+    public static function getOneOrder(int $orderId): array
+    {
+        $currentDate = date("Y-m-d");
+        $query = "SELECT * FROM orders WHERE id = :order_id";
+        try {
+            $stmt = self::getInstance()->prepare($query);
+            $stmt->bindParam(':order_id', $orderId);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [
+                "error" => "Erreur lors de la récupération des commandes pour la date donnée : " . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Supprimer une commande
+     *
+     * @param integer $id Id de la commande
+     *
+     * @return boolean True si la suppression à réussie
+     */
+    public static function deleteOrder(int $id): bool
+    {
+        $query = "DELETE FROM orders WHERE id = :id";
+        try {
+            // Préparation de la requête
+            $stmt = self::getInstance()->prepare($query);
+            $stmt->bindParam(':id', $id);
+
+            // Exécution de la requête et vérification du succès
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            return false;
         }
     }
     
