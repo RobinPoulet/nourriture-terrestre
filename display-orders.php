@@ -12,7 +12,7 @@ if (isset($postData["success"])) {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <?php require_once(__DIR__ . "/head.php"); ?>
 
@@ -63,7 +63,7 @@ require(__DIR__ . "/navbar.php");
                                     class="btn btn-warning btn-sm btn-edit"
                                     data-bs-toggle="modal"
                                     data-bs-target="#editOrderModal"
-                                    data-order='<?= json_encode($resultsOrder) ?>'
+                                    data-order='<?= json_encode($result, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS) ?>'
                                     data-username="<?= $user["NAME"] ?>"
                             >Modifier
                             </button>
@@ -78,7 +78,7 @@ require(__DIR__ . "/navbar.php");
                     <tr>
                         <td class="col">TOTAL</td>
                         <?php foreach ($totalOrders as $totalOrder) :?>
-                            <td class="col"><bold><?= $totalOrder ?></bold></td>
+                            <td class="col" style="font-weight: bold"><?= $totalOrder ?></td>
                         <?php endforeach; ?>
                         <td class="col"></td>
                     </tr>

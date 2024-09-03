@@ -29,6 +29,17 @@ $(document).ready(function () {
                 }
             }
         });
+        editOrderModal.addEventListener('hidden.bs.modal', function () {
+            const orderIdInput = document.getElementById('order-id');
+            orderIdInput.value = null;
+            const persoInput = document.getElementById('perso');
+            persoInput.value = "";
+            const editOrderModalLabel = document.getElementById('editOrderModalLabel');
+            editOrderModalLabel.textContent = "";
+            ["entree", "plat-1", "plat-2", "dessert-1", "dessert-2"].forEach(key => document.getElementById(key).checked = false);
+            const orderEditValidate = document.getElementById('order-edit-validate');
+            orderEditValidate.onclick = null;
+        });
     }
 });
 
