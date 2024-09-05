@@ -66,21 +66,10 @@ function addUser() {
         url: 'ajax.php',
         data: data,
         success: function (response) {
-            const data = JSON.parse(response);
-            if (data.success) {
-                displayToast(data.success, 'liveToast', 'liveToastContent');
-                // Déterminer l'URL de redirection en fonction de l'environnement
-                const baseUrl = window.location.origin;
-                // Rediriger vers l'URL calculée
-                window.location.href = baseUrl + '/users.php';
-            } else {
-                displayToast(data.error.message, 'liveToast', 'liveToastContent');
-            }
+            ajaxSuccess(response, 'users.php');
         },
         error: function(xhr, status, error) {
-            // Afficher un message d'erreur générique en cas d'erreur de requête AJAX
-            const toastMessage = 'Une erreur s\'est produite lors de la requête AJAX : ' + error;
-            displayToast(toastMessage, 'liveToast', 'liveToastContent');
+            ajaxError(error);
         }
     });
 }
@@ -112,21 +101,10 @@ function editUser(userId) {
         url: 'ajax.php',
         data: data,
         success: function (response) {
-            const data = JSON.parse(response);
-            if (data.success) {
-                displayToast(data.success, 'liveToast', 'liveToastContent');
-                // Déterminer l'URL de redirection en fonction de l'environnement
-                const baseUrl = window.location.origin;
-                // Rediriger vers l'URL calculée
-                window.location.href = baseUrl + '/users.php';
-            } else {
-                displayToast(data.error.message, 'liveToast', 'liveToastContent');
-            }
+            ajaxSuccess(response, 'users.php');
         },
         error: function(xhr, status, error) {
-            // Afficher un message d'erreur générique en cas d'erreur de requête AJAX
-            const toastMessage = 'Une erreur s\'est produite lors de la requête AJAX : ' + error;
-            displayToast(toastMessage, 'liveToast', 'liveToastContent');
+            ajaxError(error);
         }
     });
 }
@@ -157,21 +135,10 @@ function deleteUser(userId) {
         url: 'ajax.php',
         data: data,
         success: function (response) {
-            const data = JSON.parse(response);
-            if (data.success) {
-                displayToast(data.success, 'liveToast', 'liveToastContent');
-                // Déterminer l'URL de redirection en fonction de l'environnement
-                const baseUrl = window.location.origin;
-                // Rediriger vers l'URL calculée
-                window.location.href = baseUrl + '/users.php';
-            } else {
-                displayToast(data.error.message, 'liveToast', 'liveToastContent');
-            }
+            ajaxSuccess(response, 'users.php');
         },
         error: function(xhr, status, error) {
-            // Afficher un message d'erreur générique en cas d'erreur de requête AJAX
-            const toastMessage = "Une erreur s'est produite lors de la requête AJAX : " + error;
-            displayToast(toastMessage, 'liveToast', 'liveToastContent');
+            ajaxError(error);
         }
     });
 }

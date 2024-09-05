@@ -206,16 +206,10 @@ if (
 
     if ($result) {
         $orderData = Database::getOneOrder($orderId);
-        $response["success"] = [
-            "message" => "Ta commande a bien été modifiée",
-            "data" => $orderData
-        ];
+        $response["success"] = "Ta commande a bien été modifiée";
     } else {
         // La requête a échoué, renvoyer une réponse d'erreur
-        $response["error"] = [
-            "message" => "Erreur lors de la modification de la commande.",
-            "type" => "request"
-        ];
+        $response["error"] = "Erreur lors de la modification de la commande";
     }
     echo json_encode($response);
     die();
@@ -234,10 +228,7 @@ if (
         $response["success"] = "La commande a bien été supprimé";
     } else {
         // La requête a échoué, renvoyer une réponse d'erreur
-        $response["error"] = [
-            "message" => "Erreur lors de la suppression de la commande",
-            "type" => "request"
-        ];
+        $response["error"] = "Erreur lors de la suppression de la commande";
     }
 
     echo json_encode($response);

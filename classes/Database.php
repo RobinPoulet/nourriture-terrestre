@@ -162,11 +162,13 @@ class Database {
     /**
      * Méthode pour récupérer la liste des utilisateurs
      *
+     * @param bool $isOrderByName Retourne les utilisateurs triés par noms
+     *
      * @return array Tableau contenant la liste des utilisateurs
      */
-    public static function getAllUsers(): array
+    public static function getAllUsers(bool $isOrderByName = true): array
     {
-        $query = "SELECT * FROM users";
+        $query = "SELECT * FROM users" . ($isOrderByName ? " ORDER BY name" : "");
         try {
             $stmt = self::getInstance()->prepare($query);
             $stmt->execute();

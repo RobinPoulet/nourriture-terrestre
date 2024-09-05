@@ -3,6 +3,7 @@ $(document).ready(function () {
     const pageName = pathname.split('/').pop();
     if (pageName === 'display-orders.php') {
         const editOrderModal = document.getElementById('editOrderModal');
+
         // Gestion de l'événement de l'ouverture de la modale
         editOrderModal.addEventListener('show.bs.modal', function (event) {
             // Bouton qui a déclenché la modale
@@ -11,7 +12,7 @@ $(document).ready(function () {
             // Récupérer les données du bouton
             const orderData = button.dataset.order;
             const username = button.dataset.username;
-            const orderObject = JSON.parse(orderData)[0];
+            const orderObject = JSON.parse(orderData);
             if (orderObject && username) {
                 const orderIdInput = document.getElementById('order-id');
                 orderIdInput.value = orderObject.ID;
@@ -20,6 +21,7 @@ $(document).ready(function () {
                 const editOrderModalLabel = document.getElementById('editOrderModalLabel');
                 editOrderModalLabel.textContent = username;
                 const orderContent = JSON.parse(orderObject.CONTENT);
+                console.log(orderContent);
                 Object.keys(orderContent).forEach(key => {
                     document.getElementById(key).checked = true;
                 });
@@ -29,6 +31,7 @@ $(document).ready(function () {
                 }
             }
         });
+
         editOrderModal.addEventListener('hidden.bs.modal', function () {
             const orderIdInput = document.getElementById('order-id');
             orderIdInput.value = null;
@@ -62,27 +65,10 @@ function editOrder() {
         url: "ajax.php",
         data: $("#edit-order-form").serialize(),
         success: function (response) {
-            const data = JSON.parse(response);
-            if (data.error) {
-                displayToast(data.error.message, 'liveToast', 'liveToastContent');
-            }
-            if (data.errors) {
-                data.errors.forEach(error => {
-                    displayToast(error.message, 'liveToast', 'liveToastContent');
-                });
-            }
-            if (data.success) {
-                // Déterminer l'URL de redirection en fonction de l'environnement
-                const baseUrl = window.location.origin;
-                // Rediriger vers l'URL calculée
-                window.location.href = baseUrl + '/display-orders.php';
-                displayToast(data.success.message, 'liveToast', 'liveToastContent')
-            }
+            ajaxSuccess(response, 'display-orders.php');
         },
         error: function (xhr, status, error) {
-            // Afficher un message d'erreur générique en cas d'erreur de requête AJAX
-            const toastMessage = 'Une erreur s\'est produite lors de la requête AJAX : ' + error;
-            displayToast(toastMessage, 'liveToast', 'liveToastContent');
+            ajaxError(error);
         }
     });
 }
@@ -112,21 +98,10 @@ function deleteOrder(orderId) {
         url: 'ajax.php',
         data: data,
         success: function (response) {
-            const data = JSON.parse(response);
-            if (data.success) {
-                // Déterminer l'URL de redirection en fonction de l'environnement
-                const baseUrl = window.location.origin;
-                // Rediriger vers l'URL calculée
-                window.location.href = baseUrl + '/display-orders.php';
-                displayToast(data.success, 'liveToast', 'liveToastContent');
-            } else {
-                displayToast(data.error.message, 'liveToast', 'liveToastContent');
-            }
+            ajaxSuccess(response, 'display-orders.php');
         },
         error: function (xhr, status, error) {
-            // Afficher un message d'erreur générique en cas d'erreur de requête AJAX
-            const toastMessage = "Une erreur s'est produite lors de la requête AJAX : " + error;
-            displayToast(toastMessage, 'liveToast', 'liveToastContent');
+            ajaxError(error);
         }
     });
 }
