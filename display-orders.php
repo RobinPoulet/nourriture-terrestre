@@ -24,7 +24,7 @@ require(__DIR__ . "/navbar.php");
     <?php if (!isset($resultsOrder["error"]) && count($resultsOrder) > 0) : ?>
         <h2 class="h3 text-center p-2">Récap des commandes du <?= date("Y-m-d") ?></h2>
         <div class="container">
-            <table class="table table-striped table">
+            <table class="table table-striped table table-responsive">
                 <thead>
                     <tr>
                         <th scope="col">Nom</th>
@@ -32,6 +32,7 @@ require(__DIR__ . "/navbar.php");
                             <th scope="col"><?= explode(" ", $dish)[0] ?></th>
                         <?php endforeach; ?>
                         <th scope="col">Perso</th>
+                        <th scope="col" colspan="100%"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,17 +61,17 @@ require(__DIR__ . "/navbar.php");
                         <td class="col"><?= $perso ?></td>
                         <td class="col">
                             <button
-                                    class="btn btn-warning btn-sm btn-edit"
+                                    class="btn btn-outline-warning btn-sm btn-edit "
                                     data-bs-toggle="modal"
                                     data-bs-target="#editOrderModal"
                                     data-order='<?= json_encode($result, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS) ?>'
                                     data-username="<?= $user["NAME"] ?>"
-                            >Modifier
+                            ><i class="bi bi-pencil-square"></i>
                             </button>
                             <button
-                                    class="btn btn-danger btn-sm btn-edit"
+                                    class="btn btn-outline-danger btn-sm btn-edit"
                                     onclick="confirmOrderDelete(<?= $result["ID"] ?>)"
-                            >Supprimer
+                            ><i class="bi bi-trash3"></i>
                             </button>
                         </td>
                     </tr>
@@ -80,7 +81,7 @@ require(__DIR__ . "/navbar.php");
                         <?php foreach ($totalOrders as $totalOrder) :?>
                             <td class="col" style="font-weight: bold"><?= $totalOrder ?></td>
                         <?php endforeach; ?>
-                        <td class="col"></td>
+                        <td class="col" colspan="100%"></td>
                     </tr>
                 </tbody>
             </table>
