@@ -11,5 +11,6 @@
     <orderEntry type="library" name="jquery-3.5.0" level="application" />
     <orderEntry type="library" name="select2-bootstrap-5-theme" level="application" />
     <orderEntry type="library" name="axios" level="application" />
+    <orderEntry type="library" name="bootstrap-icons" level="application" />
   </component>
 </module>

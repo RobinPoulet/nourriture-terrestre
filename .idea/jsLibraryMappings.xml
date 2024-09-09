@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{axios, bootstrap, jquery-3.5.0, select2, select2-bootstrap-5-theme}" />
+    <file url="PROJECT" libraries="{axios, bootstrap, bootstrap-icons, jquery-3.5.0, select2, select2-bootstrap-5-theme}" />
   </component>
 </project>
