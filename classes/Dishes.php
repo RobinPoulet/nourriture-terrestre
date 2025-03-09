@@ -17,7 +17,7 @@ class Dishes
      *
      * @return ?array Le plat si il est trouvé
      */
-    public function findByName(string $name): ?array
+    public function findOneByName(string $name): ?array
     {
         $query = "SELECT * FROM dishes WHERE name= :name";
         try {
@@ -42,7 +42,7 @@ class Dishes
      *
      * @return ?array L'utilisateur si il est trouvé
      */
-    public function findById(int $id): ?array
+    public function findOneById(int $id): ?array
     {
         $query = "SELECT * FROM dishes WHERE id= :id";
         try {
@@ -62,6 +62,36 @@ class Dishes
             ];
         }
     }
+
+    /**
+     * Retrouvé les plats d'un menu
+     *
+     * @param integer $menuId Id du menu
+     *
+     * @return ?array Les plats du menu en id
+     */
+    public function findByMenuId(int $menuId): ?array
+    {
+        $query = "SELECT * FROM dishes WHERE menu_id= :menu_id";
+        try {
+            // Préparation de la requête
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':menu_id', $menuId);
+            $stmt->execute(); // Exécution de la requête
+
+            // Récupération du résultat
+            $dishes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Retourner les plats ou null s'il y en a aucun
+            return ($dishes !== false ? $dishes : null);
+        } catch (PDOException $e) {
+            return [
+                "error" => "Erreur lors de la récupération de l'utilisateur : " . $e->getMessage()
+            ];
+        }
+    }
+
+
 
     /**
      * Méthode pour récupérer la liste des plats

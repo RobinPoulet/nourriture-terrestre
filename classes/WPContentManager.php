@@ -59,7 +59,7 @@ class WPContentManager
      */
     private function getLastPost(): object
     {
-        $requestQuery = "/wp-json/wp/v2/posts?per_page=1&order=desc&orderby=date";
+        $requestQuery = "/wp-json/wp/v2/posts?per_page=2&order=desc&orderby=date";
         $apiEndpoint = $this->url . $requestQuery;
         $context = stream_context_create($this->contextOptions);
         $response = file_get_contents(
@@ -67,13 +67,14 @@ class WPContentManager
             false,
             $context
         );
+
         try {
             $returnValue = json_decode($response, false, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
             $returnValue = null;
         }
 
-        return $returnValue[0];
+        return $returnValue[1];
     }
 
     /**

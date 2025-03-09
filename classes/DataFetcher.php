@@ -16,15 +16,23 @@ abstract class DataFetcher {
         $returnValue = [];
 
         $cachedData = CacheManager::getCache();
-        if (isset($cachedData["success"]) && $cachedData["success"]) {
-            // Les données sont disponibles dans le cache
-            $returnValue["success"] = $cachedData["success"];
-        } else {
-            // Les données ne sont pas disponibles dans le cache, on essaye de les reconstruire
+
+        if (isset($cachedData[CacheManager::SUCCESS_CACHE])) {
+            $returnValue["success"] = $cachedData[CacheManager::SUCCESS_CACHE];
+        }
+
+        if (isset($cachedData[CacheManager::NO_CACHE])) {
             $url = "http://www.nourriture-terrestre.fr";
-            $wpContent = new WPContentManager($url);
-            $menuManager = new MenuManager($wpContent);
-            $menuManager->buildMenu();
+            $menuManager = new MenuManager($url);
+            $menuId = $menuManager->buildMenu();
+            $menusEntity = new Menus();
+            $menu = $menusEntity->findOneById($menuId);
+            $dishesEntity = new Dishes();
+            $dishes = $dishesEntity->findByMenuId($menuId);
+            $returnValue["success"] = [
+                "menu"   => $menu,
+                "dishes" => $dishes
+            ];
         }
 
         return $returnValue;

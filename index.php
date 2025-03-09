@@ -8,22 +8,15 @@ if (in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1']) || $_SERVER['SERVER_
 require(__DIR__ . "/classes/Autoloader.php");
 Autoloader::register();
 $postData = DataFetcher::getData();
-$isOnlyOneDessert = false;
+
 $dateMenu = "";
-$menu = [];
+$dishes = [];
 $imgSrc = "";
 if (isset($postData["success"])) {
-    $menu = $postData["success"]["menu"];
-    $dateMenu = $postData["success"]["date"];
-    $imgSrc = $postData["success"]["imgSrc"];
-    $figcaption = $postData["success"]["figcaption"];
-    // On check si il y a un seul dessert cette semaine (ça arrive malheuresement)
-    $isOnlyOneDessert = !isset($menu["dessert-2"]);
-    // check si on a bien un article publié cette semaine
-    if (!HelperDate::isNewMenuAvailable($dateMenu)) {
-        Header("Location: bad-day.php");
-        die;
-    }
+    $dishes = $postData["success"]["dishes"];
+    $dateMenu = $postData["success"]["menu"]["CREATION_DATE"];
+    $imgSrc = $postData["success"]["menu"]["IMG_SRC"];
+    $figcaption = $postData["success"]["menu"]["IMG_FIGCAPTION"];
 }
 
 ?>
@@ -35,17 +28,11 @@ if (isset($postData["success"])) {
 <?php if (isset($postData["success"])) : ?>
 <div class="container-fluid">
     <h2 class="h2 text-center mt-4 p-2">MENU DU <?= $dateMenu ?></h2>
-    <?php if ($isOnlyOneDessert) : ?>
-        <div class="alert alert-info w-75 mt-4 p-4" style="margin-left: auto; margin-right: auto;">⚠️ Il n'y a
-            malheuresement qu'un seul dessert cette semaine 😭
-        </div>
-    <?php endif; ?>
     <div class="w-50" style="margin-left: auto; margin-right: auto;">
         <ul class="list-group mt-4 p-4">
-            <?php foreach ($menu as $typePlat => $nomPlat) : ?>
+            <?php foreach ($dishes as $dish) : ?>
                 <li class="list-group-item list-group-item-light">
-                    <span class="badge bg-primary rounded-pill mr-2"><?= $typePlat ?></span>
-                    <?= $nomPlat ?>
+                    <?= $dish["NAME"] ?>
                 </li>
             <?php endforeach; ?>
         </ul>
