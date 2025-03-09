@@ -63,7 +63,7 @@ function addUser() {
     };
     $.ajax({
         type: 'POST',
-        url: 'ajax.php',
+        url: 'ajax-users.php',
         data: data,
         success: function (response) {
             ajaxSuccess(response, 'users.php');
@@ -98,7 +98,7 @@ function editUser(userId) {
     };
     $.ajax({
         type: 'POST',
-        url: 'ajax.php',
+        url: 'ajax-users.php',
         data: data,
         success: function (response) {
             ajaxSuccess(response, 'users.php');
@@ -132,7 +132,7 @@ function deleteUser(userId) {
     }
     $.ajax({
         type: 'POST',
-        url: 'ajax.php',
+        url: 'ajax-users.php',
         data: data,
         success: function (response) {
             ajaxSuccess(response, 'users.php');

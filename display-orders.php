@@ -1,14 +1,16 @@
 <?php
 require(__DIR__ . "/classes/Autoloader.php");
 Autoloader::register();
+$objOrder = new Orders();
+$objUsers = new Users();
 // On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
 $postData = DataFetcher::getData();
 $menu = [];
 if (isset($postData["success"])) {
     $menu = $postData["success"]["menu"];
     $dateMenu = $postData["success"]["date"];
-    $resultsOrder = Database::getTodayOrders();
-    $users = Database::getAllUsers();
+    $resultsOrder = $objOrder->getTodayOrders();
+    $users = $objUsers->getAllUsers();
 }
 ?>
 <!DOCTYPE html>
@@ -51,7 +53,7 @@ require(__DIR__ . "/navbar.php");
                         $orders[] = $key;
                         $totalOrders[$key]++;
                     }
-                    $user = Database::getOneUser($result["USER_ID"]);
+                    $user = $objUsers->getOneUser($result["USER_ID"]);
                 ?>
                     <tr>
                         <td class="col"><?= $user["NAME"] ?></td>

@@ -1,35 +1,10 @@
 <?php
 abstract class CacheManager {
-    /**
-     * @var string Path vers le fichier json de cache pour sauvegarder les données du menu de la semaine
-     */
-    private static string $cacheFile = './cache/menu.json';
+
     /**
      * @var int Durée de validation du cache
      */
-    private static int $cacheValidityDuration = 86400;
-
-    /**
-     * Récupérer la durée de validation du cache
-     *
-     * @return int Durée de validation du cache
-     */
-    public static function getcacheValidityDuration(): int
-    {
-        return self::$cacheValidityDuration;
-    }
-
-    /**
-     * Mettre à jour la durée de validation du cache
-     *
-     * @param integer $duration durée de validation du cache
-     *
-     * @return void
-     */
-    public static function setCacheValidityDuration(int $duration): void
-    {
-        self::$cacheValidityDuration = $duration;
-    }
+    private static int $cacheValidityDuration = 1;
 
     /**
      * Méthode pour vérifier si le cache est valide et le récupérer le cas échéant
@@ -42,8 +17,12 @@ abstract class CacheManager {
             "false" => "no cache"
         ];
 
+        // On va chercher le dernier menu en base de données
+        $menusEntity = new Menus();
+        $lastMenu = $menusEntity->getLastMenu();
+
         if (
-            file_exists(self::$cacheFile)
+            $lastmenu !== null
             && (time() - filemtime(self::$cacheFile)) < self::$cacheValidityDuration
         ) {
             $returnValue = [

@@ -1,6 +1,12 @@
 <?php
+if (in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1']) || $_SERVER['SERVER_NAME'] === 'localhost') {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
 require(__DIR__ . "/classes/Autoloader.php");
 Autoloader::register();
+$objUsers = new Users();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -27,7 +33,7 @@ Autoloader::register();
             </tr>
         </thead>
         <tbody id="tbodyUsers">
-            <?php $users = Database::getAllUsers();?>
+        <?php $users = $objUsers->getAllUsers(); ?>
             <?php foreach ($users as $user) :?>
                 <tr>
                     <td><?= htmlspecialchars($user["NAME"] ?? "") ?></td>

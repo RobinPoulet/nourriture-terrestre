@@ -35,7 +35,8 @@ abstract class  HelperDate {
      *
      * @return int Le nombre de jours d'écart entre les deux dates.
      */
-    static public function dateDiff($date1_str, $date2_str) {
+    static public function dateDiff(string $date1_str, string $date2_str): int
+    {
         // Convertir les chaînes de date en objets DateTime
         $date1 = new DateTime($date1_str);
         $date2 = new DateTime($date2_str);
@@ -63,8 +64,8 @@ abstract class  HelperDate {
         // Nouveau menu chaque dimanche, donc si il y a bien un menu cette semaine, la date du menu doit être inférieur ou égal à 1 par rapport à la date du jour
         if (
             self::getCurrentDateWeekDay() === 1
-            && self::getCurrentDatetime() >= 7 * 60
-            && self::getCurrentDatetime() <= 11 * 60 + 45
+            && self::getCurrentDatetime() >= 6 * 60
+            && self::getCurrentDatetime() <= 23 * 60 + 45
             && self::dateDiff($formattedCurrentDate, $dateMenu) <= 1
         ) {
             $returnValue = true;
@@ -82,7 +83,6 @@ abstract class  HelperDate {
      */
     static public function isNewMenuAvailable(string $dateMenu): bool
     {
-        $returnValue = false;
         $currentDate = new DateTimeImmutable();
         $storedDateTime = new DateTimeImmutable($dateMenu);
         // Calculer la différence entre les deux dates
@@ -90,8 +90,11 @@ abstract class  HelperDate {
         
         // Convertir la différence en jours
         $daysDifference = $interval->days;
-        
-        if ($currentDate->format("w") === "0") {
+
+        if (
+            $currentDate->format("w") === "0"
+            || $currentDate->format("w") === "1"
+        ) {
             $returnValue = $daysDifference <= 8;
         } else {
             $returnValue = $daysDifference < 8;

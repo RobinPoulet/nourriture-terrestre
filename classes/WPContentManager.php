@@ -1,5 +1,7 @@
 <?php
-class WPContentManager {
+
+class WPContentManager
+{
 
     /**
      * @var array Options de contexte pour le file get contents
@@ -11,43 +13,67 @@ class WPContentManager {
         ],
     ];
 
+    /** @var ?object $lastPost Dernier Post */
+    private ?object $lastPost;
+
+    /** @var ?DOMDocument $doc Document dom element */
+    private ?DOMDocument $doc;
+
     /**
      * Constructeur de la classe
      *
      * @param string $url Url du WordPress
      *
      * @return void
+     * @throws Exception
      */
-    public function __construct(private string $url) {}
+    public function __construct(private readonly string $url)
+    {
+        $this->lastPost = $this->getLastPost();
+        $this->doc = new DOMDocument();
+        $this->doc->loadHTML(
+            '<?xml encoding="UTF-8"><div>' . $this->lastPost->content->rendered . '</div>',
+            LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING
+        );
+    }
+
+
+    private function createMenuEntity(): ?int
+    {
+        $returnValue = null;
+
+        $imgSrc = $this->getFirstImgElement();
+        $imgFigcaption = $this->getFirstFigcaptionElement();
+        $dateCreation = $dateCreation = (new DateTime($this->lastPost->date))->format('Y-m-d');
+        $menuEntity = new Menus();
+
+        return $menuEntity->insert($imgSrc, $imgFigcaption, $dateCreation);
+    }
+
 
     /**
      * Récupérer le dernier article WordPress
      *
-     * @return array
-     * @throws Exception Renvoie une exception si pas de réponse de l'API ou problème lors de la conversion du JSON
+     * @return object
+     * @throws Exception
      */
-    private function getLastPost(): array
+    private function getLastPost(): object
     {
-        $returnValue = [];
-
         $requestQuery = "/wp-json/wp/v2/posts?per_page=1&order=desc&orderby=date";
-        $apiEndpoint = $this->url.$requestQuery;
+        $apiEndpoint = $this->url . $requestQuery;
         $context = stream_context_create($this->contextOptions);
         $response = file_get_contents(
             $apiEndpoint,
             false,
             $context
         );
-        $returnValue = $response
-            ? json_decode(
-                $response,
-                true,
-                512,
-                JSON_THROW_ON_ERROR
-            )
-            : ["error" => "Erreur lors de la récupération des données de l'API Wordpress"];
+        try {
+            $returnValue = json_decode($response, false, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            $returnValue = null;
+        }
 
-        return $returnValue;
+        return $returnValue[0];
     }
 
     /**
@@ -66,50 +92,35 @@ class WPContentManager {
     }
 
     /**
-     * Récupérer l'attribut src de toutes les balises <img>
-     * @param DOMDocument $doc
-     * @return array
+     * Récupérer le premier attribut src de toutes les balises <img>
+     *
+     * @return string
      */
-    public function getImgElements(DOMDocument $doc): array
+    public function getFirstImgElement(): string
     {
-        $returnValue = [];
+        $images = $this->doc->getElementsByTagName('img');
 
-        $images = $doc->getElementsByTagName("img");
-        // Parcourir toutes les balises <img> pour récupérer les URLs des images
-        foreach ($images as $image) {
-            // Récupérer l'attribut 'src' de la balise <img>
-            $imageUrl = $image->getAttribute("src");
-            // Ajouter l'URL de l'image au tableau
-            $returnValue[] = $imageUrl;
-        }
-
-        return $returnValue;
+        return urlencode(($images[0]->getAttribute('src') ?? ""));
     }
 
-    public function getFigcaptionElements(DOMDocument $doc): array
+    public function getFirstFigcaptionElement(): string
     {
-        $returnValue = [];
+        $figcaptions = $this->doc->getElementsByTagName('figcaption');
 
-        $figcaptions = $doc->getElementsByTagName("figcaption");
-        foreach ($figcaptions as $figcaption) {
-            $returnValue[] = $figcaption->nodeValue;
-        }
-
-        return $returnValue;
+        return $figcaptions[0]->nodeValue ?? "";
     }
 
     /**
      * Récupérer les élements de type <li></li> de l'article
      *
-     * @param DOMDocument $doc Contenu de l'article parser en Dom Document
      *
      * @return array
      */
-    private function getLiElements(DOMDocument $doc): array
+    public function getLiElements(): array
     {
         $returnValue = [];
 
-        $lis = $doc->getElementsByTagName("li");
+        $lis = $this->doc->getElementsByTagName('li');
         foreach ($lis as $li) {
             $returnValue[] = $li->nodeValue;
         }
@@ -120,26 +131,15 @@ class WPContentManager {
     /**
      * Récupérer la date du dernier article WordPress
      *
-     * @return array<string, string>
+     * @return string
      *
+     * @throws Exception
      */
-    public function getLastPostDate(): array
+    public function getLastPostDate(): string
     {
-        try {
-            $lastArticle = $this->getLastPost();
-            $dateString = $lastArticle[0]['date'];
-            // Convertir la chaîne de date en objet DateTime
-            $dateObj = new DateTime($dateString);
-            // Formater la date selon le format "Y-m-d"
-            $dateString = $dateObj->format("Y-m-d");
-            return [
-                "success" => $dateString
-            ];
-        } catch (\Exception $e) {
-            return [
-                "error" => "Erreur lors de la récupération du post : " . $e->getMessage()
-            ];
-        }
+        $dateString = $this->lastPost->date;
+
+        return (new DateTime($dateString))->format("Y-m-d");
     }
 
     /**
@@ -150,35 +150,30 @@ class WPContentManager {
      */
     public function getLastPostLiElements(): array
     {
-        try {
-            $lastPost = $this->getLastPost();
-            $doc = new DOMDocument();
-            // Setup du loadHTML, pour utiliser les méthodes getElementsByName sans warning ni erreur
-            $doc->loadHTML(
-                '<?xml encoding="UTF-8"><div>' . $lastPost[0]['content']['rendered'] . '</div>',
-                LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING
-            );
-            $lis = $this->getLiElements($doc);
-            // Si il n'y a pas de <li> dans l'article de la semaine, c'est une semaine sans menu on léve une exception
-            // On récupère la source de l'image du message d'absence
-            $tabAbsenceMessageImgSrc = $this->getImgElements($doc);
-            $srcImage = urlencode($tabAbsenceMessageImgSrc[0]);
-            $tabFigcaptions = $this->getFigcaptionElements($doc);
-            if (empty($lis)) {
-                Header("Location: bad-day.php".(empty($srcImage) ? "" : "?imgsrc=".$srcImage));
-                die;
-            }
-            return [
-                "success" => [
-                    "menu"       => $lis,
-                    "imgSrc"     => $srcImage,
-                    "figcaption" => $tabFigcaptions[0] ?? "",
-                ]
-            ];
-        } catch (\Exception $e) {
-            return [
-                "error" => $e->getMessage()
-            ];
-        }
+        return $this->getLiElements();
+        // Si il n'y a pas de <li> dans l'article de la semaine, c'est une semaine sans menu on léve une exception
+        // On récupère la source de l'image du message d'absence
+        // $tabAbsenceMessageImgSrc = $this->getImgElements($doc);
+        //  $srcImage = urlencode($tabAbsenceMessageImgSrc[0]);
+        //  $tabFigcaptions = $this->getFigcaptionElements($doc);
+        //  if (empty($lis)) {
+        //    Header("Location: bad-day.php" . (empty($srcImage) ? "" : "?imgsrc=" . $srcImage));
+        //   die;
+//        }
+//        return [
+//            "success" => [
+//                "menu"       => $lis,
+//                "imgSrc"     => $srcImage,
+//                "figcaption" => $tabFigcaptions[0] ?? "",
+//            ]
+//        ];
+    }
+
+    public function isMenuThisWeek(): bool
+    {
+        return (
+            isset($this->lastPost)
+            && stripos($this->lastPost->title->rendered, "menu") !== false
+        );
     }
 }
