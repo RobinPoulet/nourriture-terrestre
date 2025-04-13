@@ -1,15 +1,16 @@
 <?php
 
-
-class EnvManager {
+namespace App\Manager;
+class Env
+{
     /**
-     * @var EnvManager Instance de la classe EnvManager
+     * @var Env Instance de la classe Env
      */
-    private static $instance;
+    private static Env $instance;
     /**
      * @var array Tableau contenant les variables d'environnements
      */
-    private $env;
+    private array $env;
 
     /**
      * Constructeur privé de la classe
@@ -26,7 +27,7 @@ class EnvManager {
             foreach ($envLines as $line) {
                 $line = trim($line);
                 // Ignorer les lignes vides ou celles commençant par un dièse (#)
-                if (empty($line) || strpos($line, '#') === 0) {
+                if (empty($line) || str_starts_with($line, '#')) {
                     continue;
                 }
 
@@ -46,13 +47,13 @@ class EnvManager {
     }
 
     /**
-     * retourner une instance de EnvManager
+     * Retourner une instance de Env
      *
      * @param string $envFilePath
      *
-     * @return EnvManager
+     * @return Env
      */
-    public static function getInstance(string $envFilePath): EnvManager
+    public static function getInstance(string $envFilePath): Env
     {
         if (!self::$instance) {
             self::$instance = new self($envFilePath);
@@ -65,13 +66,13 @@ class EnvManager {
      *
      * @param string $key
      *
-     * @return null|string
+     * @return ?string
      */
     public function getEnvVariable(string $key): ?string
     {
         return $this->env[$key] ?? null;
     }
-    
+
     /**
      * Retourne toutes les variables d'environnement sous forme de tableaux clé, valeur
      *

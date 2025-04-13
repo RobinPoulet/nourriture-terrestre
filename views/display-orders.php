@@ -1,62 +1,56 @@
 <?php
-require(__DIR__ . "/classes/Autoloader.php");
-Autoloader::register();
-// On récupére le menu via le cache (ou construction du cache si le cache a plus de 48 heures)
-$postData = DataFetcher::getData();
-$menu = [];
-if (isset($postData["success"])) {
-    $menu = $postData["success"]["menu"];
-    $dateMenu = $postData["success"]["date"];
-    $resultsOrder = Database::getTodayOrders();
-    $users = Database::getAllUsers();
-}
+/** @var array $dishes */
+/** @var array $users */
+/** @var array $displayResults */
+/** @var array $tabTotalQuantity */
+/** @var string $dateMenu */
+
+session_start();
+$tabFlashMessage = ($_SESSION['tab_flash_message'] ?? null);
+unset($_SESSION['tab_flash_message']);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
-
-<?php require_once(__DIR__ . "/head.php"); ?>
-
+<?php require(__DIR__ . "/../head.php"); ?>
 <body>
-<?php 
-require(__DIR__ . "/navbar.php");
-?>
-<?php if (isset($menu) && isset($dateMenu)) : ?>
-    <?php if (!isset($resultsOrder["error"]) && count($resultsOrder) > 0) : ?>
+<?php require(__DIR__ . "/../navbar.php"); ?>
+<?php if (!empty($dishes) && isset($dateMenu)) : ?>
+    <?php if (!isset($resultsOrder["error"]) && !empty($displayResults)) : ?>
         <h2 class="h3 text-center p-2">Récap des commandes du <?= date("Y-m-d") ?></h2>
         <div class="container">
+
+            <?php if (!empty($tabFlashMessage['errors'])): ?>
+                <?php foreach ($tabFlashMessage['errors'] as $error): ?>
+                    <div class="alert alert-danger ?> mt-3"><?= htmlspecialchars($error) ?></div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+
+            <?php if (isset($tabFlashMessage['success'])): ?>
+                <div class="alert alert-success ?> mt-3"><?= htmlspecialchars($tabFlashMessage['success']) ?></div>
+            <?php endif; ?>
+
             <table class="table table-striped table table-responsive">
                 <thead>
                     <tr>
                         <th scope="col">Nom</th>
-                        <?php foreach ($menu as $dish) :?>
-                            <th scope="col"><?= explode(" ", $dish)[0] ?></th>
+                        <?php foreach ($dishes as $dish) :?>
+                            <th scope="col"><?= explode(" ", $dish["NAME"])[0] ?></th>
                         <?php endforeach; ?>
                         <th scope="col">Perso</th>
                         <th scope="col" colspan="100%"></th>
                     </tr>
                 </thead>
                 <tbody>
+                <?php foreach ($displayResults as $orderId => $result) :?>
                 <?php
-                    $totalOrders = [];
-                    foreach ($menu as $type => $name) {
-                        $totalOrders[$type] = 0;
-                    }
-                ?>
-                <?php foreach ($resultsOrder as $result) :?>
-                <?php
-                    $decodedJson = json_decode($result["CONTENT"]);
-                    $orders = [];
-                    $perso = $result["PERSO"] ?? "";
-                    foreach ($decodedJson as $key => $value) {
-                        $orders[] = $key;
-                        $totalOrders[$key]++;
-                    }
-                    $user = Database::getOneUser($result["USER_ID"]);
-                ?>
+                    $perso = $result['perso'] ?? '';
+                    $user = $users[$result['user_id']];
+                    $json = json_encode($result, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_HEX_APOS);
+                    ?>
                     <tr>
-                        <td class="col"><?= $user["NAME"] ?></td>
-                        <?php foreach ($totalOrders as $dish => $order) :?>
-                            <td class="col"><?= (in_array($dish, $orders, true) ? "X" : "") ?></td>
+                        <td class="col"><?= $user ?></td>
+                        <?php foreach ($dishes as $dish) :?>
+                            <td class="col"><?= ($result['dishes'][$dish['ID']] ?? "") ?></td>
                         <?php endforeach; ?>
                         <td class="col"><?= $perso ?></td>
                         <td class="col">
@@ -64,13 +58,15 @@ require(__DIR__ . "/navbar.php");
                                     class="btn btn-outline-warning btn-sm btn-edit "
                                     data-bs-toggle="modal"
                                     data-bs-target="#editOrderModal"
-                                    data-order='<?= json_encode($result, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS) ?>'
-                                    data-username="<?= $user["NAME"] ?>"
+                                    data-order="<?= htmlspecialchars($json) ?>"
+                                    data-username="<?= $user ?>"
+                                    data-order-id="<?= $orderId ?>"
                             ><i class="bi bi-pencil-square"></i>
                             </button>
                             <button
                                     class="btn btn-outline-danger btn-sm btn-edit"
-                                    onclick="confirmOrderDelete(<?= $result["ID"] ?>)"
+                                    id="delete-order-button"
+                                    data-order-id="<?= $orderId ?>"
                             ><i class="bi bi-trash3"></i>
                             </button>
                         </td>
@@ -78,8 +74,8 @@ require(__DIR__ . "/navbar.php");
                 <?php endforeach; ?>
                     <tr>
                         <td class="col">TOTAL</td>
-                        <?php foreach ($totalOrders as $totalOrder) :?>
-                            <td class="col" style="font-weight: bold"><?= $totalOrder ?></td>
+                        <?php foreach ($dishes as $dish) :?>
+                            <td class="col" style="font-weight: bold"><?= ($tabTotalQuantity[$dish['ID']] ?? 0) ?></td>
                         <?php endforeach; ?>
                         <td class="col" colspan="100%"></td>
                     </tr>
@@ -112,12 +108,15 @@ require(__DIR__ . "/navbar.php");
                 <div class="modal-body">
                     <div class="form-group m-3 list-group">
                         <div id="div-alert-order"></div>
-                        <?php foreach ($menu as $titrePlat => $nomPlat) : ?>
-                            <label class="list-group-item">
-                                <input class="form-check-input me-1" type="checkbox" name="<?= $titrePlat ?>"
-                                       id="<?= $titrePlat ?>">
-                                <?= $nomPlat ?>
-                            </label>
+                        <?php foreach ($dishes as $index => $dish) : ?>
+                            <div class="row mb-3">
+                                <div class="col-10">
+                                    <label for="dish-<?= $index ?>" class="form-label"><?= $dish["NAME"] ?></label>
+                                </div>
+                                <div class="col-2">
+                                    <input type="number" id="dish-<?= $dish["ID"] ?>" class="form-control" name="dishes[<?= $dish["ID"] ?>]" value="0" min="0">
+                                </div>
+                            </div>
                         <?php endforeach; ?>
                     </div>
                     <div class="form-group m-3">
@@ -125,8 +124,7 @@ require(__DIR__ . "/navbar.php");
                         <textarea class="form-control" aria-label="With textarea" name="perso" id="perso"></textarea>
                     </div>
                 </div>
-                <input type="hidden" value="edit-order" name="ajax">
-                <input type="hidden" id="order-id" name="order-id">
+                <input type="hidden" id="input-user-name" name="user-name">
                 <div class="modal-footer">
                     <button
                             type="button"
@@ -135,7 +133,7 @@ require(__DIR__ . "/navbar.php");
                     >Annuler
                     </button>
                     <button
-                            type="button"
+                            type="submit"
                             class="btn btn-primary"
                             id="order-edit-validate"
                     >Modifier

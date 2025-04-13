@@ -1,0 +1,18 @@
+Options -Indexes
+RewriteEngine On
+
+# Exclure les fichiers statiques comme les images, les CSS, et les JS de la redirection
+RewriteCond %{REQUEST_URI} !^/assets/ [NC]
+RewriteCond %{REQUEST_URI} !\.(css|js|jpg|jpeg|png|gif|ico|svg|eot|ttf|woff|woff2)$ [NC]
+
+# Rediriger tout le reste vers index.php (gestion par le routeur)
+RewriteRule ^ index.php [QSA,L]
+
+
+
+
+
+
+
+
+

@@ -1,16 +1,16 @@
 <?php
 $page = $_SERVER["REQUEST_URI"];
 $navItems = [
-    "Le menu"                => "./index.php",
-    "Commander"              => "./commande.php",
-    "Afficher les commandes" => "./display-orders.php",
-    "Utilisateurs"           => "./users.php",
+    "Le menu"                => "./index",
+    "Commander"              => "./commande",
+    "Afficher les commandes" => "./display-orders",
+    "Utilisateurs"           => "./users",
 ];
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="./index.php">
-            <img src="./IMG/favicon-32x32.png" alt="" width="32" height="32" class="d-inline-block align-text-top">
+        <a class="navbar-brand" href="./index">
+            <img src="assets/IMG/favicon-32x32.png" alt="" width="32" height="32" class="d-inline-block align-text-top">
             Nourriture Terrestre
           </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

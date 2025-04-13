@@ -7,7 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Favicon -->
-  <link rel="icon" href="./IMG/favicon-32x32.png" type="image/x-icon">
+  <link rel="icon" href="../assets/IMG/favicon-32x32.png" type="image/x-icon">
   <link href='https://fonts.googleapis.com/css?family=Carter+One' rel='stylesheet' type='text/css'>
   <link 
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
@@ -42,11 +42,7 @@
       <span class="page-404">&#x1F62D;PAS DE NOURRITURE CELESTE&#x1F62D;</span>
       <span class="not-found">
         &#x1F63F;... cette semaine ...&#x1F63F;
-        <?php
-        if (isset($_GET["imgsrc"])) {
-          echo "<img src=\"".$_GET["imgsrc"]."\" alt=\"message d'erreur\">";
-        }
-        ?>
+        <img src="<?= $imgSrc ?>" alt="message d'erreur\">"
       </span>
       <div class="moon-sky"></div>
       <div class="satellite">☄</div>
