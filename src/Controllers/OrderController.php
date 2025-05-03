@@ -167,7 +167,6 @@ class OrderController extends AbstractController
         $objUser = new Users();
         $dishes = ($request->post("dishes") ?? []);
         $userId = ($request->post("user") ?? null);
-        $isResetCookie = $request->post("reset-cookie-user") === "on";
         $perso = htmlspecialchars($request->post("perso") ?? "", ENT_QUOTES, "UTF-8");
         $dishesInputErrors = Order::checkDishesInput($dishes);
         if (!empty($dishesInputErrors)) {
@@ -178,7 +177,7 @@ class OrderController extends AbstractController
         }
         if (empty($tabFlashMessage["errors"])) {
             if ($objOrder->insert((int) $userId, $dishes, $perso)) {
-                $this->cookieManager->refreshIfNeeded(self::COOKIE_NAME, ["user_id" => (int)$userId], $isResetCookie);
+                $this->cookieManager->refreshIfNeeded(self::COOKIE_NAME, ["user_id" => (int)$userId]);
                 $user = $objUser->find((int) $userId);
                 $userName = $user["NAME"];
                 $tabFlashMessage["success"] = "Ta commande a bien été enregistrée $userName";

@@ -37,11 +37,6 @@
                         </select>
                     </div>
 
-                    <div class="form-group form-check m-3">
-                        <input class="form-check-input" type="checkbox" id="reset-cookie-user" name="reset-cookie-user">
-                        <label for="reset-cookie-user" class="form-check-label"><small>Reset le cookie utilisateur</small></label>
-                    </div>
-
                     <!-- Liste des plats -->
                     <div class="form-group m-3">
                         <?php foreach ($dishes as $index => $dish) : ?>

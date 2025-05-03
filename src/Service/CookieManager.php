@@ -52,27 +52,24 @@ class CookieManager
      *
      * @param string $name Nom du cookie
      * @param array $data Données à stocker dans le cookie (si besoin de le créer)
-     * @param bool $isResetCookie Le cookie doit être reset ?
      *
      * @return void
      */
-    public function refreshIfNeeded(string $name, array $data, bool $isResetCookie): void
+    public function refreshIfNeeded(string $name, array $data): void
     {
-        $existingData = $this->get($name);
+        $cookieData = $this->get($name);
 
         if (
-            isset($existingData)
-            && !$isResetCookie
-            && is_array($existingData)
+            isset($cookieData)
+            && is_array($cookieData)
+            && $cookieData["user_id"] === $data["user_id"]
         ) {
             $now = time();
             if ($data["expiry"] - $now < self::RENEW_THRESHOLD) {
-                $this->set($name, $existingData);
+                $this->set($name, $cookieData);
             }
         } else {
             $this->set($name, $data);
         }
-
-
     }
 }
