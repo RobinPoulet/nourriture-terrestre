@@ -4,6 +4,7 @@
 /** @var string $dateMenu */
 /** @var string $createOrderUrl */
 /** @var bool $canDisplayForm */
+/** @var int $selectedUserId */
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -27,9 +28,11 @@
                     <div class="form-group m-3">
                         <label for="user-select" class="form-label">Sélectionner un utilisateur</label>
                         <select class="form-select" id="user-select" data-placeholder="Sélectionner un nom" name="user">
-                            <option value="" disabled selected hidden>Sélectionner un nom</option>
+                            <option value="" disabled <?= ($selectedUserId === null ? "selected" : "") ?> hidden>Sélectionner un nom</option>
                             <?php foreach ($users as $user) : ?>
-                                <option value="<?= $user["ID"] ?>"><?= $user["NAME"]?></option>
+                                <option value="<?= $user["ID"] ?>" <?= ($user["ID"] === $selectedUserId ? "selected" : "") ?>>
+                                   <?= htmlspecialchars($user["NAME"]) ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
