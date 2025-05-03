@@ -7,9 +7,7 @@ use Exception;
 
 class Menu
 {
-
     private Menus $menusEntity;
-    private Dishes $dishesEntity;
     private WPContent $wpContentManager;
 
     /**
@@ -23,7 +21,6 @@ class Menu
     public function __construct(private readonly string $wpUrl)
     {
         $this->menusEntity = new Menus();
-        $this->dishesEntity = new Dishes();
         $this->wpContentManager = new WPContent($this->wpUrl);
     }
 
@@ -68,17 +65,17 @@ class Menu
         return $menuId;
     }
 
-    private function handleImgSrc(): string
+    public function handleImgSrc(): string
     {
         $imageUrl = rawurldecode($this->wpContentManager->getFirstImgElement());
-        $arrImageName = explode('/', $imageUrl);
+        $arrImageName = explode("/", $imageUrl);
         $imageName = array_pop($arrImageName);
         $returnValue = $imageName;
         // Téléchargement de l'image
         $imageContent = file_get_contents($imageUrl);
         if ($imageContent !== false) {
             // Sauvegarde de l'image localement
-            file_put_contents("assets/IMG/".$returnValue, $imageContent);
+            file_put_contents(BASE_PATH."/assets/IMG/".$returnValue, $imageContent);
         }
 
         return $returnValue;
