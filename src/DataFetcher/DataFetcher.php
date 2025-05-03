@@ -10,6 +10,7 @@ use Exception;
 
 abstract class DataFetcher
 {
+    private const string WP_URL = "http://www.nourriture-terrestre.fr";
 
     /**
      * Méthode pour récupérer les données à partir du cache ou les reconstruire
@@ -21,15 +22,24 @@ abstract class DataFetcher
     {
         $returnValue = [];
 
+        $menuManager = new Menu(self::WP_URL);
         $cachedData = Cache::getCache();
 
         if (isset($cachedData[Cache::SUCCESS_CACHE])) {
+            $data = $cachedData[Cache::SUCCESS_CACHE];
+            // Vérification si l’image du menu existe localement
+            $menu = $data["menu"] ?? null;
+            if (isset($menu["IMG_SRC"])) {
+                $imagePath = "assets/IMG/".$menu["IMG_SRC"];
+                if (!file_exists($imagePath)) {
+                    // Forcer le téléchargement de l'image si elle n'est pas présente
+                    $menuManager->handleImgSrc();
+                }
+            }
             $returnValue["success"] = $cachedData[Cache::SUCCESS_CACHE];
         }
 
         if (isset($cachedData[Cache::NO_CACHE])) {
-            $url = "http://www.nourriture-terrestre.fr";
-            $menuManager = new Menu($url);
             $menuId = $menuManager->buildMenu();
             $menusEntity = new Menus();
             $menu = $menusEntity->findOneById($menuId);
