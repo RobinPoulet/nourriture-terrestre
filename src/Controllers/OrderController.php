@@ -51,13 +51,16 @@ class OrderController extends AbstractController
         $resultsOrder = $this->objOrder->getTodayOrders();
         $displayResults = Order::handleTodayOrders($resultsOrder);
         $tabTotalQuantity = $this->objOrder->getTodayDishTotalQuantity();
+        $cookieData = $this->cookieManager->get(self::COOKIE_NAME);
+        $selectedUserId = (isset($cookieData["user_id"]) ? (int)$cookieData["user_id"] : null);
 
         return $this->render("display-orders", [
-            "dishes" => $dishes,
-            "dateMenu" => $dateMenu,
-            "displayResults" => $displayResults,
+            "dishes"           => $dishes,
+            "dateMenu"         => $dateMenu,
+            "displayResults"   => $displayResults,
             "tabTotalQuantity" => $tabTotalQuantity,
-            "users" => $displayUsers,
+            "users"            => $displayUsers,
+            "selectedUserId"   => $selectedUserId,
         ]);
     }
 
@@ -65,7 +68,7 @@ class OrderController extends AbstractController
      * Editer une commande
      *
      * @param Request $request Objet request du formulaire
-     * @param string $orderId Id de la commande à modifier
+     * @param int $orderId Id de la commande à modifier
      *
      * @return void
      */
