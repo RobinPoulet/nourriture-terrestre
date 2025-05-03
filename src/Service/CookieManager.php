@@ -15,7 +15,7 @@ class CookieManager
      *
      * @param string $name Nom du cookie
      *
-     * @return ?object
+     * @return ?array
      */
     public function get(string $name): ?array
     {
@@ -34,7 +34,7 @@ class CookieManager
      * Définir un cookie
      *
      * @param string $name Nom du cookie
-     * @param array $data Données à stocker dans le cookie
+     * @param array  $data Données à stocker dans le cookie
      *
      * @return void
      */
@@ -51,7 +51,7 @@ class CookieManager
      * Vérifie si un cookie a besoin d'être raffraichi
      *
      * @param string $name Nom du cookie
-     * @param array $data Données à stocker dans le cookie (si besoin de le créer)
+     * @param array  $data Données à stocker dans le cookie (si besoin de le créer)
      *
      * @return void
      */
