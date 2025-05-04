@@ -65,19 +65,53 @@ class Menu
         return $menuId;
     }
 
-    public function handleImgSrc(): string
+
+    /**
+     * Récupérer l'image du menu
+     *
+     * @return false|string
+     */
+    public function handleImgSrc(): false|string
     {
         $imageUrl = rawurldecode($this->wpContentManager->getFirstImgElement());
-        $arrImageName = explode("/", $imageUrl);
-        $imageName = array_pop($arrImageName);
-        $returnValue = $imageName;
-        // Téléchargement de l'image
-        $imageContent = file_get_contents($imageUrl);
-        if ($imageContent !== false) {
-            // Sauvegarde de l'image localement
-            file_put_contents(BASE_PATH."/assets/IMG/".$returnValue, $imageContent);
+
+        if (!filter_var($imageUrl, FILTER_VALIDATE_URL)) {
+            error_log("❌ Invalid image URL: " . $imageUrl);
+            return false;
         }
 
-        return $returnValue;
+        $arrImageName = explode("/", $imageUrl);
+        $imageName = array_pop($arrImageName);
+        $savePath = BASE_PATH . "/assets/IMG/" . $imageName;
+
+        // Utiliser cURL pour plus de robustesse
+        $ch = curl_init($imageUrl);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_SSL_VERIFYPEER => false,
+        ]);
+        $imageContent = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if (
+            $imageContent === false
+            || $httpCode !== 200
+        ) {
+            error_log("❌ Failed to download image from: $imageUrl (HTTP $httpCode)");
+            return false;
+        }
+
+        // Sauvegarde
+        if (file_put_contents($savePath, $imageContent) === false) {
+            error_log("❌ Failed to save image to $savePath");
+            return false;
+        } else {
+            chmod($savePath, 0644);
+        }
+
+        return $imageName;
     }
 }

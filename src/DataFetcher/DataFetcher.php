@@ -30,7 +30,7 @@ abstract class DataFetcher
             // Vérification si l’image du menu existe localement
             $menu = $data["menu"] ?? null;
             if (isset($menu["IMG_SRC"])) {
-                $imagePath = "assets/IMG/".$menu["IMG_SRC"];
+                $imagePath = BASE_PATH."/assets/IMG/".$menu["IMG_SRC"];
                 if (!file_exists($imagePath)) {
                     // Forcer le téléchargement de l'image si elle n'est pas présente
                     $menuManager->handleImgSrc();
