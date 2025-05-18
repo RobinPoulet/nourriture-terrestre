@@ -3,8 +3,8 @@
 namespace App\Controllers;
 
 use App\Core\Http;
-use App\Entity\Users;
 use App\Http\Request;
+use App\Model\User;
 use Exception;
 
 class UserController extends AbstractController
@@ -14,8 +14,7 @@ class UserController extends AbstractController
      */
     public function index(): false|string
     {
-        $objUsers = new Users();
-        $users = $objUsers->getAllUsers();
+        $users = User::all("name");
 
         return $this->render("users", [
             "users" => $users,
@@ -24,18 +23,18 @@ class UserController extends AbstractController
 
     public function create(Request $request): void
     {
-        $objUsers = new Users();
         $name = htmlspecialchars($request->post('name') ?? '', ENT_QUOTES, 'UTF-8');
 
         if (empty($name)) {
             $tabFlashMessage['errors'][] = 'Il faut un nom pour l\'utilisateur';
         } else {
-            if ($objUsers->insert($name)) {
-                $tabFlashMessage['success'] = 'L\'utilisateur ' . $name . ' a bien été enregistré';
+            $currentDate = date('Y-m-d');
+            $newUser = User::create(["name" => $name, "creation_date" => $currentDate]);
+            if ($newUser) {
+                $tabFlashMessage['success'] = 'L\'utilisateur ' . $newUser->name . ' a bien été enregistré';
             } else {
                 $tabFlashMessage['errors'][] = 'Erreur lors de l\'ajout de l\'utilisateur ' . $name;
             }
-
         }
 
         // Stocker un message flash
@@ -47,15 +46,14 @@ class UserController extends AbstractController
 
     public function edit(Request $request, string $userId): void
     {
-        $objUsers = new Users();
         $name = htmlspecialchars($request->post('name') ?? '', ENT_QUOTES, 'UTF-8');
-        $id = (int) $userId;
 
         if (empty($name)) {
             $tabFlashMessage['errors'][] = 'Il faut un nom pour l\'utilisateur';
         } else {
-            if ($objUsers->edit($id, $name)) {
-                $tabFlashMessage['success'] = "Le nom de l'utilisateur $name a bien été modifié";
+            $userUpdated = User::update($userId, ["name" => $name]);
+            if ($userUpdated) {
+                $tabFlashMessage['success'] = "Le nom de l'utilisateur $userUpdated->name a bien été modifié";
             } else {
                 $tabFlashMessage['error'][] = 'Erreur lors de la modification du nom de l\'utilisateur';
             }
@@ -70,13 +68,12 @@ class UserController extends AbstractController
 
     public function delete($userId): void
     {
-        $objUsers = new Users();
-        $user = $objUsers->find($userId);
-
-        if ($objUsers->delete($userId)) {
-            $tabFlashMessage['success'] = 'L\'utilisateur ' . $user['NAME'] . ' a bien été supprimé';
+        $userName = User::find($userId)->name;
+        $isDeleted = User::delete($userId);
+        if ($isDeleted) {
+            $tabFlashMessage['success'] = 'L\'utilisateur ' . $userName . ' a bien été supprimé';
         } else {
-            $tabFlashMessage['errors'][] = 'Erreur lors de la suppression de ' . $user['NAME'];
+            $tabFlashMessage['errors'][] = 'Erreur lors de la suppression de ' . $userName;
         }
 
         // Stocker un message flash
@@ -84,20 +81,5 @@ class UserController extends AbstractController
         $_SESSION['tab_flash_message'] = $tabFlashMessage;
 
        Http::redirect('users');
-    }
-
-    public function getAllUsers($data)
-    {
-        $objUsers = new Users();
-        $response = [];
-
-        $users = $objUsers->getAllUsers();
-        if (!isset($users['error'])) {
-            $response['success'] = $users;
-        } else {
-            $response = $users;
-        }
-
-        return $response;
     }
 }

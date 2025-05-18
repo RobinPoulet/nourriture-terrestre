@@ -1,21 +1,14 @@
 <?php
-/** @var array $users */
-/** @var array $dishes */
+/** @var \App\Model\User[] $users */
+/** @var \App\Model\Dish[] $dishes */
 /** @var string $dateMenu */
 /** @var string $createOrderUrl */
 /** @var bool $canDisplayForm */
 /** @var int $selectedUserId */
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<?php require(__DIR__ . "/../head.php"); ?>
-<body>
-<?php require(__DIR__ . "/../navbar.php"); ?>
-<div class="container-fluid">
+<div class="container mt-4">
     <?php if (!empty($dishes) && isset($dateMenu)) : ?>
     <?php if ($canDisplayForm) : ?>
-        <div id="div-alert"></div>
-        <div id="div-alert-request"></div>
         <div
                 id="form-card"
                 class="card"
@@ -30,8 +23,8 @@
                         <select class="form-select" id="user-select" data-placeholder="Sélectionner un nom" name="user">
                             <option value="" disabled <?= ($selectedUserId === null ? "selected" : "") ?> hidden>Sélectionner un nom</option>
                             <?php foreach ($users as $user) : ?>
-                                <option value="<?= $user["ID"] ?>" <?= ($user["ID"] === $selectedUserId ? "selected" : "") ?>>
-                                   <?= htmlspecialchars($user["NAME"]) ?>
+                                <option value="<?= $user->id ?>" <?= ($user->id === $selectedUserId ? "selected" : "") ?>>
+                                   <?= htmlspecialchars($user->name) ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -42,10 +35,10 @@
                         <?php foreach ($dishes as $index => $dish) : ?>
                             <div class="row mb-3">
                                 <div class="col-10">
-                                    <label for="dish-<?= $index ?>" class="form-label"><?= $dish["NAME"] ?></label>
+                                    <label for="dish-<?= $index ?>" class="form-label"><?= $dish->name ?></label>
                                 </div>
                                 <div class="col-2">
-                                    <input type="number" id="dish-<?= $index ?>" class="form-control" name="dishes[<?= $dish["ID"] ?>]" value="0" min="0">
+                                    <input type="number" id="dish-<?= $index ?>" class="form-control" name="dishes[<?= $dish->id ?>]" value="0" min="0">
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -67,16 +60,3 @@
     <?php endif; ?>
 <?php endif; ?>
 </div>
-<!-- Toast notification -->
-<div class="position-fixed top-50 start-50 p-3" style="z-index: 11">
-    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header bg-success text-white">
-            <strong class="me-auto">Nourriture Terrestre</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body" id="liveToastContent">
-        </div>
-    </div>
-</div>
-</body>
-</html>

@@ -1,15 +1,13 @@
 <?php
 
 namespace App\Manager;
-use App\Entity\Dishes;
-use App\Entity\Menus;
+use App\Model\Menu;
 
 abstract class Cache
 {
 
     /** @var int Durée de validation du cache */
     private const int CACHE_VALIDITY_DURATION = 4 * 60 * 60;
-
     public const string NO_CACHE = "no cache";
     public const string SUCCESS_CACHE = "success cache";
 
@@ -20,26 +18,15 @@ abstract class Cache
      */
     public static function getCache(): array
     {
-        $returnValue = [
-            self::NO_CACHE => "false"
-        ];
+        $returnValue[self::NO_CACHE] = "false";
 
         // On va chercher le dernier menu en base de données
-        $menusEntity = new Menus();
-        $lastMenu = $menusEntity->getLastMenu();
+        $lastMenu = Menu::last();
 
         if ($lastMenu !== null) {
-            $lastUpdatedTimestamp = strtotime($lastMenu["MODIFICATION_DATE"] ?? "0");
-            if ((time() - $lastUpdatedTimestamp) > self::CACHE_VALIDITY_DURATION) {
-                $menu = $menusEntity->findOneById($lastMenu["ID"]);
-                $dishesEntity = new Dishes();
-                $dishes = $dishesEntity->findByMenuId($lastMenu["ID"]);
-                $returnValue = [
-                    self::SUCCESS_CACHE => [
-                        "menu" => $menu,
-                        "dishes" => $dishes
-                    ]
-                ];
+            $lastUpdatedTimestamp = strtotime($lastMenu->modification_date ?? "0");
+            if ((time() - $lastUpdatedTimestamp) <= self::CACHE_VALIDITY_DURATION) {
+                $returnValue[self::SUCCESS_CACHE] = $lastMenu;
             }
         }
 

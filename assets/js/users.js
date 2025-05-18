@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+    const completeUrl = document.getElementById('complete-url').value;
     const pathname = window.location.pathname;
     const pageName = pathname.split('/').pop();
     if (pageName === 'users') {
@@ -13,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function resetModalToAddMode() {
             document.getElementById('addUserModalLabel').textContent = 'Ajouter un Utilisateur';
             const formUser = document.getElementById('form-user');
-            formUser.action = `http://localhost/nourriture-terrestre/create-user`
+            formUser.action = completeUrl + '/create-user';
             userNameInput.value = '';
             userValidateButton.textContent = 'Ajouter';
         }
@@ -29,14 +30,13 @@ document.addEventListener("DOMContentLoaded", function () {
             // Récupérer les données du bouton
             const userId = button.getAttribute('data-user-id');
             const userName = button.getAttribute('data-user-name');
-            console.log(userName, userId);
             if (
                 userId
                 && userName
             ) {
                 // Si l'édition est en cours
                 const formUser = document.getElementById('form-user');
-                formUser.action = `http://localhost/nourriture-terrestre/edit-user/${userId}`
+                formUser.action = `${completeUrl}/edit-user/${userId}`
                 document.getElementById('addUserModalLabel').textContent = 'Éditer un Utilisateur';
                 userNameInput.value = userName;
                 userValidateButton.textContent = 'Modifier';
@@ -84,13 +84,14 @@ function handleUserAction(event, actionType) {
 
 
 /**
- * Confirmer la supression d'un utilisateur 
+ * Confirmer la supression d'un utilisateur
  *
  * @param {int} userId Id de l'utilisateur
  */
 function confirmDelete(userId) {
+    const completeUrl = document.getElementById('complete-url').value;
     if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
         // Redirection vers l'URL de suppression avec le userId
-        window.location.href = `http://localhost/nourriture-terrestre/delete-user/${userId}`;
+        window.location.href = `${completeUrl}/delete-user/${userId}`;
     }
 }
