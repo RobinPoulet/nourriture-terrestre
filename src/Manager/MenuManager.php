@@ -88,7 +88,6 @@ class MenuManager
     public function handleImgSrc(): false|string
     {
         $imageUrl = rawurldecode($this->wpContentManager->getFirstImgElement());
-        var_dump($imageUrl, file_exists($imagePath));
 
         if (!filter_var($imageUrl, FILTER_VALIDATE_URL)) {
             error_log("❌ Invalid image URL: " . $imageUrl, 3, BASE_PATH . "/logs/error.log");
@@ -98,7 +97,7 @@ class MenuManager
         $arrImageName = explode("/", $imageUrl);
         $imageName = array_pop($arrImageName);
         $savePath = BASE_PATH . "/assets/IMG/" . $imageName;
-var_dump($savePath);
+
         // Utiliser cURL pour plus de robustesse
         $ch = curl_init($imageUrl);
         curl_setopt_array($ch, [
@@ -110,7 +109,7 @@ var_dump($savePath);
         $imageContent = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-        var_dump($imageContent, $httpCode);
+
         if (
             $imageContent === false
             || $httpCode !== 200
@@ -118,7 +117,7 @@ var_dump($savePath);
             error_log("❌ Failed to download image from: $imageUrl (HTTP $httpCode)", 3, BASE_PATH . "/logs/error.log");
             return false;
         }
-        var_dump(file_put_contents($savePath, $imageContent));
+
         // Sauvegarde
         if (file_put_contents($savePath, $imageContent) === false) {
             error_log("❌ Failed to save image to $savePath", 3, BASE_PATH . "/logs/error.log");
@@ -126,7 +125,7 @@ var_dump($savePath);
         } else {
             chmod($savePath, 0644);
         }
-        die;
+
         return $imageName;
     }
 }
