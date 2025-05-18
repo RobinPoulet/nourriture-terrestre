@@ -26,6 +26,7 @@ abstract class Cache
         if ($lastMenu !== null) {
             $lastUpdatedTimestamp = strtotime($lastMenu->modification_date ?? "0");
             if ((time() - $lastUpdatedTimestamp) <= self::CACHE_VALIDITY_DURATION) {
+                // On met à jour la date de modification pour le cache
                 $returnValue[self::SUCCESS_CACHE] = $lastMenu;
             }
         }

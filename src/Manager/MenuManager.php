@@ -49,6 +49,10 @@ class MenuManager
             ]);
         }
 
+        // On update la date de modification du menu pour le calcul du cache
+        $dateNow = date('Y-m-d H:i:s');
+        Menu::update($menu->id, ["modification_date" => $dateNow]);
+
         if ($menu->is_open) {
             // Récupération de la liste des plats du menu de la semaine
             $tabDishesNames = $this->wpContentManager->getLiElements();
@@ -58,7 +62,7 @@ class MenuManager
                     ->where("name", "=", $dishName)
                     ->first();
                 if (is_null($dishElement)) {
-                    $newDish = Dish::create([
+                    Dish::create([
                         "name"          => $dishName,
                         "total"         => 1,
                         "menu_id"       => $menu->id,
