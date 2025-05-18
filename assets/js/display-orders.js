@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+    const completeUrl = document.getElementById('complete-url').value;
     const pathname = window.location.pathname;
     const pageName = pathname.split('/').pop();
     if (pageName === 'display-orders') {
@@ -7,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
             button.addEventListener('click', function () {
                 const orderId = this.getAttribute('data-order-id');
                 if (confirm('Êtes-vous sûr de vouloir supprimer cette commande ?')) {
-                    window.location.href = `http://localhost/nourriture-terrestre/delete-order/${orderId}`;
+                    window.location.href = `${completeUrl}/delete-order/${orderId}`;
                 }
             })
         })
@@ -20,24 +21,28 @@ document.addEventListener("DOMContentLoaded", function () {
             const button = event.relatedTarget;
             // Récupérer les données du bouton
             const orderId = button.getAttribute('data-order-id');
-            const orderData = button.getAttribute('data-order');
+            const perso = button.getAttribute('data-perso');
             const username = button.getAttribute('data-username');
+            const orderDishesData = button.getAttribute('data-order-dishes');
             const inputUserName = document.getElementById('input-user-name');
             inputUserName.value = username;
-            const orderObject = JSON.parse(orderData);
-            if (orderObject && username) {
-                Object.keys(orderObject.dishes).forEach(key => {
-                    const element = document.getElementById('dish-' + key);
-                    element.value = orderObject.dishes[key];
+            const orderDishesObject = JSON.parse(orderDishesData);
+            if (
+                orderDishesObject
+                && username
+            ) {
+                Object.keys(orderDishesObject).forEach(key => {
+                    const element = document.getElementById('dish-' + orderDishesObject[key]["id"]);
+                    element.value = orderDishesObject[key]["quantity"];
                 })
                 const persoInput = document.getElementById('perso');
                 const tempElement = document.createElement("div");
-                tempElement.innerHTML = orderObject.perso;
+                tempElement.innerHTML = perso;
                 persoInput.value = tempElement.textContent;
                 const editOrderModalLabel = document.getElementById('editOrderModalLabel');
                 editOrderModalLabel.textContent = username;
                 const editOrderForm = document.getElementById('edit-order-form');
-                editOrderForm.action = `http://localhost/nourriture-terrestre/edit-order/${orderId}`;
+                editOrderForm.action = `${completeUrl}/edit-order/${orderId}`;
                 editOrderForm.addEventListener('submit', function(event) {
                     event.preventDefault();
                     if (confirm('Êtes-vous sûr de vouloir modifier cette commande ?')) {
