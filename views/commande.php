@@ -5,58 +5,80 @@
 /** @var string $createOrderUrl */
 /** @var bool $canDisplayForm */
 /** @var int $selectedUserId */
-?>
-<div class="container mt-4">
+?><div class="container py-5">
     <?php if (!empty($dishes) && isset($dateMenu)) : ?>
-    <?php if ($canDisplayForm) : ?>
-        <div
-                id="form-card"
-                class="card"
-                style="width: 34rem; margin-left: auto; margin-right: auto; margin-top: 20px; padding: 4px;"
-        >
-            <h5 class="card-header text-center bg-dark text-white">Fais ta commande :</h5>
-
-            <form action="<?= $createOrderUrl ?>" id="order-form" method="POST">
-                <div class="card-body">
-                    <div class="form-group m-3">
-                        <label for="user-select" class="form-label">Sélectionner un utilisateur</label>
-                        <select class="form-select" id="user-select" data-placeholder="Sélectionner un nom" name="user">
-                            <option value="" disabled <?= ($selectedUserId === null ? "selected" : "") ?> hidden>Sélectionner un nom</option>
-                            <?php foreach ($users as $user) : ?>
-                                <option value="<?= $user->id ?>" <?= ($user->id === $selectedUserId ? "selected" : "") ?>>
-                                   <?= htmlspecialchars($user->name) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <!-- Liste des plats -->
-                    <div class="form-group m-3">
-                        <?php foreach ($dishes as $index => $dish) : ?>
-                            <div class="row mb-3">
-                                <div class="col-10">
-                                    <label for="dish-<?= $index ?>" class="form-label"><?= $dish->name ?></label>
-                                </div>
-                                <div class="col-2">
-                                    <input type="number" id="dish-<?= $index ?>" class="form-control" name="dishes[<?= $dish->id ?>]" value="0" min="0">
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-
-                    <!-- Section de personnalisation -->
-                    <div class="form-group m-3">
-                        <label for="perso" class="form-label">Personnalisation</label>
-                        <textarea class="form-control" aria-label="With textarea" name="perso" id="perso"></textarea>
-                    </div>
-
-                    <!-- Bouton de validation de commande -->
-                    <div class="m-3 text-center">
-                        <button type="submit" class="btn btn-dark">Commander</button>
-                    </div>
+        <?php if ($canDisplayForm) : ?>
+            <div id="form-card" class="card shadow-lg rounded-4 mx-auto" style="max-width: 600px;">
+                <div class="card-header bg-dark text-white text-center rounded-top-4">
+                    <h5 class="mb-0">🍽️ Passe ta commande</h5>
                 </div>
-            </form>
-        </div>
+
+                <form action="<?= $createOrderUrl ?>" id="order-form" method="POST">
+                    <div class="card-body p-4">
+
+                        <!-- Sélection utilisateur -->
+                        <div class="mb-4">
+                            <label for="user-select" class="form-label fw-semibold">👤 Choisis ton nom</label>
+                            <select class="form-select" id="user-select" name="user" required>
+                                <option value="" disabled <?= ($selectedUserId === null ? "selected" : "") ?> hidden>Sélectionner un nom</option>
+                                <?php foreach ($users as $user) : ?>
+                                    <option value="<?= $user->id ?>" <?= ($user->id === $selectedUserId ? "selected" : "") ?>>
+                                        <?= htmlspecialchars($user->name) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <!-- Liste des plats -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3">🍛 Choisis tes plats</h6>
+                            <?php foreach ($dishes as $index => $dish) : ?>
+                                <div class="row align-items-center mb-2">
+                                    <div class="col-8">
+                                        <label for="dish-<?= $index ?>" class="form-label"><?= htmlspecialchars($dish->name) ?></label>
+                                    </div>
+                                    <div class="col-4">
+                                        <input type="number" id="dish-<?= $index ?>" name="dishes[<?= $dish->id ?>]"
+                                               class="form-control text-center" value="0" min="0">
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <!-- Personnalisation -->
+                        <div class="mb-4">
+                            <label for="perso" class="form-label fw-semibold">📝 Commentaires ou préférences</label>
+                            <textarea class="form-control" name="perso" id="perso" rows="3" placeholder="Ex : sans sauce, bien cuit..."></textarea>
+                        </div>
+
+                        <!-- Bouton de commande -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-dark px-4 py-2 rounded-pill">
+                                <i class="bi bi-send-fill me-2"></i>Valider la commande
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        <?php endif; ?>
     <?php endif; ?>
-<?php endif; ?>
 </div>
+<style>
+    .card {
+        border: none;
+        background: #fff;
+    }
+
+    .form-label {
+        font-size: 0.95rem;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button {
+        opacity: 1;
+    }
+</style>
