@@ -31,7 +31,8 @@ abstract class DataFetcher
             $menu = $menuManager->buildMenu();
             $returnValue["success"] = $menu;
         }
-
+        var_dump($menu);
+        die;
         // Vérification si l’image du menu existe localement
         if ($menu->img_src !== null) {
             $imagePath = BASE_PATH."/assets/IMG/".$menu->img_src;
