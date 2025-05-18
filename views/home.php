@@ -27,7 +27,7 @@
             <div class="col-lg-5 text-center">
                 <figure class="figure">
                     <img
-                            src="<?= ($_SERVER["BASE_URI"] ?? "") . "/nourriture-terrestre/assets/IMG/" . htmlspecialchars($menu->img_src) ?>"
+                            src="<?= PREFIX ?>/assets/IMG/<?= htmlspecialchars($menu->img_src) ?>"
                             alt="Photo du menu"
                             class="figure-img img-fluid rounded shadow-sm"
                             style="max-height: 320px; object-fit: cover;"

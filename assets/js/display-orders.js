@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const completeUrl = document.getElementById('complete-url').value;
     const pathname = window.location.pathname;
     const pageName = pathname.split('/').pop();
     if (pageName === 'display-orders') {
+        const completeUrl = document.getElementById('complete-url').value;
         // Sélectionne tous les boutons de suppression
         document.querySelectorAll('.btn-outline-danger').forEach(button => {
             button.addEventListener('click', function () {

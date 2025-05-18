@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const completeUrl = document.getElementById('complete-url').value;
     const pathname = window.location.pathname;
     const pageName = pathname.split('/').pop();
     if (pageName === 'users') {
+        const completeUrl = document.getElementById('complete-url').value;
         // Sélectionner les éléments nécessaires
         const addUserModal = document.getElementById('addUserModal');
         const userNameInput = document.getElementById('userName');
