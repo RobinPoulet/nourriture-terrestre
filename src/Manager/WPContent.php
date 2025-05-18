@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Manager;
-use App\Entity\Menus;
-use DateMalformedStringException;
 use DateTime;
 use DOMDocument;
 use Exception;
@@ -44,23 +42,6 @@ class WPContent
             LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING
         );
     }
-
-
-    /**
-     * @throws DateMalformedStringException
-     */
-    private function createMenuEntity(): ?int
-    {
-        $returnValue = null;
-
-        $imgSrc = $this->getFirstImgElement();
-        $imgFigcaption = $this->getFirstFigcaptionElement();
-        $dateCreation = $dateCreation = (new DateTime($this->lastPost->date))->format('Y-m-d');
-        $menuEntity = new Menus();
-
-        return $menuEntity->insert($imgSrc, $imgFigcaption, true, $dateCreation);
-    }
-
 
     /**
      * Récupérer le dernier article WordPress

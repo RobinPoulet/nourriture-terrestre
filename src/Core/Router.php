@@ -121,7 +121,7 @@ class Router
     /**
      * Appelle la méthode du contrôleur en lui passant les paramètres.
      */
-    private function dispatch(string $route, string $requestMethod, array $params = [])
+    private function dispatch(string $route, string $requestMethod, array $params = []): void
     {
         $controllerName = "App\\Controllers\\" . $this->routes[$route]['controller'];
         $methodName = $this->routes[$route]['action'];

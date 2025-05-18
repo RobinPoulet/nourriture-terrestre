@@ -10,19 +10,15 @@ class HomeController extends AbstractController
     /**
      * @throws Exception
      */
-    public function index()
+    public function index(): false|string
     {
-        $postData = DataFetcher::getData();
-        $dishes = $postData["success"]["dishes"];
-        $dateMenu = $postData["success"]["menu"]["CREATION_DATE"];
-        $imgSrc = "./assets/IMG/".$postData["success"]["menu"]["IMG_SRC"];
-        $figcaption = $postData["success"]["menu"]["IMG_FIGCAPTION"];
+        $data = DataFetcher::getData();
+        $menu = $data["success"];
+        $isDishes = (!empty($menu->dishes()));
 
         return $this->render("home", [
-            "dishes" => $dishes,
-            "dateMenu" => $dateMenu,
-            "imgSrc" => $imgSrc,
-            "figcaption" => $figcaption,
+            "menu"     => $menu,
+            "isDishes" => $isDishes,
         ]);
     }
 }
