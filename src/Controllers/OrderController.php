@@ -141,7 +141,6 @@ class OrderController extends AbstractController
         $dateMenu = $menu->creation_date;
         $canDisplayForm = Date::canDisplayOrderForm($dateMenu);
         $users = User::all('name');
-        $canDisplayForm = true;
         $cookieData = $this->cookieManager->get(self::COOKIE_NAME);
         $selectedUserId = (isset($cookieData['user_id']) ? (int)$cookieData['user_id'] : null);
 
