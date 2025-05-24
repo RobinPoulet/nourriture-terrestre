@@ -85,7 +85,7 @@ class Router
     /**
      * @throws Exception
      */
-    public function handleRequest()
+    public function handleRequest(): void
     {
         $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $requestUri = str_replace(PREFIX, '', $requestUri);

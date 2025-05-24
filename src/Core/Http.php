@@ -10,7 +10,7 @@ class Http
      * @param string $route Nom de la route définie dans le Router.
      * @param array $params Paramètres optionnels à inclure dans l'URL.
      */
-    public static function redirect(string $route, array $params = [])
+    public static function redirect(string $route, array $params = []): void
     {
         // Construire l'URL de redirection
         $url = COMPLETE_URL."/".$route;
