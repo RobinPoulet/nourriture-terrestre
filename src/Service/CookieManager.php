@@ -41,10 +41,10 @@ class CookieManager
     public function set(string $name, array $data): void
     {
         $expiry = time() + self::COOKIE_LIFETIME;
-        $data["expiry"] = $expiry;
+        $data['expiry'] = $expiry;
 
         $payload = base64_encode(json_encode($data));
-        setcookie($name, $payload, $expiry, "/");
+        setcookie($name, $payload, $expiry, '/');
     }
 
     /**
@@ -62,10 +62,10 @@ class CookieManager
         if (
             isset($cookieData)
             && is_array($cookieData)
-            && $cookieData["user_id"] === $data["user_id"]
+            && $cookieData['user_id'] === $data['user_id']
         ) {
             $now = time();
-            if ($data["expiry"] - $now < self::RENEW_THRESHOLD) {
+            if ($data['expiry'] - $now < self::RENEW_THRESHOLD) {
                 $this->set($name, $cookieData);
             }
         } else {

@@ -1,10 +1,10 @@
 <?php
-$page = $_SERVER["REQUEST_URI"];
+$page = $_SERVER['REQUEST_URI'];
 $navItems = [
-    "Le menu"                => "./index",
-    "Commander"              => "./commande",
-    "Afficher les commandes" => "./display-orders",
-    "Utilisateurs"           => "./users",
+    'Le menu'                => './index',
+    'Commander'              => './commande',
+    'Afficher les commandes' => './display-orders',
+    'Utilisateurs'           => './users',
 ];
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -21,7 +21,7 @@ $navItems = [
             <?php foreach ($navItems as $name => $path) :?>
                 <li class="nav-item">
                     <a 
-                        class="nav-link<?= ((str_contains($page, substr($path, 2))) || ($path === "./index.php" && strlen($page) === 22) ? " active" : "") ?>" 
+                        class="nav-link<?= ((str_contains($page, substr($path, 2))) || ($path === './index.php' && strlen($page) === 22) ? " active" : "") ?>"
                         href="<?= $path ?>"
                     ><?= $name ?></a>
                 </li>

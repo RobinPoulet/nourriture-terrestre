@@ -6,7 +6,7 @@
 ?>
 <div class="container mt-4 w-50">
     <div class="d-flex justify-content-between align-items-center">
-        <h2>Liste des Utilisateurs</h2>
+        <h2>Liste des utilisateurs</h2>
         <!-- Utilisation du bouton pour ouvrir la modale d'ajout -->
         <button
                 class="btn btn-outline-primary"
@@ -26,13 +26,13 @@
         <tbody id="tbodyUsers">
             <?php foreach ($users as $user) :?>
                 <tr>
-                    <td><?= htmlspecialchars($user->name ?? "") ?></td>
+                    <td><?= htmlspecialchars($user->name ?? '') ?></td>
                     <td class="text-end">
                         <button
                             class="btn btn-outline-warning btn-sm btn-edit "
                             data-bs-toggle="modal"
                             data-bs-target="#addUserModal"
-                            data-user-name="<?= htmlspecialchars($user->name ?? "") ?>"
+                            data-user-name="<?= htmlspecialchars($user->name ?? '') ?>"
                             data-user-id="<?= $user->id ?? 0 ?>"
                         ><i class="bi bi-pencil-square"></i></button>
                         <button

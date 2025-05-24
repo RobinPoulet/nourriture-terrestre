@@ -53,7 +53,7 @@ abstract class BaseModel
         $foreignValue = $this->$foreignKey; // ex: $this->user_id
 
         return (new QueryBuilder($relatedTable, $relatedClass))
-            ->where($relatedKey, "=", $foreignValue) // ✅ on filtre sur id du user
+            ->where($relatedKey, '=', $foreignValue) // ✅ on filtre sur id du user
             ->first();
     }
 
@@ -119,7 +119,7 @@ abstract class BaseModel
      */
     public static function getTable(): string
     {
-        throw new Exception("You must implement getTable in subclass");
+        throw new Exception('You must implement getTable in subclass');
     }
 
     // Connection DB simulée

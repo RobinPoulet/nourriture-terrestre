@@ -9,15 +9,15 @@ use PDO;
 
 class Order extends Model implements JsonSerializable
 {
-    protected static string $table = "orders";
+    protected static string $table = 'orders';
     protected string $perso;
     protected int $user_id;
 
     protected static array $fillables = [
-        "perso",
-        "user_id",
-        "creation_date",
-        "modification_date",
+        'perso',
+        'user_id',
+        'creation_date',
+        'modification_date',
     ];
 
     /**
@@ -41,24 +41,24 @@ class Order extends Model implements JsonSerializable
     public function attachDishes(array $dishes): void
     {
         foreach ($dishes as $dishId => $quantity) {
-            static::attachPivot("order_dishes", [
-                "order_id" => $this->id,
-                "dish_id"  => $dishId,
-                "quantity" => $quantity
+            static::attachPivot('order_dishes', [
+                'order_id' => $this->id,
+                'dish_id'  => $dishId,
+                'quantity' => $quantity
             ]);
         }
     }
 
     public function syncDishes(array $dishes): void
     {
-        static::syncPivot("order_dishes", ["order_id" => $this->id], $dishes, "dish_id");
+        static::syncPivot('order_dishes', ['order_id' => $this->id], $dishes, 'dish_id');
     }
 
     public static function getDishTotalQuantityByDate(string $date = null): array
     {
         $returnValue = [];
 
-        $date = $date ?? date("Y-m-d");
+        $date = $date ?? date('Y-m-d');
 
             $query = "
             SELECT od.dish_id AS dish_id, SUM(od.quantity) AS total_quantity

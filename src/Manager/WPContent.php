@@ -51,7 +51,7 @@ class WPContent
      */
     private function getLastPost(): object
     {
-        $requestQuery = "/wp-json/wp/v2/posts?per_page=2&order=desc&orderby=date";
+        $requestQuery = '/wp-json/wp/v2/posts?per_page=2&order=desc&orderby=date';
         $apiEndpoint = $this->url . $requestQuery;
         $context = stream_context_create($this->contextOptions);
         $response = file_get_contents(
@@ -78,7 +78,7 @@ class WPContent
      */
     public function deleteImages(DOMDocument $doc): void
     {
-        $images = $doc->getElementsByTagName("img");
+        $images = $doc->getElementsByTagName('img');
         foreach ($images as $img) {
             $img->parentNode->removeChild($img);
         }
@@ -93,14 +93,14 @@ class WPContent
     {
         $images = $this->doc->getElementsByTagName('img');
 
-        return urlencode(($images[0]->getAttribute('src') ?? ""));
+        return urlencode(($images[0]->getAttribute('src') ?? ''));
     }
 
     public function getFirstFigcaptionElement(): string
     {
         $figcaptions = $this->doc->getElementsByTagName('figcaption');
 
-        return $figcaptions[0]->nodeValue ?? "";
+        return $figcaptions[0]->nodeValue ?? '';
     }
 
     /**
@@ -132,7 +132,7 @@ class WPContent
     {
         $dateString = $this->lastPost->date;
 
-        return (new DateTime($dateString))->format("Y-m-d");
+        return (new DateTime($dateString))->format('Y-m-d');
     }
 
     /**
@@ -150,14 +150,14 @@ class WPContent
         //  $srcImage = urlencode($tabAbsenceMessageImgSrc[0]);
         //  $tabFigcaptions = $this->getFigcaptionElements($doc);
         //  if (empty($lis)) {
-        //    Header("Location: bad-day.php" . (empty($srcImage) ? "" : "?imgsrc=" . $srcImage));
+        //    Header('Location: bad-day.php' . (empty($srcImage) ? '' : '?imgsrc=' . $srcImage));
         //   die;
 //        }
 //        return [
-//            "success" => [
-//                "menu"       => $lis,
-//                "imgSrc"     => $srcImage,
-//                "figcaption" => $tabFigcaptions[0] ?? "",
+//            'success' => [
+//                'menu'       => $lis,
+//                'imgSrc'     => $srcImage,
+//                'figcaption' => $tabFigcaptions[0] ?? '',
 //            ]
 //        ];
     }
@@ -166,7 +166,7 @@ class WPContent
     {
         return (
             isset($this->lastPost)
-            && stripos($this->lastPost->title->rendered, "menu") !== false
+            && stripos($this->lastPost->title->rendered, 'menu') !== false
         );
     }
 }

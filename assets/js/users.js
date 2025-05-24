@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
          * Fonction pour réinitialiser la modale au mode ajout
          */
         function resetModalToAddMode() {
-            document.getElementById('addUserModalLabel').textContent = 'Ajouter un Utilisateur';
+            document.getElementById('addUserModalLabel').textContent = 'Ajouter un utilisateur';
             const formUser = document.getElementById('form-user');
             formUser.action = completeUrl + '/create-user';
             userNameInput.value = '';
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Si l'édition est en cours
                 const formUser = document.getElementById('form-user');
                 formUser.action = `${completeUrl}/edit-user/${userId}`
-                document.getElementById('addUserModalLabel').textContent = 'Éditer un Utilisateur';
+                document.getElementById('addUserModalLabel').textContent = 'Éditer un utilisateur';
                 userNameInput.value = userName;
                 userValidateButton.textContent = 'Modifier';
             } else {

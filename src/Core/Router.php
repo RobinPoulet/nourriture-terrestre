@@ -85,7 +85,7 @@ class Router
     /**
      * @throws Exception
      */
-    public function handleRequest()
+    public function handleRequest(): void
     {
         $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $requestUri = str_replace(PREFIX, '', $requestUri);
@@ -114,7 +114,7 @@ class Router
         if ($this->isAjax()) {
             echo json_encode(['error' => 'Page non trouvée']);
         } else {
-            echo "404 - Page non trouvée";
+            echo '404 - Page non trouvée';
         }
     }
 

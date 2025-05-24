@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 class AbstractController
 {
-    protected function render(string $view, array $data = [], string $layout = 'layout')
+    protected function render(string $view, array $data = [], string $layout = 'layout'): false|string
     {
         extract($data);
 

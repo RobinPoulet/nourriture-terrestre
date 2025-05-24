@@ -7,12 +7,12 @@ use Exception;
 
 class User extends Model
 {
-    protected static string $table = "users";
+    protected static string $table = 'users';
 
     protected string $name;
 
     protected static array $fillables = [
-        "name",
+        'name',
     ];
 
     /**

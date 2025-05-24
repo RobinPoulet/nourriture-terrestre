@@ -13,11 +13,11 @@ use App\Model\User;
 use App\Service\CookieManager;
 use Exception;
 
-require_once "./config/constants.php";
+require_once './config/constants.php';
 class OrderController extends AbstractController
 {
     /** @var string Nom du cookie pour l'id user  */
-    private const string COOKIE_NAME = "selected_user";
+    private const string COOKIE_NAME = 'selected_user';
 
     /** @var CookieManager Manager de gestion des cookies */
     private CookieManager $cookieManager;
@@ -39,22 +39,22 @@ class OrderController extends AbstractController
     public function index(): false|string
     {
         $postData = DataFetcher::getData();
-        $menu = $postData["success"];
+        $menu = $postData['success'];
         $dateMenu = $menu->creation_date;
-        $currentDate = date("Y-m-d");
+        $currentDate = date('Y-m-d');
         $resultsOrder = Order::query()
-            ->where("creation_date", "=", $currentDate)
+            ->where('creation_date', '=', $currentDate)
             ->get();
         $tabTotalQuantity = Order::getDishTotalQuantityByDate($currentDate);
         $cookieData = $this->cookieManager->get(self::COOKIE_NAME);
-        $selectedUserId = (isset($cookieData["user_id"]) ? (int)$cookieData["user_id"] : null);
+        $selectedUserId = (isset($cookieData['user_id']) ? (int)$cookieData['user_id'] : null);
 
-        return $this->render("display-orders", [
-            "dishes"           => $menu->dishes(),
-            "orders"           => $resultsOrder,
-            "dateMenu"         => $dateMenu,
-            "tabTotalQuantity" => $tabTotalQuantity,
-            "selectedUserId"   => $selectedUserId,
+        return $this->render('display-orders', [
+            'dishes'           => $menu->dishes(),
+            'orders'           => $resultsOrder,
+            'dateMenu'         => $dateMenu,
+            'tabTotalQuantity' => $tabTotalQuantity,
+            'selectedUserId'   => $selectedUserId,
         ]);
     }
 
@@ -68,35 +68,35 @@ class OrderController extends AbstractController
      */
     public function edit(Request $request, int $orderId): void
     {
-        $perso = htmlspecialchars($request->post("perso") ?? "", ENT_QUOTES, "UTF-8");
-        $dishes = ($request->post("dishes") ?? []);
-        $dishesMapped = array_map(fn ($dish) => (["quantity" => (int) $dish]), $dishes);
+        $perso = htmlspecialchars($request->post('perso') ?? '', ENT_QUOTES, 'UTF-8');
+        $dishes = ($request->post('dishes') ?? []);
+        $dishesMapped = array_map(fn ($dish) => (['quantity' => (int) $dish]), $dishes);
         $dishesInputErrors = HelperOrder::checkDishesInput($dishes);
         if (!empty($dishesInputErrors)) {
-            $tabFlashMessage["errors"][] = $dishesInputErrors;
+            $tabFlashMessage['errors'][] = $dishesInputErrors;
         }
-        if (empty($tabFlashMessage["errors"])) {
-            $userName = $request->post("user-name");
+        if (empty($tabFlashMessage['errors'])) {
+            $userName = $request->post('user-name');
             /** @var Order $orderToUpdate */
             $orderToUpdate = Order::find($orderId);
             $orderToUpdate->syncDishes($dishesMapped);
             if (!empty($perso)) {
-                Order::update($orderId, ["perso" => $perso]);
+                Order::update($orderId, ['perso' => $perso]);
             }
 
             if ($this->hasMatchingQuantities($orderToUpdate->dishes(), $dishesMapped)) {
-                $tabFlashMessage["success"] = "Ta commande a bien été modifiée $userName";
+                $tabFlashMessage['success'] = "Ta commande a bien été modifiée $userName";
             } else {
                 // La requête a échoué, renvoyer une réponse d'erreur
-                $tabFlashMessage["errors"][] = "Erreur lors de la modification de ta commande $userName";
+                $tabFlashMessage['errors'][] = "Erreur lors de la modification de ta commande $userName";
             }
         }
 
         // Stocker un message flash
         session_start();
-        $_SESSION["tab_flash_message"] = $tabFlashMessage;
+        $_SESSION['tab_flash_message'] = $tabFlashMessage;
 
-        Http::redirect("display-orders");
+        Http::redirect('display-orders');
     }
 
     /**
@@ -113,19 +113,19 @@ class OrderController extends AbstractController
         if ($order !== null) {
             $user = $order->user();
             if (Order::delete($orderId)) {
-                $tabFlashMessage["success"] = "Ta commande a bien été supprimée $user->name";
+                $tabFlashMessage['success'] = "Ta commande a bien été supprimée $user->name";
             } else {
-                $tabFlashMessage["errors"][] = "Erreur lors de ta suppression $user->name";
+                $tabFlashMessage['errors'][] = "Erreur lors de la suppression de te commande $user->name";
             }
         } else {
-            $tabFlashMessage["error"][] = "La commande n'existe pas";
+            $tabFlashMessage['error'][] = "La commande n'existe pas";
         }
 
         // Stocker un message flash
         session_start();
-        $_SESSION["tab_flash_message"] = $tabFlashMessage;
+        $_SESSION['tab_flash_message'] = $tabFlashMessage;
 
-        Http::redirect("display-orders");
+        Http::redirect('display-orders');
     }
     
     /**
@@ -137,21 +137,21 @@ class OrderController extends AbstractController
     public function create(): false|string
     {
         $postData = DataFetcher::getData();
-        $menu = $postData["success"];
+        $menu = $postData['success'];
         $dateMenu = $menu->creation_date;
         $canDisplayForm = Date::canDisplayOrderForm($dateMenu);
-        $users = User::all("name");
+        $users = User::all('name');
         $canDisplayForm = true;
         $cookieData = $this->cookieManager->get(self::COOKIE_NAME);
-        $selectedUserId = (isset($cookieData["user_id"]) ? (int)$cookieData["user_id"] : null);
+        $selectedUserId = (isset($cookieData['user_id']) ? (int)$cookieData['user_id'] : null);
 
-        return $this->render("commande", [
-            "users"          => $users,
-            "dishes"         => $menu->dishes(),
-            "dateMenu"       => $dateMenu,
-            "createOrderUrl" => COMPLETE_URL . "/create-order",
-            "canDisplayForm" => $canDisplayForm,
-            "selectedUserId" => $selectedUserId,
+        return $this->render('commande', [
+            'users'          => $users,
+            'dishes'         => $menu->dishes(),
+            'dateMenu'       => $dateMenu,
+            'createOrderUrl' => COMPLETE_URL . '/create-order',
+            'canDisplayForm' => $canDisplayForm,
+            'selectedUserId' => $selectedUserId,
         ]);
     }
 
@@ -164,37 +164,37 @@ class OrderController extends AbstractController
      */
     public function store(Request $request): void
     {
-        $dishes = ($request->post("dishes") ?? []);
-        $userId = ($request->post("user") ?? null);
-        $perso = htmlspecialchars($request->post("perso") ?? "", ENT_QUOTES, "UTF-8");
+        $dishes = ($request->post('dishes') ?? []);
+        $userId = ($request->post('user') ?? null);
+        $perso = htmlspecialchars($request->post('perso') ?? '', ENT_QUOTES, 'UTF-8');
         $dishesInputErrors = HelperOrder::checkDishesInput($dishes);
         if (!empty($dishesInputErrors)) {
-            $tabFlashMessage["errors"][] = $dishesInputErrors;
+            $tabFlashMessage['errors'][] = $dishesInputErrors;
         }
         if (!isset($userId)) {
-            $tabFlashMessage["errors"][] = "Merci de sélectionner un nom";
+            $tabFlashMessage['errors'][] = "Merci de sélectionner un nom";
         }
-        if (empty($tabFlashMessage["errors"])) {
+        if (empty($tabFlashMessage['errors'])) {
             /** @var Order $newOrder */
-            $newOrder = Order::create(["user_id" => $userId, "perso" => $perso]);
+            $newOrder = Order::create(['user_id' => $userId, 'perso' => $perso]);
             if ($newOrder) {
                 $newOrder->attachDishes($dishes);
-                $this->cookieManager->refreshIfNeeded(self::COOKIE_NAME, ["user_id" => (int)$userId]);
+                $this->cookieManager->refreshIfNeeded(self::COOKIE_NAME, ['user_id' => (int)$userId]);
                 $user = User::find($userId);
-                $tabFlashMessage["success"] = "Ta commande a bien été enregistrée $user->name";
+                $tabFlashMessage['success'] = "Ta commande a bien été enregistrée $user->name";
             } else {
-                $tabFlashMessage["errors"][] = "Erreur lors de l'enregistrement de la commande.";
+                $tabFlashMessage['errors'][] = "Erreur lors de l'enregistrement de la commande.";
             }
         }
 
         // Stocker un message flash
         session_start();
-        $_SESSION["tab_flash_message"] = $tabFlashMessage;
+        $_SESSION['tab_flash_message'] = $tabFlashMessage;
 
-        if (!empty($tabFlashMessage["errors"])) {
-            Http::redirect("commande");
+        if (!empty($tabFlashMessage['errors'])) {
+            Http::redirect('commande');
         } else {
-            Http::redirect("display-orders");
+            Http::redirect('display-orders');
         }
 
     }
@@ -209,11 +209,11 @@ class OrderController extends AbstractController
     public function hasMatchingQuantities(array $dishes, array $expectedQuantities): bool
     {
         foreach ($dishes as $dish) {
-            if (!isset($expectedQuantities[$dish->id]["quantity"])) {
+            if (!isset($expectedQuantities[$dish->id]['quantity'])) {
                 return false; // id manquant
             }
 
-            $expectedQuantity = $expectedQuantities[$dish->id]["quantity"];
+            $expectedQuantity = $expectedQuantities[$dish->id]['quantity'];
             $actualQuantity = $dish->pivot->quantity ?? null;
             if ($actualQuantity !== $expectedQuantity) {
                 return false;

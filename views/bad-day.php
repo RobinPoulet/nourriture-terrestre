@@ -42,7 +42,7 @@
       <span class="page-404">&#x1F62D;PAS DE NOURRITURE CELESTE&#x1F62D;</span>
       <span class="not-found">
         &#x1F63F;... cette semaine ...&#x1F63F;
-        <img src="<?= $imgSrc ?>" alt="message d'erreur\">"
+        <img src="<?= $imgSrc ?>" alt="message d'erreur">
       </span>
       <div class="moon-sky"></div>
       <div class="satellite">☄</div>
