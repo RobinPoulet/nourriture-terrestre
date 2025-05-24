@@ -61,7 +61,7 @@
                                                 class="btn btn-sm btn-outline-warning"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#editOrderModal"
-                                                data-perso="<?= htmlspecialchars($order->perso ?? "") ?>"
+                                                data-perso="<?= htmlspecialchars($order->perso ?? '') ?>"
                                                 data-username="<?= htmlspecialchars($user->name) ?>"
                                                 data-order-id="<?= $order->id ?>"
                                                 data-order-dishes="<?= htmlspecialchars($dishesJson) ?>"
@@ -94,8 +94,8 @@
                     </tbody>
                 </table>
             </div>
-        <?php elseif (isset($orders["error"])) : ?>
-            <div class="alert alert-danger text-center mt-4"><?= $orders["error"] ?></div>
+        <?php elseif (isset($orders['error'])) : ?>
+            <div class="alert alert-danger text-center mt-4"><?= $orders['error'] ?></div>
         <?php else : ?>
             <div class="alert alert-info text-center mt-4">Pas de commande aujourd'hui</div>
         <?php endif; ?>

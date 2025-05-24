@@ -33,9 +33,9 @@ class Request
     public function all(): array
     {
         return [
-            "get" => $this->get,
-            "post" => $this->post,
-            "files" => $this->files
+            'get' => $this->get,
+            'post' => $this->post,
+            'files' => $this->files
         ];
     }
 }

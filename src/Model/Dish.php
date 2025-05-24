@@ -8,17 +8,17 @@ use JsonSerializable;
 
 class Dish extends Model implements JsonSerializable
 {
-    protected static string $table = "dishes";
+    protected static string $table = 'dishes';
 
     protected string $name;
     protected int $total;
     protected int $menu_id;
     protected static array $fillables = [
-        "name",
-        "total",
-        "menu_id",
-        "creation_date",
-        "modification_date",
+        'name',
+        'total',
+        'menu_id',
+        'creation_date',
+        'modification_date',
     ];
 
     public function orders(): array

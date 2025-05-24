@@ -13,7 +13,7 @@ class Http
     public static function redirect(string $route, array $params = []): void
     {
         // Construire l'URL de redirection
-        $url = COMPLETE_URL."/".$route;
+        $url = COMPLETE_URL.'/'.$route;
 
         // Ajouter les paramètres GET s'il y en a
         if (!empty($params)) {
@@ -21,7 +21,7 @@ class Http
         }
 
         // Redirection
-        header("Location: " . $url);
+        header('Location: ' . $url);
         exit();
     }
 }

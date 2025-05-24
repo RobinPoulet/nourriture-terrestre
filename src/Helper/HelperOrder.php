@@ -26,7 +26,7 @@ abstract class HelperOrder
 
     public static function checkDishesInput(array $dishes): string
     {
-        $returnValue = "";
+        $returnValue = '';
 
         // Vérifier si tous les éléments sont des entiers positifs
         $filteredDishes = array_filter(
@@ -35,7 +35,7 @@ abstract class HelperOrder
         );
 
         if (empty($filteredDishes)) {
-            $returnValue = "Il faut commander au moins un plat";
+            $returnValue = 'Il faut commander au moins un plat';
         }
 
         return $returnValue;

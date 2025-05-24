@@ -114,7 +114,7 @@ class Router
         if ($this->isAjax()) {
             echo json_encode(['error' => 'Page non trouvée']);
         } else {
-            echo "404 - Page non trouvée";
+            echo '404 - Page non trouvée';
         }
     }
 

@@ -17,7 +17,7 @@ abstract class  Date
     {
         $date = new DateTime();
 
-        return (int)$date->format("N");
+        return (int)$date->format('N');
     }
 
     /**
@@ -28,8 +28,8 @@ abstract class  Date
     public static function getCurrentDatetime(): int
     {
         $date = new DateTime();
-        $hoursMinutes = (int)$date->format("H") * 60;
-        $secondes = (int)$date->format("i");
+        $hoursMinutes = (int)$date->format('H') * 60;
+        $secondes = (int)$date->format('i');
 
         return $hoursMinutes + $secondes;
     }
@@ -67,7 +67,7 @@ abstract class  Date
     {
         $returnValue = false;
         $currentDate = new DateTime();
-        $formattedCurrentDate = $currentDate->format("Y-m-d");
+        $formattedCurrentDate = $currentDate->format('Y-m-d');
         // On peut commander le lundi de 7h00 à 11h45 inclus, si il y a bien un menu publié cette semaine
         // Nouveau menu chaque dimanche, donc si il y a bien un menu cette semaine, la date du menu doit être inférieur ou égal à 1 par rapport à la date du jour
         if (
@@ -100,8 +100,8 @@ abstract class  Date
         $daysDifference = $interval->days;
 
         if (
-            $currentDate->format("w") === "0"
-            || $currentDate->format("w") === "1"
+            $currentDate->format('w') === '0'
+            || $currentDate->format('w') === '1'
         ) {
             $returnValue = $daysDifference <= 8;
         } else {

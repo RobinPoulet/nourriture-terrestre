@@ -14,10 +14,10 @@ class UserController extends AbstractController
      */
     public function index(): false|string
     {
-        $users = User::all("name");
+        $users = User::all('name');
 
-        return $this->render("users", [
-            "users" => $users,
+        return $this->render('users', [
+            'users' => $users,
         ]);
     }
 
@@ -29,7 +29,7 @@ class UserController extends AbstractController
             $tabFlashMessage['errors'][] = 'Il faut un nom pour l\'utilisateur';
         } else {
             $currentDate = date('Y-m-d');
-            $newUser = User::create(["name" => $name, "creation_date" => $currentDate]);
+            $newUser = User::create(['name' => $name, 'creation_date' => $currentDate]);
             if ($newUser) {
                 $tabFlashMessage['success'] = 'L\'utilisateur ' . $newUser->name . ' a bien été enregistré';
             } else {
@@ -51,7 +51,7 @@ class UserController extends AbstractController
         if (empty($name)) {
             $tabFlashMessage['errors'][] = 'Il faut un nom pour l\'utilisateur';
         } else {
-            $userUpdated = User::update($userId, ["name" => $name]);
+            $userUpdated = User::update($userId, ['name' => $name]);
             if ($userUpdated) {
                 $tabFlashMessage['success'] = "Le nom de l'utilisateur $userUpdated->name a bien été modifié";
             } else {
