@@ -35,7 +35,7 @@ abstract class HelperOrder
         );
 
         if (empty($filteredDishes)) {
-            $returnValue = "Il faut commander au moins un article";
+            $returnValue = "Il faut commander au moins un plat";
         }
 
         return $returnValue;

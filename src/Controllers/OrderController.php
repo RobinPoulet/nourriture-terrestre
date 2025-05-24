@@ -115,7 +115,7 @@ class OrderController extends AbstractController
             if (Order::delete($orderId)) {
                 $tabFlashMessage["success"] = "Ta commande a bien été supprimée $user->name";
             } else {
-                $tabFlashMessage["errors"][] = "Erreur lors de ta suppression $user->name";
+                $tabFlashMessage["errors"][] = "Erreur lors de la suppression de te commande $user->name";
             }
         } else {
             $tabFlashMessage["error"][] = "La commande n'existe pas";

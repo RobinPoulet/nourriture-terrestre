@@ -6,7 +6,7 @@
 ?>
 <div class="container mt-4 w-50">
     <div class="d-flex justify-content-between align-items-center">
-        <h2>Liste des Utilisateurs</h2>
+        <h2>Liste des utilisateurs</h2>
         <!-- Utilisation du bouton pour ouvrir la modale d'ajout -->
         <button
                 class="btn btn-outline-primary"
