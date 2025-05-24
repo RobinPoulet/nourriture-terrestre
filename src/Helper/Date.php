@@ -13,7 +13,7 @@ abstract class  Date
      *
      * @return int Le jour de la semaine actuel (1 pour lundi, 2 pour mardi, ..., 7 pour dimanche).
      */
-    static public function getCurrentDateWeekDay(): int
+    public static function getCurrentDateWeekDay(): int
     {
         $date = new DateTime();
 
@@ -25,7 +25,7 @@ abstract class  Date
      *
      * @return int La date et l'heure actuelles sous forme de minutes depuis minuit.
      */
-    static public function getCurrentDatetime(): int
+    public static function getCurrentDatetime(): int
     {
         $date = new DateTime();
         $hoursMinutes = (int)$date->format("H") * 60;
@@ -43,7 +43,7 @@ abstract class  Date
      * @return int Le nombre de jours d'écart entre les deux dates.
      * @throws DateMalformedStringException
      */
-    static public function dateDiff(string $date1_str, string $date2_str): int
+    public static function dateDiff(string $date1_str, string $date2_str): int
     {
         // Convertir les chaînes de date en objets DateTime
         $date1 = new DateTime($date1_str);
@@ -63,7 +63,7 @@ abstract class  Date
      *
      * @return bool Retourne true si il est possible d'afficher le formulaire de commande
      */
-    static public function canDisplayOrderForm(string $dateMenu): bool
+    public static function canDisplayOrderForm(string $dateMenu): bool
     {
         $returnValue = false;
         $currentDate = new DateTime();
@@ -89,7 +89,7 @@ abstract class  Date
      * @return boolean
      * @throws DateMalformedStringException
      */
-    static public function isNewMenuAvailable(string $dateMenu): bool
+    public static function isNewMenuAvailable(string $dateMenu): bool
     {
         $currentDate = new DateTimeImmutable();
         $storedDateTime = new DateTimeImmutable($dateMenu);
