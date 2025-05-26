@@ -40,6 +40,7 @@ class OrderController extends AbstractController
     {
         $postData = DataFetcher::getData();
         $menu = $postData['success'];
+        $isOpen = $menu->is_open;
         $dateMenu = $menu->creation_date;
         $currentDate = date('Y-m-d');
         $resultsOrder = Order::query()
@@ -52,6 +53,7 @@ class OrderController extends AbstractController
         return $this->render('display-orders', [
             'dishes'           => $menu->dishes(),
             'orders'           => $resultsOrder,
+            'isOpen'           => $isOpen,
             'dateMenu'         => $dateMenu,
             'tabTotalQuantity' => $tabTotalQuantity,
             'selectedUserId'   => $selectedUserId,

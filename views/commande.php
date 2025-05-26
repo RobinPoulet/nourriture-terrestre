@@ -68,15 +68,9 @@
     </div>
     <?php else : ?>
     <?php if (!$isOpen) : ?>
-        <h5 class="text-center mb-5"
-            style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-            Nourriture terrestre est fermé cette semaine
-        </h5>
-    <?php else : ?>
-            <h5 class="text-center mb-5"
-                style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-               La prise de commande est ouverte de 00h à 11h15 le lundi
-            </h5>
+            <div class="alert alert-info text-center mt-4">Nourriture terrestre est fermé cette semaine</div>
+        <?php else : ?>
+            <div class="alert alert-info text-center mt-4">La prise de commande est ouverte de 00h à 11h15 le lundi</div>
     <?php endif; ?>
     <?php endif; ?>
 </div>
