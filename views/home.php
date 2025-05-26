@@ -56,8 +56,21 @@
 
 <?php else: ?>
 <div class="container mt-5">
-    <div class="alert alert-danger text-center" role="alert">
-        Erreur lors de la récupération des données
+    <!-- Image du menu -->
+    <div class="col-lg-5 text-center">
+        <figure class="figure">
+            <img
+                    src="<?= PREFIX ?>/assets/IMG/<?= htmlspecialchars($menu->img_src) ?>"
+                    alt="Photo du menu"
+                    class="figure-img img-fluid rounded shadow-sm"
+                    style="max-height: 320px; object-fit: cover;"
+            >
+            <?php if (!empty($menu->figcaption)) : ?>
+                <figcaption class="figure-caption text-muted mt-3" style="font-style: italic;">
+                    <?= htmlspecialchars($menu->figcaption) ?>
+                </figcaption>
+            <?php endif; ?>
+        </figure>
     </div>
 </div>
 <?php endif; ?>

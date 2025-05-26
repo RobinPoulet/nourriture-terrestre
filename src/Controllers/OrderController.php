@@ -139,6 +139,7 @@ class OrderController extends AbstractController
         $postData = DataFetcher::getData();
         $menu = $postData['success'];
         $dateMenu = $menu->creation_date;
+        $isOpen = $menu->is_open;
         $canDisplayForm = Date::canDisplayOrderForm($dateMenu);
         $users = User::all('name');
         $cookieData = $this->cookieManager->get(self::COOKIE_NAME);
@@ -147,6 +148,7 @@ class OrderController extends AbstractController
         return $this->render('commande', [
             'users'          => $users,
             'dishes'         => $menu->dishes(),
+            'isOpen'         => $isOpen,
             'dateMenu'       => $dateMenu,
             'createOrderUrl' => COMPLETE_URL . '/create-order',
             'canDisplayForm' => $canDisplayForm,
