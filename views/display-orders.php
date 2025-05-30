@@ -1,12 +1,13 @@
 <?php
 /** @var \App\Model\Dish[] $dishes */
 /** @var \App\Model\Order[] $orders */
+/** @var bool $isOpen */
 /** @var string $dateMenu */
 /** @var array $tabTotalQuantity */
 /** @var ?int $selectedUserId */
 ?>
 <div class="container mt-5">
-    <?php if (!empty($dishes) && isset($dateMenu)) : ?>
+    <?php if ($isOpen) : ?>
         <?php if (!empty($orders)) : ?>
             <!-- Résumé rapide -->
             <div class="row text-center mb-4">
@@ -100,9 +101,8 @@
             <div class="alert alert-info text-center mt-4">Pas de commande aujourd'hui</div>
         <?php endif; ?>
     <?php else : ?>
-        <div class="alert alert-info text-center mt-4">Erreur lors de la récupération des informations du menu</div>
+        <div class="alert alert-info text-center mt-4">Nourriture terrestre est fermé cette semaine</div>
     <?php endif; ?>
-
     <?php include_once __DIR__ . '/partials/order_edit_modal.php'; ?>
 </div>
 <style>

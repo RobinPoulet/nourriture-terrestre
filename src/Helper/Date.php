@@ -62,19 +62,19 @@ abstract class  Date
      * @param string $dateMenu Date de publication du menu
      *
      * @return bool Retourne true si il est possible d'afficher le formulaire de commande
+     * @throws DateMalformedStringException
      */
     public static function canDisplayOrderForm(string $dateMenu): bool
     {
         $returnValue = false;
         $currentDate = new DateTime();
         $formattedCurrentDate = $currentDate->format('Y-m-d');
-        // On peut commander le lundi de 7h00 à 11h45 inclus, si il y a bien un menu publié cette semaine
-        // Nouveau menu chaque dimanche, donc si il y a bien un menu cette semaine, la date du menu doit être inférieur ou égal à 1 par rapport à la date du jour
+        // On peut commander le lundi de 00h00 à 11h15 inclus, si il y a bien un menu publié cette semaine
+        // Nouveau menu chaque dimanche, donc si il y a bien un menu cette semaine, la date du menu doit être inférieur ou égal à 2 par rapport à la date du jour
         if (
             self::getCurrentDateWeekDay() === 1
-            && self::getCurrentDatetime() >= 6 * 60
-            && self::getCurrentDatetime() <= 23 * 60 + 45
-            && self::dateDiff($formattedCurrentDate, $dateMenu) <= 1
+            && self::getCurrentDatetime() <= 11 * 60 + 15
+            && self::dateDiff($formattedCurrentDate, $dateMenu) <= 2
         ) {
             $returnValue = true;
         }

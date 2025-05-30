@@ -40,6 +40,7 @@ class OrderController extends AbstractController
     {
         $postData = DataFetcher::getData();
         $menu = $postData['success'];
+        $isOpen = $menu->is_open;
         $dateMenu = $menu->creation_date;
         $currentDate = date('Y-m-d');
         $resultsOrder = Order::query()
@@ -52,6 +53,7 @@ class OrderController extends AbstractController
         return $this->render('display-orders', [
             'dishes'           => $menu->dishes(),
             'orders'           => $resultsOrder,
+            'isOpen'           => $isOpen,
             'dateMenu'         => $dateMenu,
             'tabTotalQuantity' => $tabTotalQuantity,
             'selectedUserId'   => $selectedUserId,
@@ -139,15 +141,16 @@ class OrderController extends AbstractController
         $postData = DataFetcher::getData();
         $menu = $postData['success'];
         $dateMenu = $menu->creation_date;
+        $isOpen = $menu->is_open;
         $canDisplayForm = Date::canDisplayOrderForm($dateMenu);
         $users = User::all('name');
-        $canDisplayForm = true;
         $cookieData = $this->cookieManager->get(self::COOKIE_NAME);
         $selectedUserId = (isset($cookieData['user_id']) ? (int)$cookieData['user_id'] : null);
 
         return $this->render('commande', [
             'users'          => $users,
             'dishes'         => $menu->dishes(),
+            'isOpen'         => $isOpen,
             'dateMenu'       => $dateMenu,
             'createOrderUrl' => COMPLETE_URL . '/create-order',
             'canDisplayForm' => $canDisplayForm,
