@@ -31,7 +31,7 @@ class Database
         if (!self::$instance) {
             $config = require_once __DIR__.'/../../config/database.php';
             try {
-                self::$instance = new PDO("mysql:host=" . $config['host'] . ";dbname=" . $config['dbname'], $config['username'], $config['password']);
+                self::$instance = new PDO('mysql:host=' . $config['host'] . ';dbname=' . $config['dbname'], $config['username'], $config['password']);
                 self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
                 // Ici il n'y a qu'une requête ajax qui utilise la connexion à la base de donnée

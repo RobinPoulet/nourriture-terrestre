@@ -13,12 +13,12 @@ class HomeController extends AbstractController
     public function index(): false|string
     {
         $data = DataFetcher::getData();
-        $menu = $data["success"];
+        $menu = $data['success'];
         $isDishes = (!empty($menu->dishes()));
 
-        return $this->render("home", [
-            "menu"     => $menu,
-            "isDishes" => $isDishes,
+        return $this->render('home', [
+            'menu'     => $menu,
+            'isDishes' => $isDishes,
         ]);
     }
 }

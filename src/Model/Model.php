@@ -22,7 +22,7 @@ abstract class Model extends BaseModel
         return new QueryBuilder(static::$table, static::class);
     }
 
-    public static function all($orderBy = ""): array
+    public static function all($orderBy = ''): array
     {
         $returnValue = [];
 
@@ -40,7 +40,7 @@ abstract class Model extends BaseModel
     public static function find(int $id): ?Object
     {
         return static::query()
-            ->where('id', "=", $id)
+            ->where('id', '=', $id)
             ->first();
     }
 
