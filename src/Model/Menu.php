@@ -8,6 +8,7 @@ class Menu extends Model
 {
     protected static string $table = 'menus';
 
+    public ?int $sms_response_id = null;
     protected string $img_src;
     protected string $img_figcaption;
     protected bool $is_open;
@@ -33,4 +34,12 @@ class Menu extends Model
         }
         return $this->dishesCache;
     }
+
+    /**
+     * @throws Exception
+     */
+//    public function smsResponse(): ?Menu
+//    {
+//        return $this->belongsTo(SmsResponse::class, 'sms_response_id');
+//    }
 }

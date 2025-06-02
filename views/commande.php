@@ -6,6 +6,8 @@
 /** @var bool $canDisplayForm */
 /** @var bool $isOpen */
 /** @var int $selectedUserId */
+
+$canDisplayForm = true;
 ?>
 <div class="container py-5">
     <?php if ($isOpen && $canDisplayForm) : ?>

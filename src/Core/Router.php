@@ -12,73 +12,73 @@ class Router
     private const string GET = 'GET';
     private const string POST = 'POST';
     private array $routes = [
-        '/index' => [
-            'method' => self::GET,
+        '/index'                 => [
+            'method'     => self::GET,
             'controller' => 'HomeController',
-            'action' => 'index'
+            'action'     => 'index'
         ],
-        '/' => [
-            'method' => self::GET,
+        '/'                      => [
+            'method'     => self::GET,
             'controller' => 'HomeController',
-            'action' => 'index'
+            'action'     => 'index'
         ],
-        '/commande' => [
-            'method' => self::GET,
+        '/commande'              => [
+            'method'     => self::GET,
             'controller' => 'OrderController',
-            'action' => 'create'
+            'action'     => 'create'
         ],
-        '/users' => [
-            'method' => self::GET,
+        '/users'                 => [
+            'method'     => self::GET,
             'controller' => 'UserController',
-            'action' => 'index'
+            'action'     => 'index'
         ],
-        '/display-orders' => [
-            'method' => self::GET,
+        '/display-orders'        => [
+            'method'     => self::GET,
             'controller' => 'OrderController',
-            'action' => 'index'
+            'action'     => 'index'
         ],
-        '/create-user' => [
-            'method' => self::POST,
+        '/create-user'           => [
+            'method'     => self::POST,
             'controller' => 'UserController',
-            'action' => 'create'
+            'action'     => 'create'
         ],
-        '/create-order' => [
-            'method' => self::POST,
+        '/create-order'          => [
+            'method'     => self::POST,
             'controller' => 'OrderController',
-            'action' => 'store'
+            'action'     => 'store'
         ],
-        '/edit-order/:orderId' => [
-            'method' => self::POST,
-            'pattern' => '#^/edit-order/(\d+)#',
-            'params' => ['orderId'],
+        '/edit-order/:orderId'   => [
+            'method'     => self::POST,
+            'pattern'    => '#^/edit-order/(\d+)#',
+            'params'     => ['orderId'],
             'controller' => 'OrderController',
-            'action' => 'edit'
+            'action'     => 'edit'
         ],
         '/delete-order/:orderId' => [
-            'method' => self::GET,
-            'pattern' => '#^/delete-order/(\d+)#',
-            'params' => ['orderId'],
+            'method'     => self::GET,
+            'pattern'    => '#^/delete-order/(\d+)#',
+            'params'     => ['orderId'],
             'controller' => 'OrderController',
-            'action' => 'delete'
+            'action'     => 'delete'
         ],
-        '/edit-user/:userId' => [
-            'method' => self::POST,
-            'pattern' => '#^/edit-user/(\d+)#',
-            'params' => ['userId'],
+        '/edit-user/:userId'     => [
+            'method'     => self::POST,
+            'pattern'    => '#^/edit-user/(\d+)#',
+            'params'     => ['userId'],
             'controller' => 'UserController',
-            'action' => 'edit'
+            'action'     => 'edit'
         ],
-        '/delete-user/:userId' => [
-            'method' => self::GET,
-            'pattern' => '#^/delete-user/(\d+)#',
-            'params' => ['userId'],
+        '/delete-user/:userId'   => [
+            'method'     => self::GET,
+            'pattern'    => '#^/delete-user/(\d+)#',
+            'params'     => ['userId'],
             'controller' => 'UserController',
-            'action' => 'delete'
+            'action'     => 'delete'
         ],
-        '/get-all-users' => [
-            'method' => self::POST,
-            'controller' => 'UserController',
-            'action' => 'getAllUsers'
+        '/send-sms'              => [
+            'method'     => self::POST,
+            'controller' => 'SendSMSController',
+            'action'     => 'send'
         ]
     ];
 

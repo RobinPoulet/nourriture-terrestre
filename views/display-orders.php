@@ -32,7 +32,7 @@
             </div>
 
             <!-- Tableau commandes -->
-            <div class="table-responsive shadow rounded fade-in">
+            <div class="shadow rounded fade-in">
                 <table class="table table-custom table-bordered align-middle text-center sticky-header">
                     <thead>
                     <tr>
@@ -94,6 +94,16 @@
                     </tr>
                     </tbody>
                 </table>
+                <div class="text-center mt-4 mb-5">
+                    <form id="send-sms-form" method="POST" action="<?= COMPLETE_URL ?>/send-sms" style="display: inline;">
+                        <?php foreach ($tabTotalQuantity as $label => $qty): ?>
+                            <input type="hidden" name="totalQuantity[<?= htmlspecialchars($label) ?>]" value="<?= $qty ?>">
+                        <?php endforeach; ?>
+                        <button type="submit" class="btn btn-success shadow-sm">
+                            📩 Envoyer le récapitulatif par SMS
+                        </button>
+                    </form>
+                </div>
             </div>
         <?php elseif (isset($orders['error'])) : ?>
             <div class="alert alert-danger text-center mt-4"><?= $orders['error'] ?></div>

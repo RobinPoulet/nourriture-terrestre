@@ -10,4 +10,6 @@ define('BASE_PATH', dirname(__DIR__));  // Définit la racine du projet
 define('APP_ENV', $_ENV['APP_ENV']);
 define('BASE_URL', $_ENV['BASE_URL']);
 define('COMPLETE_URL', $_ENV['COMPLETE_URL']);
+define('API_KEY_SMS', $_ENV['API_KEY_SMS']);
+define('HOST_SMS', $_ENV['HOST_SMS']);
 const PREFIX = (APP_ENV === 'development' ? '/nourriture-terrestre' : '');
