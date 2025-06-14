@@ -8,23 +8,19 @@ class SmsResponse extends Model
 {
     protected static string $table = 'sms_responses';
     protected static array $fillables = [
-        'bulk_id',
-        'message_id',
+        'message',
         'destination',
-        'status_group_id',
-        'status_group_name',
-        'status_id',
-        'status_name',
-        'status_description',
-        'status_action',
+        'sms_batch_id',
+        'status',
+        'menu_id',
         'creation_date',
     ];
 
     /**
      * @throws Exception
      */
-//    public function dishes(): array
-//    {
-//        return $this->hasMany(Dish::class, 'sms_response_id');
-//    }
+    public function menu(): ?Menu
+    {
+        return $this->belongsTo(Menu::class, 'menu_id');
+    }
 }

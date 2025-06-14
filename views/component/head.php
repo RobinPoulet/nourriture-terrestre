@@ -30,4 +30,5 @@ if (in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1']) || $_SERVER['SERVER_
     <script src="assets/js/index.js"></script>
     <script src="assets/js/users.js"></script>
     <script src="assets/js/display-orders.js"></script>
+    <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
 </head>

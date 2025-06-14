@@ -4,12 +4,24 @@
 /** @var bool $isOpen */
 /** @var string $dateMenu */
 /** @var array $tabTotalQuantity */
+/** @var array $smsSent */
 /** @var ?int $selectedUserId */
+/** @var int $menuId */
 ?>
 <div class="container mt-5">
     <?php if ($isOpen) : ?>
         <?php if (!empty($orders)) : ?>
             <!-- Résumé rapide -->
+            <?php if(!empty($smsSent)) : ?>
+            <div class="row text-center mb-4" id="sms-summary-target">
+                <div class="col-12">
+                    <div class="summary-card alert alert-<?= $smsSent['status'] ?>">
+                        <h6 class="text-muted mb-1">🗨️ SMS De Commande </h6>
+                        <p class="alert alert-<?= $smsSent['status'] ?>"><?= $smsSent['message'] ?></p>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
             <div class="row text-center mb-4">
                 <div class="col-md-4">
                     <div class="summary-card">
@@ -94,16 +106,6 @@
                     </tr>
                     </tbody>
                 </table>
-                <div class="text-center mt-4 mb-5">
-                    <form id="send-sms-form" method="POST" action="<?= COMPLETE_URL ?>/send-sms" style="display: inline;">
-                        <?php foreach ($tabTotalQuantity as $label => $qty): ?>
-                            <input type="hidden" name="totalQuantity[<?= htmlspecialchars($label) ?>]" value="<?= $qty ?>">
-                        <?php endforeach; ?>
-                        <button type="submit" class="btn btn-success shadow-sm">
-                            📩 Envoyer le récapitulatif par SMS
-                        </button>
-                    </form>
-                </div>
             </div>
         <?php elseif (isset($orders['error'])) : ?>
             <div class="alert alert-danger text-center mt-4"><?= $orders['error'] ?></div>

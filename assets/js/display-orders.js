@@ -2,6 +2,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const pathname = window.location.pathname;
     const pageName = pathname.split('/').pop();
     if (pageName === 'display-orders') {
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        const pusher = new Pusher('79beb406572478ae2b95', {
+            cluster: 'eu'
+        });
+
+        const channel = pusher.subscribe('send-sms');
+        channel.bind('send-sms', function(data) {
+            createSmsSummary(data['status'], data['message']);
+        });
         const completeUrl = document.getElementById('complete-url').value;
         // Sélectionne tous les boutons de suppression
         document.querySelectorAll('.btn-outline-danger').forEach(button => {
@@ -68,3 +79,33 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+function createSmsSummary(status, message) {
+    // Ne rien faire si un bloc a déjà été injecté
+    if (document.querySelector('.sms-summary-block')) {
+        console.log("Bloc SMS déjà présent.");
+        return;
+    }
+
+    // Trouver l'élément summary-card le plus proche pour l'insérer avant
+    const closestSummaryCard = document.querySelector('.summary-card');
+    if (!closestSummaryCard) {
+        console.warn("Aucun élément .summary-card trouvé pour insertion.");
+        return;
+    }
+
+    // Création du bloc SMS
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'row text-center mb-4 sms-summary-block';
+    rowDiv.innerHTML = `
+        <div class="col-12">
+            <div class="summary-card alert alert-${status}">
+                <h6 class="text-muted mb-1">🗨️ SMS De Commande</h6>
+                <p class="alert alert-${status}">${message}</p>
+            </div>
+        </div>
+    `;
+
+    // Insertion du bloc juste avant le summary-card trouvé
+    closestSummaryCard.parentNode.parentNode.insertBefore(rowDiv, closestSummaryCard.parentNode);
+}

@@ -9,14 +9,16 @@ use App\Helper\HelperOrder;
 use App\Http\Request;
 use App\Model\Dish;
 use App\Model\Order;
+use App\Model\SmsResponse;
 use App\Model\User;
 use App\Service\CookieManager;
 use Exception;
 
 require_once './config/constants.php';
+
 class OrderController extends AbstractController
 {
-    /** @var string Nom du cookie pour l'id user  */
+    /** @var string Nom du cookie pour l'id user */
     private const string COOKIE_NAME = 'selected_user';
 
     /** @var CookieManager Manager de gestion des cookies */
@@ -41,6 +43,21 @@ class OrderController extends AbstractController
         $postData = DataFetcher::getData();
         $menu = $postData['success'];
         $isOpen = $menu->is_open;
+        $smsSent = [];
+        if ($isOpen) {
+            $smsResponse = SmsResponse::query()
+                ->where('menu_id', '=', $menu->id)
+                ->first();
+            $status = ($smsResponse->status ?? '');
+            if ($status === 'success') {
+                $smsSent['message'] = 'Envoyé avec succès à '. (new \DateTime($smsResponse->created_at))->format('H:i');
+                $smsSent['status'] = $status;
+            }
+            if ($status === 'error') {
+                $smsSent['message'] = 'Echec de l\'envoi';
+                $smsSent['status'] = $status;
+            }
+        }
         $dateMenu = $menu->creation_date;
         $currentDate = date('Y-m-d');
         $resultsOrder = Order::query()
@@ -56,7 +73,9 @@ class OrderController extends AbstractController
             'isOpen'           => $isOpen,
             'dateMenu'         => $dateMenu,
             'tabTotalQuantity' => $tabTotalQuantity,
+            'smsSent'          => $smsSent,
             'selectedUserId'   => $selectedUserId,
+            'menuId'           => $menu->id,
         ]);
     }
 
@@ -64,7 +83,7 @@ class OrderController extends AbstractController
      * Editer une commande
      *
      * @param Request $request Objet request du formulaire
-     * @param int $orderId Id de la commande à modifier
+     * @param int     $orderId Id de la commande à modifier
      *
      * @return void
      */
@@ -72,7 +91,7 @@ class OrderController extends AbstractController
     {
         $perso = htmlspecialchars($request->post('perso') ?? '', ENT_QUOTES, 'UTF-8');
         $dishes = ($request->post('dishes') ?? []);
-        $dishesMapped = array_map(fn ($dish) => (['quantity' => (int) $dish]), $dishes);
+        $dishesMapped = array_map(fn($dish) => (['quantity' => (int)$dish]), $dishes);
         $dishesInputErrors = HelperOrder::checkDishesInput($dishes);
         if (!empty($dishesInputErrors)) {
             $tabFlashMessage['errors'][] = $dishesInputErrors;
@@ -129,7 +148,7 @@ class OrderController extends AbstractController
 
         Http::redirect('display-orders');
     }
-    
+
     /**
      * Afficher le formulaire de prise de commande
      *
@@ -205,7 +224,7 @@ class OrderController extends AbstractController
     /**
      * Vérifie si chaque dish dans $dishes a une quantité correspondant à $expectedQuantities[dish_id].
      *
-     * @param Dish[] $dishes
+     * @param Dish[]            $dishes
      * @param array<int, array> $expectedQuantities
      * @return bool
      */

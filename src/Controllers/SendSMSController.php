@@ -2,67 +2,82 @@
 
 namespace App\Controllers;
 
-use App\Http\Request;
 use App\Model\Dish;
-use Infobip\Configuration;
-use Infobip\ApiException;
-use Infobip\Model\SmsRequest;
-use Infobip\Model\SmsDestination;
-use Infobip\Model\SmsMessage;
-use Infobip\Api\SmsApi;
-use Infobip\Model\SmsTextContent;
+use App\Model\SmsResponse;
 
 class SendSMSController extends AbstractController
 {
-    private const string PHONE_NUMBER_DESTINATION = '33636149634';
-    private Configuration $configuration;
-    public function __construct()
+    private const string PHONE_NUMBER_DESTINATION = '+33636149634';
+    private const int HTTP_CODE_SUCCESS = 201;
+    public function send(array $totalQuantity, int $menuId, string $deviceId, string $apiKey): void
     {
-        $this->configuration = new Configuration(
-            host: HOST_SMS,
-            apiKey: API_KEY_SMS,
-        );
-    }
+        $url = 'https://api.textbee.dev/api/v1/gateway/devices/'.$deviceId.'/send-sms';
 
-    public function send(Request $request): void
-    {
-        $message = $this->buildMessage($request->post('totalQuantity'));
+        $message = $this->formatSmsKeyValue($totalQuantity);
 
-        $sendSmsApi = new SmsApi(config: $this->configuration);
+        $data = [
+            'recipients' => [self::PHONE_NUMBER_DESTINATION], // Numéro en format international
+            'message'    => $message,
+        ];
 
-        $message = new SmsMessage(
-            destinations: [
-                new SmsDestination(
-                    to: self::PHONE_NUMBER_DESTINATION,
-                )
-            ],
-            content: new SmsTextContent(
-                text: $message
-            ),
-            sender: '447491163443'
-        );
+        $headers = [
+            'Content-Type: application/json',
+            'x-api-key: '.$apiKey
+        ];
 
-        $request = new SmsRequest(messages: [$message]);
+        $curl = curl_init($url);
+        curl_setopt_array($curl, [
+            CURLOPT_POST           => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER         => true,               // On veut récupérer les entêtes HTTP + le corps
+            CURLOPT_HTTPHEADER     => $headers,
+            CURLOPT_POSTFIELDS     => json_encode($data),
+        ]);
 
-        try {
-            $smsResponse = $sendSmsApi->sendSmsMessages($request);
-            var_dump($smsResponse);
-        } catch (ApiException $apiException) {
-            // HANDLE THE EXCEPTION
-        }
-    }
+        $response = curl_exec($curl);
 
-    private function buildMessage(array $tabTotalDishes): string
-    {
-        $tabMessages = [];
-        // Reconstitution du total en message
-        foreach ($tabTotalDishes as $dishId => $quantity) {
-            if ($quantity > 0) {
-                $dishName = Dish::find($dishId)->name;
-                $tabMessages[] = $quantity . " " . $dishName;
-            }
+        // Si une erreur cURL est survenue
+        if (curl_errno($curl)) {
+            echo '❌ Erreur cURL : ' . curl_error($curl);
+            curl_close($curl);
+            exit;
         }
 
-        return "Commande MyDSO : ".implode(", ", $tabMessages);
+        // On récupère les infos
+        $headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $body = substr($response, $headerSize);
+
+        if ($httpCode === self::HTTP_CODE_SUCCESS) {
+            $jsonResponse = json_decode($body, true);
+            $this->storeMessageResponse($jsonResponse, $message, $menuId);
+        }
+
+        curl_close($curl);
+    }
+
+    private function storeMessageResponse(array $jsonResponse, string $message, int $menuId): void
+    {
+        $dateNow = date('Y-m-d H:i:s');
+
+        SmsResponse::create([
+            'message'      => $message,
+            'destination'  => self::PHONE_NUMBER_DESTINATION,
+            'sms_batch_id' => $jsonResponse['data']['smsBatchId'],
+            'status'       => 'success',
+            'menu_id'      => $menuId,
+            'created_at'   => $dateNow,
+        ]);
+    }
+
+    function formatSmsKeyValue(array $data): string {
+        $lines = [];
+
+        foreach ($data as $key => $value) {
+            $lines[] = explode(" ",Dish::find($key)->name)[0] . ': ' . $value;
+        }
+
+        // Double quote obligatoire sinon le saut de ligne ne se fait pas sur le téléphone
+        return "Commande MyDSO\n".implode("\n", $lines);
     }
 }
