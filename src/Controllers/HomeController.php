@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\DataFetcher\DataFetcher;
+use App\Helper\Date;
 use Exception;
 
 class HomeController extends AbstractController
@@ -14,11 +15,12 @@ class HomeController extends AbstractController
     {
         $data = DataFetcher::getData();
         $menu = $data['success'];
-        $isDishes = (!empty($menu->dishes()));
+        $dateMenu = $menu->creation_date;
+        $canDisplayForm = Date::canDisplayOrderForm($dateMenu);
 
         return $this->render('home', [
-            'menu'     => $menu,
-            'isDishes' => $isDishes,
+            'menu'           => $menu,
+            'canDisplayForm' => $canDisplayForm,
         ]);
     }
 }

@@ -54,7 +54,7 @@ if (
             $data['status'] = 'danger';
         }
         $pusher->trigger('send-sms', 'send-sms', $data);
-    } catch (PusherException|GuzzleException|PDOException $e) {
+    } catch (PusherException|GuzzleException|PDOException|DateMalformedStringException $e) {
         throwException($e);
     }
 }

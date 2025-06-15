@@ -1,8 +1,8 @@
 <?php
 /** @var \App\Model\Menu $menu */
-/** @var bool $isDishes */
+/** @var bool $canDisplayForm */
 ?>
-<?php if ($isDishes) : ?>
+<?php if ($menu->is_open) : ?>
     <div class="container my-5">
         <h2 class="text-center display-5 fw-bold mb-5" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
             🍽️ Menu du <span class="text-primary"><?= htmlspecialchars($menu->creation_date) ?></span> 🥗
@@ -55,22 +55,26 @@
     </style>
 
 <?php else: ?>
-<div class="container mt-5">
-    <!-- Image du menu -->
-    <div class="col-lg-5 text-center">
-        <figure class="figure">
-            <img
-                    src="<?= PREFIX ?>/assets/IMG/<?= htmlspecialchars($menu->img_src) ?>"
-                    alt="Photo du menu"
-                    class="figure-img img-fluid rounded shadow-sm"
-                    style="max-height: 320px; object-fit: cover;"
-            >
-            <?php if (!empty($menu->figcaption)) : ?>
-                <figcaption class="figure-caption text-muted mt-3" style="font-style: italic;">
-                    <?= htmlspecialchars($menu->figcaption) ?>
-                </figcaption>
-            <?php endif; ?>
-        </figure>
-    </div>
-</div>
+    <?php if ($canDisplayForm) : ?>
+        <div class="container mt-5">
+            <!-- Image du menu -->
+            <div class="col-lg-5 text-center">
+                <figure class="figure">
+                    <img
+                            src="<?= PREFIX ?>/assets/IMG/<?= htmlspecialchars($menu->img_src) ?>"
+                            alt="Photo du menu"
+                            class="figure-img img-fluid rounded shadow-sm"
+                            style="max-height: 320px; object-fit: cover;"
+                    >
+                    <?php if (!empty($menu->figcaption)) : ?>
+                        <figcaption class="figure-caption text-muted mt-3" style="font-style: italic;">
+                            <?= htmlspecialchars($menu->figcaption) ?>
+                        </figcaption>
+                    <?php endif; ?>
+                </figure>
+            </div>
+        </div>
+    <?php else: ?>
+        <div class="alert alert-info text-center mt-4">Pas de nourriture terrestre aujourd'hui</div>
+    <?php endif; ?>
 <?php endif; ?>
