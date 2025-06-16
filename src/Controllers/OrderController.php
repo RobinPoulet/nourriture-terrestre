@@ -45,9 +45,7 @@ class OrderController extends AbstractController
         $isOpen = $menu->is_open;
         $smsSent = [];
         if ($isOpen) {
-            $smsResponse = SmsResponse::query()
-                ->where('menu_id', '=', $menu->id)
-                ->first();
+            $smsResponse = $menu->smsResponse();
             $status = ($smsResponse->status ?? '');
             if ($status === 'success') {
                 $smsSent['message'] = 'Envoyé avec succès à '. (new \DateTime($smsResponse->created_at))->format('H:i');
@@ -61,7 +59,7 @@ class OrderController extends AbstractController
         $dateMenu = $menu->creation_date;
         $currentDate = date('Y-m-d');
         $resultsOrder = Order::query()
-            ->where('creation_date', '=', $currentDate)
+            ->where('creation_date', $currentDate)
             ->get();
         $tabTotalQuantity = Order::getDishTotalQuantityByDate($currentDate);
         $cookieData = $this->cookieManager->get(self::COOKIE_NAME);
@@ -101,9 +99,7 @@ class OrderController extends AbstractController
             /** @var Order $orderToUpdate */
             $orderToUpdate = Order::find($orderId);
             $orderToUpdate->syncDishes($dishesMapped);
-            if (!empty($perso)) {
-                Order::update($orderId, ['perso' => $perso]);
-            }
+            Order::update($orderId, ['perso' => $perso]);
 
             if ($this->hasMatchingQuantities($orderToUpdate->dishes(), $dishesMapped)) {
                 $tabFlashMessage['success'] = "Ta commande a bien été modifiée $userName";

@@ -6,12 +6,10 @@ use Exception;
 
 class Menu extends Model
 {
+    /** @var string Nom de la table en base */
     protected static string $table = 'menus';
 
-    public ?int $sms_response_id = null;
-    protected string $img_src;
-    protected string $img_figcaption;
-    protected bool $is_open;
+    /** @var string[] Tableau des propriétés pouvant être directement mises à jour dans l'interface */
     protected static array $fillables = [
         'id',
         'img_src',
@@ -21,10 +19,14 @@ class Menu extends Model
         'modification_date',
     ];
 
-
+    /** @var ?Dish[]  */
     private ?array $dishesCache = null;
 
     /**
+     * Relation avec la table dish
+     *
+     * @return Dish[]
+     *
      * @throws Exception
      */
     public function dishes(): array
@@ -36,10 +38,14 @@ class Menu extends Model
     }
 
     /**
+     * Relation avec la table smsResponse
+     *
+     * @return SmsResponse
+     *
      * @throws Exception
      */
-//    public function smsResponse(): ?Menu
-//    {
-//        return $this->belongsTo(SmsResponse::class, 'sms_response_id');
-//    }
+    public function smsResponse()
+    {
+        return $this->hasOne(SmsResponse::class, 'menu_id');
+    }
 }

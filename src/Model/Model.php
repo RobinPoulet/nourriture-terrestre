@@ -4,25 +4,33 @@ namespace App\Model;
 
 use App\Core\QueryBuilder;
 use App\Database\Database;
-use PDO;
 
 abstract class Model extends BaseModel
 {
+    /** @var string Nom de la table en base */
     protected static string $table;
+
+    /** @var string[] Tableau des propriétés pouvant être directement mises à jour dans l'interface */
     protected static array $fillables = [];
 
-    public static function getTable(): string
-    {
-        return static::$table
-            ?? strtolower((new \ReflectionClass(static::class))->getShortName()) . 's';
-    }
-
+    /**
+     * Faire une query en base
+     *
+     * @return QueryBuilder
+     */
     public static function query(): QueryBuilder
     {
         return new QueryBuilder(static::$table, static::class);
     }
 
-    public static function all($orderBy = ''): array
+    /**
+     * Retourne tous les éléments d'une table
+     *
+     * @param string $orderBy Order by à appliquer sur la requête
+     *
+     * @return array
+     */
+    public static function all(string $orderBy = ''): array
     {
         $returnValue = [];
 
@@ -37,10 +45,17 @@ abstract class Model extends BaseModel
         return $returnValue;
     }
 
+    /**
+     * Trouver un élément dans une table
+     *
+     * @param int $id Id de l'élément à trouver
+     *
+     * @return ?Object
+     */
     public static function find(int $id): ?Object
     {
         return static::query()
-            ->where('id', '=', $id)
+            ->where('id', $id)
             ->first();
     }
 
@@ -57,6 +72,13 @@ abstract class Model extends BaseModel
             ->first();
     }
 
+    /**
+     * Créer un élément en base
+     *
+     * @param array $data Donnée de l'élément à créer
+     *
+     * @return ?Object
+     */
     public static function create(array $data): ?Object
     {
         $fields = array_intersect_key($data, array_flip(static::$fillables));
@@ -71,6 +93,14 @@ abstract class Model extends BaseModel
         return static::find($id);
     }
 
+    /**
+     * Mise à jour d'un élément en base de donnée
+     *
+     * @param int   $id   Id de l'élément à update
+     * @param array $data Données à mettre à jour
+     *
+     * @return ?Object
+     */
     public static function update(int $id, array $data): ?Object
     {
         $returnValue = null;
@@ -89,6 +119,13 @@ abstract class Model extends BaseModel
         return $returnValue;
     }
 
+    /**
+     * Supprimer en base de données
+     *
+     * @param int $id Id de l'élément à supprimer
+     *
+     * @return bool
+     */
     public static function delete(int $id): bool
     {
         $sql = "DELETE FROM " . static::$table . " WHERE id = ?";
@@ -96,6 +133,14 @@ abstract class Model extends BaseModel
         return $stmt->execute([$id]);
     }
 
+    /**
+     * Attache à une table pivot
+     *
+     * @param string $pivotTable Nom de la table pivot
+     * @param array  $data       Données à rattacher
+     *
+     * @return void
+     */
     public static function attachPivot(string $pivotTable, array $data): void
     {
         $columns = implode(',', array_keys($data));
@@ -106,6 +151,16 @@ abstract class Model extends BaseModel
         $stmt->execute(array_values($data));
     }
 
+    /**
+     * Sync une table pivot(détache puis rattache)
+     *
+     * @param string $pivotTable Nom de la table pivot
+     * @param array  $where      Conditions du where
+     * @param array  $items      Nouveaux éléments
+     * @param string $keyName    Nom de la clé
+     *
+     * @return void
+     */
     public static function syncPivot(string $pivotTable, array $where, array $items, string $keyName): void
     {
         // Supprimer les anciens
@@ -121,16 +176,17 @@ abstract class Model extends BaseModel
         }
     }
 
+    /**
+     * Remplits les propriétés d'un model à partir d'un tableau d'atttributs
+     *
+     * @param array $attributes Tableau d'attributs
+     *
+     * @return void
+     */
     public function fillFromArray(array $attributes): void
     {
         foreach ($attributes as $key => $value) {
             $this->{strtolower($key)} = $value;
         }
-    }
-
-
-    public function toArray(): array
-    {
-        return $this->attributes;
     }
 }

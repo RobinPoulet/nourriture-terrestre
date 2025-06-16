@@ -41,7 +41,7 @@ if (
             $options
         );
         $smsResponse = SmsResponse::query()
-            ->where('menu_id', '=', $lastMenu->id)
+            ->where('menu_id', $lastMenu->id)
             ->first();
         if (
             $smsResponse

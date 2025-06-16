@@ -59,7 +59,7 @@
                     <tbody>
                     <?php foreach ($orders as $order) :
                         $user = $order->user();
-                        $dishesJson = json_encode($order->dishes(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_HEX_APOS);
+                        $dishesJson = json_encode($order->extractPivotsToArray(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_HEX_APOS);
                         ?>
                         <tr>
                             <td class="fw-semibold"><?= htmlspecialchars($user->name) ?></td>
