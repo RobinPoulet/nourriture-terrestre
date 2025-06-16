@@ -50,7 +50,7 @@
                     <tr>
                         <th scope="col">👤 Nom</th>
                         <?php foreach ($dishes as $dish) : ?>
-                            <th scope="col"><?= htmlspecialchars(explode(" ", $dish->name)[0]) ?></th>
+                            <th scope="col"><?= htmlspecialchars(array_values(array_filter(explode(" ", $dish->name), fn($w) => !empty($w)))[0]) ?></th>
                         <?php endforeach; ?>
                         <th scope="col">📝 Perso</th>
                         <th scope="col">Actions</th>
