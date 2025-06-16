@@ -7,8 +7,8 @@ use App\Model\SmsResponse;
 
 class SendSMSController extends AbstractController
 {
-    private const string PHONE_NUMBER_DESTINATION = '+33636149634';
-    private const int HTTP_CODE_SUCCESS = 201;
+    private const PHONE_NUMBER_DESTINATION = '+33636149634';
+    private const HTTP_CODE_SUCCESS = 201;
     public function send(array $totalQuantity, int $menuId, string $deviceId, string $apiKey): void
     {
         $url = 'https://api.textbee.dev/api/v1/gateway/devices/'.$deviceId.'/send-sms';
