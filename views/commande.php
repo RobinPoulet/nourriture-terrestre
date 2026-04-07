@@ -70,7 +70,7 @@
     <?php if (!$isOpen) : ?>
             <div class="alert alert-info text-center mt-4">Nourriture terrestre est fermé cette semaine</div>
         <?php else : ?>
-            <div class="alert alert-info text-center mt-4">La prise de commande est ouverte de 00h à 11h15 le lundi</div>
+            <div class="alert alert-info text-center mt-4">La prise de commande est ouverte de 0h à 11h15 le lundi</div>
     <?php endif; ?>
     <?php endif; ?>
 </div>
