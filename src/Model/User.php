@@ -7,15 +7,19 @@ use Exception;
 
 class User extends Model
 {
+    /** @var string Nom de la table en base */
     protected static string $table = 'users';
 
-    protected string $name;
-
+    /** @var string[] Tableau des propriétés pouvant être directement mises à jour dans l'interface */
     protected static array $fillables = [
         'name',
     ];
 
     /**
+     * Relation avec la table Order
+     *
+     * @return Order[]
+     *
      * @throws Exception
      */
     public function orders(): array

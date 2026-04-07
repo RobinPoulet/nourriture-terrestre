@@ -33,7 +33,7 @@ class MenuManager
         $weekMenuDate = $this->wpContentManager->getLastPostDate();
         // On check en base si il y a déjà un menu qui existe à cette date
         $menu = Menu::query()
-            ->where('creation_date', '=', $weekMenuDate)
+            ->where('creation_date', $weekMenuDate)
             ->first();
 
         // Si pas de menu en base on va le créer
@@ -59,7 +59,7 @@ class MenuManager
             foreach ($tabDishesNames as $dishName) {
                 //On check et update chaque plat s'il il existe en base de données
                 $dishElement = Dish::query()
-                    ->where('name', '=', $dishName)
+                    ->where('name', $dishName)
                     ->first();
                 if (is_null($dishElement)) {
                     Dish::create([

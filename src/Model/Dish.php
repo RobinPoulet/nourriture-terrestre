@@ -2,17 +2,17 @@
 
 namespace App\Model;
 
-use App\Model\Model;
 use Exception;
-use JsonSerializable;
+use ReflectionClass;
+use ReflectionException;
+use stdClass;
 
-class Dish extends Model implements JsonSerializable
+class Dish extends Model
 {
+    /** @var string Nom de la table en base */
     protected static string $table = 'dishes';
 
-    protected string $name;
-    protected int $total;
-    protected int $menu_id;
+    /** @var string[] Tableau des propriétés pouvant être directement mises à jour dans l'interface */
     protected static array $fillables = [
         'name',
         'total',
@@ -21,12 +21,21 @@ class Dish extends Model implements JsonSerializable
         'modification_date',
     ];
 
+    /**
+     * Relation avec la table order (un plat peut-être associé à plusieurs orders)
+     *
+     * @return Order[]
+     */
     public function orders(): array
     {
         return $this->belongsToMany(Order::class, 'order_dishes', 'dish_id', 'order_id');
     }
 
     /**
+     * Relation avec la table menu (un plat appartient à un seul menu)
+     *
+     * @return ?Menu
+     *
      * @throws Exception
      */
     public function menu(): ?Menu
@@ -34,15 +43,4 @@ class Dish extends Model implements JsonSerializable
         return $this->belongsTo(Menu::class, 'menu_id');
     }
 
-    public function jsonSerialize(): array
-    {
-        return [
-            'id'                => $this->id,
-            'creation_date'     => $this->creation_date,
-            'modification_date' => $this->modification_date,
-            'name'              => $this->name,
-            'total'             => $this->total,
-            'quantity'          => ($this->pivot->quantity ?? null)
-        ];
-    }
 }

@@ -8,7 +8,6 @@ abstract class Cache
 
     /** @var int Durée de validation du cache */
     private const int CACHE_VALIDITY_DURATION = 4 * 60 * 60;
-    public const string NO_CACHE = 'no cache';
     public const string SUCCESS_CACHE = 'success cache';
 
     /**
@@ -18,7 +17,7 @@ abstract class Cache
      */
     public static function getCache(): array
     {
-        $returnValue[self::NO_CACHE] = 'false';
+        $returnValue[self::SUCCESS_CACHE] = null;
 
         // On va chercher le dernier menu en base de données
         $lastMenu = Menu::last();

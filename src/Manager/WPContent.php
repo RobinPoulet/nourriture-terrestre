@@ -51,7 +51,7 @@ class WPContent
      */
     private function getLastPost(): object
     {
-        $requestQuery = '/wp-json/wp/v2/posts?per_page=2&order=desc&orderby=date';
+        $requestQuery = '/wp-json/wp/v2/posts?per_page=1&order=desc&orderby=date';
         $apiEndpoint = $this->url . $requestQuery;
         $context = stream_context_create($this->contextOptions);
         $response = file_get_contents(
@@ -96,6 +96,11 @@ class WPContent
         return urlencode(($images[0]->getAttribute('src') ?? ''));
     }
 
+    /**
+     * Retourne le premier figcpation element
+     *
+     * @return string
+     */
     public function getFirstFigcaptionElement(): string
     {
         $figcaptions = $this->doc->getElementsByTagName('figcaption');
@@ -133,33 +138,6 @@ class WPContent
         $dateString = $this->lastPost->date;
 
         return (new DateTime($dateString))->format('Y-m-d');
-    }
-
-    /**
-     * Récupérer les éléments de type li de l'article
-     *
-     * @return array
-     *
-     */
-    public function getLastPostLiElements(): array
-    {
-        return $this->getLiElements();
-        // Si il n'y a pas de <li> dans l'article de la semaine, c'est une semaine sans menu on léve une exception
-        // On récupère la source de l'image du message d'absence
-        // $tabAbsenceMessageImgSrc = $this->getImgElements($doc);
-        //  $srcImage = urlencode($tabAbsenceMessageImgSrc[0]);
-        //  $tabFigcaptions = $this->getFigcaptionElements($doc);
-        //  if (empty($lis)) {
-        //    Header('Location: bad-day.php' . (empty($srcImage) ? '' : '?imgsrc=' . $srcImage));
-        //   die;
-//        }
-//        return [
-//            'success' => [
-//                'menu'       => $lis,
-//                'imgSrc'     => $srcImage,
-//                'figcaption' => $tabFigcaptions[0] ?? '',
-//            ]
-//        ];
     }
 
     public function isMenuThisWeek(): bool

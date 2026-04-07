@@ -4,12 +4,24 @@
 /** @var bool $isOpen */
 /** @var string $dateMenu */
 /** @var array $tabTotalQuantity */
+/** @var array $smsSent */
 /** @var ?int $selectedUserId */
+/** @var int $menuId */
 ?>
 <div class="container mt-5">
     <?php if ($isOpen) : ?>
         <?php if (!empty($orders)) : ?>
             <!-- Résumé rapide -->
+            <?php if(!empty($smsSent)) : ?>
+            <div class="row text-center mb-4" id="sms-summary-target">
+                <div class="col-12">
+                    <div class="summary-card alert alert-<?= $smsSent['status'] ?>">
+                        <h6 class="text-muted mb-1">🗨️ SMS De Commande </h6>
+                        <p class="alert alert-<?= $smsSent['status'] ?>"><?= $smsSent['message'] ?></p>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
             <div class="row text-center mb-4">
                 <div class="col-md-4">
                     <div class="summary-card">
@@ -32,13 +44,13 @@
             </div>
 
             <!-- Tableau commandes -->
-            <div class="table-responsive shadow rounded fade-in">
+            <div class="shadow rounded fade-in">
                 <table class="table table-custom table-bordered align-middle text-center sticky-header">
                     <thead>
                     <tr>
                         <th scope="col">👤 Nom</th>
                         <?php foreach ($dishes as $dish) : ?>
-                            <th scope="col"><?= htmlspecialchars(explode(" ", $dish->name)[0]) ?></th>
+                            <th scope="col"><?= htmlspecialchars(array_values(array_filter(explode(" ", $dish->name), fn($w) => !empty($w)))[0]) ?></th>
                         <?php endforeach; ?>
                         <th scope="col">📝 Perso</th>
                         <th scope="col">Actions</th>
@@ -47,7 +59,7 @@
                     <tbody>
                     <?php foreach ($orders as $order) :
                         $user = $order->user();
-                        $dishesJson = json_encode($order->dishes(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_HEX_APOS);
+                        $dishesJson = json_encode($order->extractPivotsToArray(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_HEX_APOS);
                         ?>
                         <tr>
                             <td class="fw-semibold"><?= htmlspecialchars($user->name) ?></td>

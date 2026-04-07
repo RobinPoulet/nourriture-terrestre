@@ -9,26 +9,104 @@ use PDO;
 
 abstract class BaseModel
 {
-    protected ?int $id = null;
-    protected ?string $creation_date = null;
-    protected ?string $modification_date = null;
+    /** @var array Relations chargés */
     protected array $loadedRelations = [];
+
+    /** @var ?object Pivot entre 2 tables */
     protected ?object $pivot = null;
 
+    /** @var array Tableau d'attributs du model */
+    protected array $attributes = [];
+
+    /**
+     * Getter (magique)
+     *
+     * @param string $key
+     *
+     * @return array|mixed|object|null
+     */
     public function __get(string $key)
     {
-        return ($this->$key ?? null);
-    }
+        $returnValue = null;
 
-    public function __set(string $key, $value): void
-    {
-        $this->$key = $value;
+        if (isset($this->attributes[$key])) {
+            $returnValue = $this->attributes[$key];
+        }
+
+        if (isset($this->loadedRelations[$key])) {
+            $returnValue = $this->loadedRelations[$key];
+        }
+
+        if (isset($this->pivot->$key)) {
+            $returnValue = $this->pivot->$key;
+        }
+
+        if ($key === 'pivot') {
+            $returnValue = $this->pivot;
+        }
+
+        if ($key === 'loadedRelations') {
+            $returnValue = $this->loadedRelations;
+        }
+
+        return $returnValue;
     }
 
     /**
-     * @param class-string<BaseModel> $relatedClass
-     * @param string                  $foreignKey
+     * Setter (magique))
+     *
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return void
+     */
+    public function __set(string $key, mixed $value): void
+    {
+        if (property_exists($this, $key)) {
+            $this->$key = $value;
+        } else {
+            $this->attributes[$key] = $value;
+        }
+    }
+
+    /**
+     * Récupérer la table de la classe
+     *
+     * @return string
+     */
+    public static function getTable(): string
+    {
+        return static::$table
+            ?? strtolower((new \ReflectionClass(static::class))->getShortName()) . 's';
+    }
+
+    /**
+     * Relation 1-1
+     *
+     * @param class-string<BaseModel> $relatedClass Classe cible de la relation
+     * @param string                  $foreignKey   Clé étrangère
+     *
+     * @return ?object
+     *
+     * @throws Exception
+     */
+    public function hasOne(string $relatedClass, string $foreignKey): ?object
+    {
+        $relatedTable = $relatedClass::getTable();
+        $localValue = $this->id;
+        return (new QueryBuilder($relatedTable, $relatedClass))
+            ->where($foreignKey, $localValue)
+            ->first();
+    }
+
+    /**
+     * Relation 1-n
+     *
+     * @param class-string<BaseModel> $relatedClass Classe cible de la relation
+     * @param string                  $foreignKey   Clé étrangère
+     *
      * @return array
+     *
      * @throws Exception
      */
     public function hasMany(string $relatedClass, string $foreignKey): array
@@ -36,14 +114,17 @@ abstract class BaseModel
         $relatedTable = $relatedClass::getTable();
         $localValue = $this->id;
         return (new QueryBuilder($relatedTable, $relatedClass))
-            ->where($foreignKey, '=', $localValue)
+            ->where($foreignKey, $localValue)
             ->get();
     }
 
     /**
-     * @param class-string<BaseModel> $relatedClass $relatedClass
-     * @param string                  $foreignKey
-     * @return mixed|null
+     * Relation n-1
+     *
+     * @param class-string<BaseModel> $relatedClass Classe cible de la relation
+     * @param string                  $foreignKey   Clé étrangère
+     * @return ?object
+     *
      * @throws Exception
      */
     public function belongsTo(string $relatedClass, string $foreignKey): ?object
@@ -53,10 +134,21 @@ abstract class BaseModel
         $foreignValue = $this->$foreignKey; // ex: $this->user_id
 
         return (new QueryBuilder($relatedTable, $relatedClass))
-            ->where($relatedKey, '=', $foreignValue) // ✅ on filtre sur id du user
+            ->where($relatedKey, $foreignValue) // ✅ on filtre sur id du user
             ->first();
     }
 
+    /**
+     * Relation n-n
+     *
+     * @param string $relatedClass Classe cible de la relation
+     * @param string $pivotTable   Nom de la table pivot
+     * @param string $foreignKey   Clé étrangère
+     * @param string $relatedKey   Clé cible
+     * @param bool   $forceReload  Forcer le rechargement ?
+     *
+     * @return array
+     */
     public function belongsToMany(string $relatedClass, string $pivotTable, string $foreignKey, string $relatedKey, bool $forceReload = false): array
     {
         $cacheKey = "btm_{$pivotTable}_{$relatedClass}";
@@ -108,24 +200,13 @@ abstract class BaseModel
         return $instances;
     }
 
+    /**
+     * Retourne la clé principale
+     *
+     * @return string
+     */
     public static function getPrimaryKey(): string
     {
         return 'id';
     }
-
-
-    /**
-     * @throws Exception
-     */
-    public static function getTable(): string
-    {
-        throw new Exception('You must implement getTable in subclass');
-    }
-
-    // Connection DB simulée
-    protected static function db(): PDO
-    {
-        return Database::getInstance(); // adapte selon ton projet
-    }
-
 }
